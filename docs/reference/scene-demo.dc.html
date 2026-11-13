@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>NobodyFalls — scène de démonstration DA cinématique</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#05070A}
+a{color:#D9D3C7}a:hover{color:#FFFFFF}
+button:disabled{cursor:default}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #05070A; color: #E4E1DA; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+
+  <canvas ref="{{canvasRef}}" role="img" aria-label="{{sceneLabel}}" style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; display: block"></canvas>
+
+  <div style="position: absolute; left: 0; top: 0; width: 390px; box-sizing: border-box; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center">
+    <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.32em; color: #8E99A6">NOBODYFALLS</span>
+    <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.12em; color: #8E99A6; font-variant-numeric: tabular-nums">NUIT 41 · {{countdown}}</span>
+  </div>
+
+  <span style="position: absolute; left: 124px; top: 146px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 0.18em; color: #7F8B98">LÉA_M</span>
+  <span style="position: absolute; left: 226px; top: 122px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 0.18em; color: #7F8B98">KENJI</span>
+  <span style="position: absolute; left: 232px; top: 296px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 0.2em; color: #E4E1DA">TOI</span>
+  <span style="position: absolute; left: 120px; top: 516px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 0.18em; color: #7F8B98">TOM.B</span>
+  <span style="position: absolute; left: 140px; top: 600px; display: flex; align-items: center; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 0.18em; color: #D8A85A">
+    <svg width="10" height="9" viewBox="0 0 12 11" aria-hidden="true"><path d="M6 1 L11 10 L1 10 Z" fill="none" stroke="#D8A85A" stroke-width="1.6" stroke-linejoin="round"></path></svg>INES · 1/2
+  </span>
+  <span style="position: absolute; left: 236px; top: 536px; display: flex; align-items: center; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; letter-spacing: 0.18em; color: {{yukiColor}}">
+    <svg width="10" height="9" viewBox="0 0 12 11" aria-hidden="true"><path d="M6 0 L12 11 L0 11 Z" fill="{{yukiColor}}" opacity="{{yukiFilled}}"></path><path d="M6 1 L11 10 L1 10 Z" fill="none" stroke="{{yukiColor}}" stroke-width="1.6" stroke-linejoin="round"></path></svg>{{yukiTag}}
+  </span>
+
+  <div style="position: absolute; left: 0; bottom: 0; width: 390px; box-sizing: border-box; padding: 64px 24px 24px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(to bottom, rgba(5,7,10,0) 0px, rgba(5,7,10,0.88) 70px, #05070A 120px)">
+    <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.22em; color: #8E99A6">TENU · 2 MAINS SUR 2</span>
+    <h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 50px; line-height: 0.92; letter-spacing: 0.005em; color: #E4E1DA">Tu tiens encore.</h1>
+    <p style="margin: 0 0 6px; font-size: 15px; line-height: 1.45; color: #A3ACB6">{{subline}}</p>
+    <button type="button" onClick="{{rescue}}" disabled="{{rescued}}" style="height: 52px; border-radius: 2px; font: inherit; font-size: 16px; font-weight: 600; letter-spacing: 0.01em; cursor: pointer; {{ctaStyle}}">{{ctaLabel}}</button>
+    <button type="button" style="height: 44px; background: none; border: 0; color: #A3ACB6; font: inherit; font-size: 14px; letter-spacing: 0.04em; cursor: pointer">Au bord du vide · 37</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    this._timer = setInterval(() => {
+      const left = (this.state && this.state.left != null) ? this.state.left : 10033;
+      this.setState({ left: Math.max(0, left - 1) });
+    }, 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this._timer);
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._vis) document.removeEventListener('visibilitychange', this._vis);
+  }
+
+  // ---------- setup ----------
+  setup(el) {
+    if (!el || this._canvas === el) return;
+    this._canvas = el;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    el.width = 390 * dpr;
+    el.height = 844 * dpr;
+    this._ctx = el.getContext('2d');
+    this._ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this._reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.buildScene();
+    const loop = (ts) => {
+      this.draw(ts / 1000);
+      if (!this._reduce && !document.hidden) this._raf = requestAnimationFrame(loop);
+    };
+    this._vis = () => {
+      if (!document.hidden && !this._reduce) this._raf = requestAnimationFrame(loop);
+    };
+    document.addEventListener('visibilitychange', this._vis);
+    if (this._reduce) this.draw(0); else this._raf = requestAnimationFrame(loop);
+  }
+
+  rng(seed) {
+    let s = seed;
+    return () => {
+      s = (s + 0x6D2B79F5) | 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  buildScene() {
+    const r = this.rng(77);
+    const far = [];
+    for (let i = 0; i < 18; i++) {
+      far.push({ gx: r() * 390, gy: 40 + r() * 620, s: 0.2 + r() * 0.16, amp: 0.02 + r() * 0.03, ph: r() * 6.28, top: r() * 40 - 20 });
+    }
+    const mid = [
+      { gx: 22, gy: 250, s: 0.46, amp: 0.025, ph: 1.2, top: 10 },
+      { gx: 360, gy: 330, s: 0.5, amp: 0.03, ph: 2.7, top: -14 },
+      { gx: 40, gy: 690, s: 0.44, amp: 0.02, ph: 4.1, top: 18 },
+      { gx: 372, gy: 40, s: 0.42, amp: 0.02, ph: 0.4, top: -6 }
+    ];
+    const dust = [];
+    for (let i = 0; i < 60; i++) dust.push({ x: r() * 390, y: r() * 844, r: 0.4 + r() * 1.1, sp: 2 + r() * 6, ph: r() * 6.28, a: 0.08 + r() * 0.28 });
+    const skin = '#C9C3B9', pants = '#262A31', boots = '#16191E';
+    const main = {
+      lea: { gx: 106, gy: 142, s: 0.8, pose: 'two', amp: 0.025, ph: 0.3, look: { coat: '#6A6744', hair: 'long', hairColor: '#2A1E19', skin, pants, boots } },
+      kenji: { gx: 296, gy: 120, s: 0.8, pose: 'two', amp: 0.022, ph: 2.1, look: { coat: '#2E4749', hat: 'hood', skin, pants, boots, gloves: '#3B3F45' } },
+      me: { gx: 195, gy: 282, s: 1.15, pose: 'two', amp: 0.018, ph: 1.1, look: { coat: '#4A5463', hat: 'beanie', hatColor: '#7A3931', scarf: '#B5AD9C', skin, pants, boots, gloves: '#2E3238' } },
+      tom: { gx: 100, gy: 505, s: 0.85, pose: 'two', amp: 0.02, ph: 3.3, look: { coat: '#4E5A3C', hat: 'beanie', hatColor: '#585C63', skin, pants, boots } },
+      ines: { gx: 200, gy: 540, s: 0.85, pose: 'one', amp: 0.035, ph: 0.9, look: { coat: '#5A2E39', hair: 'short', hairColor: '#CFC7BA', scarf: '#6F757E', skin, pants, boots } },
+      yuki: { gx: 318, gy: 560, s: 0.8, pose: 'thin', amp: 0.06, ph: 2.5, look: { coat: '#857A65', hat: 'brim', hatColor: '#34343A', skin, pants, boots } }
+    };
+    this.scene = { far, mid, dust, main };
+  }
+
+  // ---------- helpers ----------
+  mix(hex, k) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    const t = k < 0 ? 0 : 255, p = Math.abs(k);
+    r = Math.round(r + (t - r) * p); g = Math.round(g + (t - g) * p); b = Math.round(b + (t - b) * p);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+  ik(sx, sy, hx, hy, l1, l2, bend) {
+    const dx = hx - sx, dy = hy - sy;
+    const d = Math.min(Math.hypot(dx, dy), l1 + l2 - 0.01);
+    const a = Math.atan2(dy, dx);
+    const c = (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d);
+    const b = Math.acos(Math.max(-1, Math.min(1, c)));
+    const ang = a + bend * b;
+    return [sx + Math.cos(ang) * l1, sy + Math.sin(ang) * l1];
+  }
+  limb(ctx, pts, w, base, flat) {
+    const path = () => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); };
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (flat) { ctx.strokeStyle = base; ctx.lineWidth = w; path(); ctx.stroke(); return; }
+    ctx.save(); ctx.translate(w * 0.18, w * 0.12); ctx.strokeStyle = this.mix(base, -0.55); ctx.lineWidth = w; path(); ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = base; ctx.lineWidth = w * 0.86; path(); ctx.stroke();
+    ctx.save(); ctx.globalAlpha = 0.45; ctx.translate(-w * 0.2, -w * 0.12); ctx.strokeStyle = this.mix(base, 0.35); ctx.lineWidth = w * 0.28; path(); ctx.stroke(); ctx.restore();
+  }
+  sway(c, t) {
+    const a = c.amp * Math.sin(t * 0.9 + c.ph) + c.amp * 0.35 * Math.sin(t * 2.1 + c.ph * 1.7);
+    return { a, dx: a * 22 };
+  }
+  world(c, sw, lx, ly) {
+    const x = lx * c.s, y = ly * c.s;
+    const ca = Math.cos(sw.a), sa = Math.sin(sw.a);
+    return [c.gx + sw.dx + x * ca - y * sa, c.gy + x * sa + y * ca];
+  }
+  handsLocal(c) {
+    if (c.pose === 'one') return { L: null, R: [6, 0] };
+    if (c.pose === 'thin') return { L: [-3, 0], R: [3, 0] };
+    return { L: [-14, 0], R: [14, 0] };
+  }
+
+  // ---------- character ----------
+  drawCharacter(ctx, c, t, opts) {
+    const flat = opts && opts.flat;
+    const look = c.look || {};
+    const sw = this.sway(c, t);
+    const coat = flat ? opts.color : look.coat;
+    const skinC = flat ? opts.color : look.skin;
+    const pantsC = flat ? opts.color : look.pants;
+    const bootsC = flat ? opts.color : look.boots;
+    const handC = flat ? opts.color : (look.gloves || look.skin);
+    const pose = c.pose || 'two';
+    const state = c.state || 'held';
+    ctx.save();
+    ctx.translate(c.gx + sw.dx, c.gy);
+    ctx.rotate(sw.a);
+    ctx.scale(c.s, c.s);
+
+    const bx = pose === 'one' ? 5 : 0;
+    const hands = this.handsLocal(c);
+    const shL = [bx - 11, 33], shR = [bx + 11, 33];
+    const kick = state === 'danger' ? Math.sin(t * 3.2 + c.ph) * 5 : 0;
+
+    // legs
+    const hipL = [bx - 5, 66], hipR = [bx + 5, 66];
+    let kneeL = [bx - 6, 82], kneeR = [bx + 6.5, 82], footL = [bx - 5.5, 98], footR = [bx + 6, 98];
+    if (state === 'danger') { kneeL = [bx - 9, 78 - kick * 0.4]; footL = [bx - 4, 92 + kick * 0.3]; kneeR = [bx + 8, 80 + kick * 0.4]; footR = [bx + 11, 95 - kick * 0.3]; }
+    if (pose === 'one') { kneeR = [bx + 7, 81]; footR = [bx + 4, 96]; }
+    this.limb(ctx, [hipL, kneeL, footL], 7.5, pantsC, flat);
+    this.limb(ctx, [hipR, kneeR, footR], 7.5, pantsC, flat);
+    [footL, footR].forEach((f) => {
+      ctx.fillStyle = bootsC; ctx.beginPath(); ctx.ellipse(f[0] + 0.5, f[1] + 2, 4.6, 3.6, 0.15, 0, Math.PI * 2); ctx.fill();
+      if (!flat) { ctx.fillStyle = 'rgba(190,205,220,0.18)'; ctx.beginPath(); ctx.ellipse(f[0] - 1.2, f[1] + 0.8, 2, 1.2, 0, 0, Math.PI * 2); ctx.fill(); }
+    });
+
+    // hood / long hair behind head
+    if (look.hat === 'hood' || flat && c.hat === 'hood') {
+      ctx.fillStyle = flat ? coat : this.mix(coat, -0.25);
+      ctx.beginPath(); ctx.ellipse(bx, 19, 15.5, 17, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    if (look.hair === 'long' && !flat) {
+      ctx.fillStyle = look.hairColor; ctx.beginPath();
+      ctx.moveTo(bx - 13, 18); ctx.quadraticCurveTo(bx - 15, 40, bx - 10, 44); ctx.lineTo(bx + 10, 44); ctx.quadraticCurveTo(bx + 15, 40, bx + 13, 18); ctx.closePath(); ctx.fill();
+    }
+
+    // torso (coat)
+    ctx.beginPath();
+    ctx.moveTo(bx - 12, 31); ctx.quadraticCurveTo(bx, 27.5, bx + 12, 31);
+    ctx.quadraticCurveTo(bx + 14.5, 50, bx + 14, 68);
+    ctx.quadraticCurveTo(bx, 71, bx - 14, 68);
+    ctx.quadraticCurveTo(bx - 14.5, 50, bx - 12, 31); ctx.closePath();
+    if (flat) { ctx.fillStyle = coat; } else {
+      const g = ctx.createLinearGradient(bx - 14, 30, bx + 14, 60);
+      g.addColorStop(0, this.mix(coat, 0.22)); g.addColorStop(0.45, coat); g.addColorStop(1, this.mix(coat, -0.6));
+      ctx.fillStyle = g;
+    }
+    ctx.fill();
+    if (!flat) {
+      ctx.strokeStyle = this.mix(coat, -0.5); ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(bx + 1, 34); ctx.lineTo(bx + 1.5, 69); ctx.stroke();
+      ctx.strokeStyle = 'rgba(205,220,235,0.35)'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(bx - 12, 32); ctx.quadraticCurveTo(bx - 14.5, 50, bx - 14, 67); ctx.stroke();
+      ctx.fillStyle = '#17191D'; ctx.fillRect(bx - 13.5, 58, 27, 4.2);
+      ctx.fillStyle = '#8A8F96'; ctx.beginPath(); ctx.arc(bx, 60.2, 2.3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#17191D'; ctx.beginPath(); ctx.arc(bx, 60.2, 1.1, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // neck shadow + head
+    if (!flat) { ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.beginPath(); ctx.ellipse(bx, 31, 7, 3, 0, 0, Math.PI * 2); ctx.fill(); }
+    const tilt = pose === 'one' ? -0.18 : (state === 'danger' ? 0.12 : 0);
+    ctx.save(); ctx.translate(bx, 20); ctx.rotate(tilt);
+    if (flat) { ctx.fillStyle = skinC; ctx.beginPath(); ctx.ellipse(0, 0, 11.5, 12.8, 0, 0, Math.PI * 2); ctx.fill(); }
+    else {
+      const hg = ctx.createRadialGradient(-4, -5, 2, 0, 0, 14);
+      hg.addColorStop(0, this.mix(skinC, 0.12)); hg.addColorStop(0.55, skinC); hg.addColorStop(1, this.mix(skinC, -0.62));
+      ctx.fillStyle = hg; ctx.beginPath(); ctx.ellipse(0, 0, 11.5, 12.8, 0, 0, Math.PI * 2); ctx.fill();
+      // face: small, a little strange
+      const wide = state === 'danger';
+      ctx.fillStyle = '#0A0B0D';
+      ctx.beginPath(); ctx.ellipse(-4.2, 1.5, wide ? 1.9 : 1.5, wide ? 2.5 : 2.0, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(4.2, 1.5, wide ? 1.9 : 1.5, wide ? 2.5 : 2.0, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(235,240,245,0.75)';
+      ctx.beginPath(); ctx.arc(-4.7, 0.6, 0.45, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(3.7, 0.6, 0.45, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(150,80,80,0.18)';
+      ctx.beginPath(); ctx.ellipse(-6.5, 5.5, 2.4, 1.4, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(6.5, 5.5, 2.4, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+      if (wide) { ctx.fillStyle = '#0A0B0D'; ctx.beginPath(); ctx.ellipse(0, 7.2, 1.3, 1.7, 0, 0, Math.PI * 2); ctx.fill(); }
+      if (state === 'relieved') { ctx.strokeStyle = '#0A0B0D'; ctx.lineWidth = 0.9; ctx.beginPath(); ctx.arc(0, 5.6, 2, 0.25, Math.PI - 0.25); ctx.stroke(); }
+      // headwear
+      if (look.hat === 'beanie') {
+        ctx.fillStyle = look.hatColor; ctx.beginPath(); ctx.ellipse(0, -4, 12.2, 10.5, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = this.mix(look.hatColor, -0.3); ctx.fillRect(-12.4, -5.5, 24.8, 4.2);
+        ctx.fillStyle = 'rgba(205,220,235,0.25)'; ctx.beginPath(); ctx.ellipse(-4, -11, 4, 2, -0.3, 0, Math.PI * 2); ctx.fill();
+      } else if (look.hat === 'hood') {
+        ctx.strokeStyle = this.mix(look.coat, -0.05); ctx.lineWidth = 3.2; ctx.beginPath(); ctx.ellipse(0, 0.5, 13, 14, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();
+      } else if (look.hat === 'brim') {
+        ctx.fillStyle = look.hatColor; ctx.beginPath(); ctx.ellipse(0, -5, 16, 3.4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, -8, 9.5, 7, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(0, -2.5, 11, 2.6, 0, 0, Math.PI); ctx.fill();
+      } else if (look.hair === 'short') {
+        ctx.fillStyle = look.hairColor; ctx.beginPath(); ctx.moveTo(-12, -1); ctx.quadraticCurveTo(-12, -14, 0, -13.5); ctx.quadraticCurveTo(12, -14, 12, -1); ctx.quadraticCurveTo(6, -7, 1, -5); ctx.quadraticCurveTo(-5, -8, -12, -1); ctx.fill();
+      } else if (look.hair === 'long') {
+        ctx.fillStyle = look.hairColor; ctx.beginPath(); ctx.moveTo(-12, 2); ctx.quadraticCurveTo(-12, -14, 0, -13.5); ctx.quadraticCurveTo(12, -14, 12, 2); ctx.quadraticCurveTo(7, -6, 0, -5); ctx.quadraticCurveTo(-8, -6, -12, 2); ctx.fill();
+      }
+      // rim light (key light from top-left)
+      ctx.strokeStyle = 'rgba(210,225,240,0.42)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.ellipse(0, 0, 11.6, 12.9, 0, Math.PI * 0.95, Math.PI * 1.55); ctx.stroke();
+    }
+    ctx.restore();
+
+    // scarf
+    if (look.scarf && !flat) {
+      ctx.fillStyle = look.scarf; ctx.beginPath(); ctx.ellipse(bx, 31.5, 10.5, 3.6, 0, 0, Math.PI * 2); ctx.fill();
+      this.limb(ctx, [[bx - 5, 33], [bx - 7, 41], [bx - 6.5, 48]], 4.2, look.scarf, false);
+    }
+
+    // arms (in front)
+    const L1 = 18, L2 = 18;
+    let handL = hands.L, handR = hands.R;
+    if (pose === 'one') {
+      const reach = [bx - 30 + Math.sin(t * 1.4 + c.ph) * 2, 34 + Math.sin(t * 1.1) * 3];
+      handL = reach;
+    }
+    const elL = this.ik(shL[0], shL[1], handL[0], handL[1], L1, L2, pose === 'one' ? 1 : -1);
+    const elR = this.ik(shR[0], shR[1], handR[0], handR[1], L1, L2, 1);
+    this.limb(ctx, [shL, elL, handL], 6.4, coat, flat);
+    this.limb(ctx, [shR, elR, handR], 6.4, coat, flat);
+    [handL, handR].forEach((h) => {
+      ctx.fillStyle = handC; ctx.beginPath(); ctx.arc(h[0], h[1], 3.6, 0, Math.PI * 2); ctx.fill();
+      if (!flat) { ctx.fillStyle = 'rgba(210,225,240,0.25)'; ctx.beginPath(); ctx.arc(h[0] - 1, h[1] - 1.2, 1.3, 0, Math.PI * 2); ctx.fill(); }
+    });
+    ctx.restore();
+    return sw;
+  }
+
+  // ---------- ropes ----------
+  curve(a, b, sag, prog) {
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2 + sag;
+    const N = 30, end = Math.max(1, Math.round(N * prog)), pts = [];
+    for (let i = 0; i <= end; i++) {
+      const t = i / N, u = 1 - t;
+      pts.push([u * u * a[0] + 2 * u * t * mx + t * t * b[0], u * u * a[1] + 2 * u * t * my + t * t * b[1]]);
+    }
+    return pts;
+  }
+  rope(ctx, a, b, sag, w, prog, alpha) {
+    const pts = this.curve(a, b, sag, prog == null ? 1 : prog);
+    const path = (ox, oy) => { ctx.beginPath(); ctx.moveTo(pts[0][0] + ox, pts[0][1] + oy); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0] + ox, pts[i][1] + oy); };
+    ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#1E1915'; ctx.lineWidth = w; path(0.5, 0.5); ctx.stroke();
+    ctx.strokeStyle = '#6B5E4F'; ctx.lineWidth = w * 0.7; path(0, 0); ctx.stroke();
+    ctx.globalAlpha *= 0.6; ctx.strokeStyle = '#B3A48A'; ctx.lineWidth = w * 0.22; path(-w * 0.18, -w * 0.12); ctx.stroke();
+    ctx.globalAlpha = (alpha == null ? 1 : alpha) * 0.55; ctx.strokeStyle = '#1E1915'; ctx.lineWidth = 0.6;
+    for (let i = 1; i < pts.length; i++) {
+      const dx = pts[i][0] - pts[i - 1][0], dy = pts[i][1] - pts[i - 1][1], l = Math.hypot(dx, dy) || 1;
+      const nx = -dy / l, ny = dx / l, tx = dx / l, ty = dy / l, h = w * 0.42;
+      const steps = Math.max(1, Math.round(l / (w * 0.9)));
+      for (let k = 0; k < steps; k++) {
+        const px = pts[i - 1][0] + dx * (k / steps), py = pts[i - 1][1] + dy * (k / steps);
+        ctx.beginPath(); ctx.moveTo(px - nx * h - tx * h * 0.6, py - ny * h - ty * h * 0.6); ctx.lineTo(px + nx * h + tx * h * 0.6, py + ny * h + ty * h * 0.6); ctx.stroke();
+      }
+    }
+    ctx.restore();
+    return pts[pts.length - 1];
+  }
+  thread(ctx, a, b) {
+    const fy = a[1] + (b[1] - a[1]) * 0.35, fx = a[0] + (b[0] - a[0]) * 0.35;
+    ctx.save(); ctx.strokeStyle = 'rgba(178,170,155,0.7)'; ctx.lineWidth = 0.9;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(fx, fy - 6); ctx.stroke();
+    ctx.lineWidth = 0.4;
+    [[-1.6, 0], [0.4, 0.8], [1.8, -0.6]].forEach(([o, j]) => { ctx.beginPath(); ctx.moveTo(fx + o * 0.3, fy - 6); ctx.quadraticCurveTo(fx + o * 2.2, fy + j, fx, fy + 6); ctx.stroke(); });
+    ctx.lineWidth = 0.9; ctx.beginPath(); ctx.moveTo(fx, fy + 6); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    ctx.restore();
+  }
+
+  // ---------- frame ----------
+  draw(t) {
+    const ctx = this._ctx; if (!ctx || !this.scene) return;
+    const W = 390, H = 844, S = this.scene;
+
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0E141D'); bg.addColorStop(0.5, '#090D13'); bg.addColorStop(1, '#030405');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // key light shaft from above-left
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const sg = ctx.createLinearGradient(0, 0, 0, H);
+    sg.addColorStop(0, 'rgba(140,165,195,0.13)'); sg.addColorStop(0.6, 'rgba(140,165,195,0.035)'); sg.addColorStop(1, 'rgba(140,165,195,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.moveTo(30, -10); ctx.lineTo(170, -10); ctx.lineTo(360, H); ctx.lineTo(-90, H); ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    // far layer: tiny figures in the haze, ropes vanishing upward
+    ctx.save(); ctx.filter = 'blur(1.4px)';
+    S.far.forEach((f) => {
+      const sw = this.sway(f, t);
+      const h = this.world(f, sw, 0, 0);
+      ctx.strokeStyle = 'rgba(40,50,62,0.7)'; ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.moveTo(h[0] - 3, h[1]); ctx.lineTo(h[0] - 3 + f.top * 0.3, -10); ctx.moveTo(h[0] + 3, h[1]); ctx.lineTo(h[0] + 3 + f.top * 0.3, -10); ctx.stroke();
+      this.drawCharacter(ctx, f, t, { flat: true, color: '#1F2731' });
+    });
+    ctx.restore();
+    ctx.fillStyle = 'rgba(10,15,22,0.38)'; ctx.fillRect(0, 0, W, H);
+
+    // mid layer
+    ctx.save(); ctx.filter = 'blur(0.6px)';
+    S.mid.forEach((f) => {
+      const sw = this.sway(f, t);
+      const hl = this.world(f, sw, -14, 0), hr = this.world(f, sw, 14, 0);
+      this.rope(ctx, [hl[0] - 4 + f.top, -20], hl, 0, 2.2, 1, 0.45);
+      this.rope(ctx, [hr[0] + 4 + f.top, -20], hr, 0, 2.2, 1, 0.45);
+      this.drawCharacter(ctx, f, t, { flat: true, color: '#28313D' });
+    });
+    ctx.restore();
+
+    // drifting haze banks
+    [[80, 240, 0], [300, 470, 2], [150, 700, 4]].forEach(([x, y, ph]) => {
+      const cx = x + Math.sin(t * 0.07 + ph) * 40;
+      const fg = ctx.createRadialGradient(cx, y, 10, cx, y, 230);
+      fg.addColorStop(0, 'rgba(110,130,155,0.075)'); fg.addColorStop(1, 'rgba(110,130,155,0)');
+      ctx.fillStyle = fg; ctx.fillRect(0, 0, W, H);
+    });
+
+    // main cast
+    const M = S.main;
+    const rescueProg = this._rescueAt == null ? 0 : (this._rescueAt < 0 ? 1 : Math.min(1, (t - this._rescueAt) / 0.85));
+    M.yuki.state = rescueProg >= 1 ? 'relieved' : 'danger';
+    M.yuki.amp = rescueProg >= 1 ? 0.03 : 0.06;
+    M.ines.state = 'attention';
+    const sws = {};
+    Object.keys(M).forEach((k) => { sws[k] = this.sway(M[k], t); });
+    const P = (k, lx, ly) => this.world(M[k], sws[k], lx, ly);
+    const belt = (k) => P(k, M[k].pose === 'one' ? 5 : 0, 60.2);
+
+    // ropes (behind bodies)
+    this.rope(ctx, [P('lea', -14, 0)[0] - 8, -20], P('lea', -14, 0), 0, 2.6);
+    this.rope(ctx, [P('lea', 14, 0)[0] + 6, -20], P('lea', 14, 0), 0, 2.6);
+    this.rope(ctx, [P('kenji', -14, 0)[0] - 6, -20], P('kenji', -14, 0), 0, 2.6);
+    this.rope(ctx, [P('kenji', 14, 0)[0] + 9, -20], P('kenji', 14, 0), 0, 2.6);
+    this.rope(ctx, belt('lea'), P('me', -14, 0), 4, 3.2);
+    this.rope(ctx, belt('kenji'), P('me', 14, 0), 4, 3.2);
+    this.rope(ctx, [-30, 380], P('tom', -14, 0), 10, 2.8);
+    this.rope(ctx, belt('me'), P('tom', 14, 0), 6, 3);
+    this.rope(ctx, belt('me'), P('ines', 6, 0), 3, 3);
+    this.thread(ctx, [372, -10], P('yuki', 0, 0));
+    if (rescueProg > 0) {
+      const ease = 1 - Math.pow(1 - rescueProg, 3);
+      this.rope(ctx, belt('me'), P('yuki', 0, 0), 46 - 38 * ease, 3, ease);
+    }
+
+    ['lea', 'kenji', 'tom', 'ines', 'yuki', 'me'].forEach((k) => this.drawCharacter(ctx, M[k], t));
+
+    // free coil at the belt, until thrown
+    if (rescueProg === 0) {
+      const b = belt('me');
+      ctx.save(); ctx.lineCap = 'round';
+      [[8, 12, 7, 9], [10, 16, 6.5, 8.5], [6.5, 14, 7.5, 9.5]].forEach(([ox, oy, rx, ry], i) => {
+        ctx.strokeStyle = '#1E1915'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(b[0] + ox, b[1] + oy, rx, ry, 0.3 + i * 0.2, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#6B5E4F'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(b[0] + ox, b[1] + oy, rx, ry, 0.3 + i * 0.2, 0, Math.PI * 2); ctx.stroke();
+      });
+      ctx.restore();
+      this.rope(ctx, [b[0] + 12, b[1] + 22], [b[0] + 20 + Math.sin(t * 1.3) * 2, b[1] + 52], 2, 2.6);
+    }
+
+    // the void: rising cold haze at the bottom
+    const vg = ctx.createLinearGradient(0, 560, 0, H);
+    vg.addColorStop(0, 'rgba(60,75,95,0)'); vg.addColorStop(1, 'rgba(60,75,95,0.22)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 560, W, H - 560);
+
+    // dust in the light
+    S.dust.forEach((d) => {
+      const y = ((d.y - t * d.sp) % H + H) % H;
+      const x = d.x + Math.sin(t * 0.4 + d.ph) * 6;
+      ctx.fillStyle = 'rgba(200,212,226,' + (d.a * (0.6 + 0.4 * Math.sin(t + d.ph))).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(x, y, d.r, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // vignette
+    const vig = ctx.createRadialGradient(195, 360, 160, 195, 400, 600);
+    vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,0.72)');
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+  }
+
+  renderVals() {
+    if (!this._canvasRef) this._canvasRef = (el) => this.setup(el);
+    if (!this._rescue) {
+      this._rescue = () => {
+        if (this._rescueAt != null) return;
+        this._rescueAt = this._reduce ? -1 : performance.now() / 1000;
+        this.setState({ rescued: true });
+        if (this._reduce) this.draw(0);
+      };
+    }
+    const left = (this.state && this.state.left != null) ? this.state.left : 10033;
+    const p = (n) => String(n).padStart(2, '0');
+    const rescued = !!(this.state && this.state.rescued);
+    return {
+      canvasRef: this._canvasRef,
+      rescue: this._rescue,
+      rescued,
+      countdown: p(Math.floor(left / 3600)) + ':' + p(Math.floor((left % 3600) / 60)) + ':' + p(left % 60),
+      sceneLabel: rescued
+        ? 'Tu es suspendu au-dessus du vide, retenu par les cordes de léa_m et kenji. Tu tiens tom.b, ines et maintenant yuki, qui a attrapé ta corde.'
+        : 'Tu es suspendu au-dessus du vide, retenu par les cordes de léa_m et kenji. Tu tiens tom.b et ines. Yuki ne tient plus qu’à un fil effiloché.',
+      subline: rescued
+        ? 'Yuki a attrapé ta corde. Il lui en faut encore une avant minuit.'
+        : 'Il te reste une main. Yuki ne tient plus qu’à un fil.',
+      ctaLabel: rescued ? 'Main tendue à yuki' : 'Tendre ta dernière main à yuki',
+      ctaStyle: rescued ? 'background: none; border: 1px solid #4A535E; color: #A3ACB6' : 'background: #D9D3C7; border: 0; color: #0B0E13',
+      yukiTag: rescued ? 'YUKI · 1/2' : 'YUKI · UN FIL',
+      yukiColor: rescued ? '#D8A85A' : '#D0645F',
+      yukiFilled: rescued ? '0' : '1'
+    };
+  }
+}
+</script>
+</body>
+</html>
