@@ -484,6 +484,12 @@ l'en-tête « NUIT 41 » de Ce soir. Tu préfères un onglet Monde à la place ?
 - Dernier rempart : fenêtre 23:00:00–23:59:59 UTC ; jamais pour un receveur immunisé.
 - Une tempête peut être programmée pour le jour même jusqu'à 18:00 UTC ; elle
   relève alors les seuils déjà fixés pour la journée (seule exception au gel).
+- Les Veilleurs sont des joueurs de type `watcher` aux pseudos réservés
+  (`veilleur.01`, …) ; l'interface les étiquette toujours comme Veilleurs.
+- Après une panne du serveur, les nuits manquées sont résolues dans l'ordre au
+  redémarrage. Une panne couvrant une journée entière ferait tomber ceux que
+  personne n'a pu tenir : à traiter par une procédure d'exploitation (geler la
+  nuit) si le cas se présente.
 - « X t'a sauvé » est notifié quel que soit le lien (ami ou non).
 - Tri du Bord du vide : déficit décroissant, puis mains reçues croissantes,
   puis ordre pseudo-aléatoire stable par jour (pour répartir l'aide au lieu de
