@@ -2,10 +2,10 @@ using System.Security.Cryptography;
 using System.Text;
 using NobodyFalls.Domain.Common;
 
-namespace NobodyFalls.Domain.Tests.Support;
+namespace NobodyFalls.Testing;
 
 /// <summary>Readable, deterministic player ids for tests: <c>Ids.Of("lea")</c>.</summary>
-internal static class Ids
+public static class Ids
 {
     public static PlayerId Of(string name)
     {

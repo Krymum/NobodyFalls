@@ -3,13 +3,13 @@ using NobodyFalls.Domain.Night;
 using NobodyFalls.Domain.Players;
 using NobodyFalls.Domain.Rules;
 
-namespace NobodyFalls.Domain.Tests.Support;
+namespace NobodyFalls.Testing;
 
 /// <summary>
 /// Generates valid random days from a seed. Shared with the differential tests that
 /// compare the SQL resolution with <see cref="NightResolver"/>.
 /// </summary>
-internal static class RandomDay
+public static class RandomDay
 {
     public static DaySnapshot Generate(int seed)
     {

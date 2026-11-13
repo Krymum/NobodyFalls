@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>NobodyFalls.Testing</RootNamespace>
+    <Description>Test data builders shared by the test projects.</Description>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CA1515;CA1707</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NobodyFalls.Domain\NobodyFalls.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

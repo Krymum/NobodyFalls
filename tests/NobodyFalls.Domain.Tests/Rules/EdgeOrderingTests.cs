@@ -1,6 +1,6 @@
 using NobodyFalls.Domain.Common;
 using NobodyFalls.Domain.Rules;
-using NobodyFalls.Domain.Tests.Support;
+using NobodyFalls.Testing;
 
 namespace NobodyFalls.Domain.Tests.Rules;
 
