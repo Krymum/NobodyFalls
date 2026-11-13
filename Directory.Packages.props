@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup Label="Tests">
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
+    <PackageVersion Include="FsCheck" Version="3.6.0" />
+    <PackageVersion Include="FsCheck.Xunit.v3" Version="3.6.0" />
+  </ItemGroup>
+</Project>
