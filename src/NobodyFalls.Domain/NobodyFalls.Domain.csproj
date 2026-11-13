@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>NobodyFalls.Domain</RootNamespace>
+    <Description>Pure rules of NobodyFalls. No dependencies, no I/O, no clock.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="NobodyFalls.Domain.Tests" />
+  </ItemGroup>
+
+</Project>
