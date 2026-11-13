@@ -482,6 +482,8 @@ l'en-tête « NUIT 41 » de Ce soir. Tu préfères un onglet Monde à la place ?
 - Dette de vie : main décisive ⇔ le receveur a exactement le seuil
   (alors toutes ses mains humaines sont décisives).
 - Dernier rempart : fenêtre 23:00:00–23:59:59 UTC ; jamais pour un receveur immunisé.
+- Une tempête peut être programmée pour le jour même jusqu'à 18:00 UTC ; elle
+  relève alors les seuils déjà fixés pour la journée (seule exception au gel).
 - « X t'a sauvé » est notifié quel que soit le lien (ami ou non).
 - Tri du Bord du vide : déficit décroissant, puis mains reçues croissantes,
   puis ordre pseudo-aléatoire stable par jour (pour répartir l'aide au lieu de
