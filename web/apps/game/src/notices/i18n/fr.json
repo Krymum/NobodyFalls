@@ -1,0 +1,30 @@
+{
+  "notices": {
+    "ban": {
+      "title": "Ton compte est suspendu.",
+      "titleForever": "Ton compte est banni.",
+      "until": "Jusqu'au {{date}}.",
+      "intro": "Tu ne peux plus tenir ni être tenu pour l'instant. Ta place n'est pas comptée comme une chute.",
+      "contest": "Contester cette décision",
+      "logout": "Se déconnecter"
+    },
+    "warning": {
+      "title": "Un message de l'équipe",
+      "ack": "J'ai compris"
+    },
+    "pseudo": {
+      "title": "Choisis un nouveau pseudo.",
+      "intro": "L'équipe a remplacé ton pseudo, qui ne respectait pas les règles. Choisis-en un autre pour continuer.",
+      "label": "Nouveau pseudo",
+      "submit": "Valider"
+    }
+  },
+  "errors": {
+    "pseudo": {
+      "no_reset": "Ton pseudo ne peut changer qu'après une réinitialisation par l'équipe."
+    },
+    "sanction": {
+      "not_found": "Ce message n'existe plus."
+    }
+  }
+}

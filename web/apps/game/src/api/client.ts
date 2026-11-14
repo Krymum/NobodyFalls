@@ -9,6 +9,7 @@ import type {
   Locale,
   MapNameVisibility,
   MyProfile,
+  Notices,
   NotificationPreferences,
   PlayerRef,
   Session,
@@ -76,6 +77,7 @@ const get = <T>(path: string): Promise<T> => request<T>('GET', path);
 /** The game API (`/api/v1`). One function per endpoint, nothing else. */
 export const api = {
   session: () => get<Session>('/api/v1/session'),
+  notices: () => get<Notices>('/api/v1/me/notices'),
   register: (body: {
     pseudo: string;
     appearance: Appearance;

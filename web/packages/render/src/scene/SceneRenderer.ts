@@ -71,6 +71,8 @@ export class SceneRenderer {
   private middle: Figure[] = [];
   private dust: Mote[] = [];
   private farSprites: Sprite[] = [];
+  /** The far plane, drawn once per size (ART_DIRECTION, "Contraintes techniques"). */
+  private farLayer: Surface | null = null;
   private middleSprites: Sprite[] = [];
   private width = REFERENCE_WIDTH;
   private height = REFERENCE_HEIGHT;
@@ -139,6 +141,7 @@ export class SceneRenderer {
     this.farSprites = this.far.map((f) =>
       this.silhouette(f.scale, characterTokens.farSilhouette, 1.4, pixelRatio),
     );
+    this.farLayer = this.renderFarLayer(width, height, pixelRatio);
     this.middleSprites = this.middle.map((f) =>
       this.silhouette(f.scale, characterTokens.midSilhouette, 0.6, pixelRatio),
     );
@@ -161,7 +164,6 @@ export class SceneRenderer {
   drawBackground(ctx: Ctx2D, t: number): void {
     const { width: w, height: h } = this;
     const sx = w / REFERENCE_WIDTH;
-    const unit = this.unit();
 
     const background = ctx.createLinearGradient(0, 0, 0, h);
     background.addColorStop(0, palette.backgroundTop);
@@ -187,7 +189,20 @@ export class SceneRenderer {
     ctx.fill();
     ctx.restore();
 
-    // Far plane: tiny figures in the haze, their ropes vanishing upwards.
+    // Far plane: tiny figures in the haze, their ropes vanishing upwards. Pre-rendered
+    // once (still: their sway would be invisible at that size); drawn figure by figure
+    // only when no offscreen surface is available.
+    if (this.farLayer?.ctx) {
+      ctx.drawImage(this.farLayer.image, 0, 0, w, h);
+    } else {
+      this.drawFarPlane(ctx, t);
+    }
+    ctx.fillStyle = atmosphere.farVeil;
+    ctx.fillRect(0, 0, w, h);
+    this.drawRest(ctx, t);
+  }
+
+  private drawFarPlane(ctx: Ctx2D, t: number): void {
     ctx.save();
     ctx.strokeStyle = 'rgba(40,50,62,0.7)';
     ctx.lineWidth = 0.7;
@@ -203,8 +218,22 @@ export class SceneRenderer {
       this.drawSprite(ctx, this.farSprites[i], figure, sway);
     });
     ctx.restore();
-    ctx.fillStyle = atmosphere.farVeil;
-    ctx.fillRect(0, 0, w, h);
+  }
+
+  private renderFarLayer(width: number, height: number, pixelRatio: number): Surface | null {
+    const surface = this.canvases.create(Math.ceil(width * pixelRatio), Math.ceil(height * pixelRatio));
+    if (!surface.ctx) {
+      return null;
+    }
+    surface.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    this.drawFarPlane(surface.ctx, 0);
+    return surface;
+  }
+
+  /** The middle plane and the drifting haze, drawn every frame. */
+  private drawRest(ctx: Ctx2D, t: number): void {
+    const { width: w, height: h } = this;
+    const unit = this.unit();
 
     // Middle plane.
     this.middle.forEach((figure, i) => {

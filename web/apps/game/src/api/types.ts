@@ -87,6 +87,17 @@ export interface Session {
   readonly devTools: boolean;
 }
 
+/** What a sanctioned player must see first (GAME_DESIGN §9). */
+export interface Notices {
+  readonly warnings: readonly { readonly id: number; readonly message: string; readonly at: string }[];
+  readonly ban: {
+    readonly id: number;
+    readonly message: string | null;
+    readonly until: string | null;
+  } | null;
+  readonly pseudoResetPending: boolean;
+}
+
 export interface LifeDebt {
   readonly player: PlayerRef;
   readonly day: string;

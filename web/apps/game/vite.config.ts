@@ -2,12 +2,13 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 /**
- * Modules loaded on demand (SignalR after the first screen, "Ideas and contact", dev
+ * Modules loaded on demand (SignalR after the first screen, "Ideas and contact", notices
+ * for sanctioned players, dev
  * pages). Everything else forms one "game" chunk: without this group, modules shared by
  * the first screen and a lazy one are split into extra chunks, each with its own
  * overhead, and the first load grows (ADR 0017: the game must not grow).
  */
-const LAZY = /[\\/](src[\\/](feedback|dev)|@microsoft[\\/]signalr)[\\/]/;
+const LAZY = /[\\/](src[\\/](feedback|notices|dev)|@microsoft[\\/]signalr)[\\/]/;
 
 // The API (docker compose or `dotnet run`) serves /api, /auth, /hubs and /dev on port 8080.
 const api = 'http://localhost:8080';

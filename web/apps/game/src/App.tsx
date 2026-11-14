@@ -18,6 +18,10 @@ import { useLayout } from './ui/useLayout.ts';
 
 // The reference scene demo is a development page: kept out of the main bundle.
 const SceneDemo = lazy(() => import('./dev/SceneDemo.tsx').then((m) => ({ default: m.SceneDemo })));
+// What a sanctioned player sees first (GAME_DESIGN §9): rare, so its own chunk.
+const NoticesScreen = lazy(() =>
+  import('./notices/NoticesScreen.tsx').then((m) => ({ default: m.NoticesScreen })),
+);
 // "Ideas and contact" is opened from the profile: its own chunk, texts included.
 const FeedbackScreen = lazy(() =>
   import('./feedback/FeedbackScreen.tsx').then((m) => ({ default: m.FeedbackScreen })),
@@ -80,6 +84,7 @@ function Game() {
   const [location] = useLocation();
   const { t } = useTranslation();
   const layout = useLayout();
+  const notices = useGame((s) => s.notices);
 
   useEffect(() => {
     game.loadSession().catch(() => {
@@ -121,6 +126,25 @@ function Game() {
   }
 
   const registered = session.state === 'player';
+  const mustSee =
+    registered &&
+    notices !== null &&
+    (notices.ban !== null || notices.warnings.length > 0 || notices.pseudoResetPending);
+  // A banned player may only reach the contact page, to contest the ban.
+  const contesting = notices?.ban != null && location === '/profile/feedback';
+  if (mustSee && !contesting) {
+    return (
+      <div className={ui.shell} data-layout={layout}>
+        <div className={ui.main}>
+          <Suspense fallback={<main className={ui.page} aria-busy="true" />}>
+            <NoticesScreen />
+          </Suspense>
+        </div>
+        {session.devTools && <DevPanel />}
+      </div>
+    );
+  }
+
   const onTonight = registered && location === '/';
   // The scene fills the window behind every screen from tablets on (dimmed behind lists,
   // the void alone before sign-up); on phones only "Tonight" draws it, to save battery.
@@ -162,7 +186,7 @@ function Game() {
           </Switch>
         )}
       </div>
-      {registered && location !== '/onboarding' && <Navigation />}
+      {registered && location !== '/onboarding' && !contesting && <Navigation />}
       {session.devTools && <DevPanel />}
     </div>
   );
