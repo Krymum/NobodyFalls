@@ -1,7 +1,14 @@
+/*
+ * "Tonight" and the scene behind the interface (ART_DIRECTION, "Interface" and
+ * "Responsive"): the scene always fills the window; the text sits on a fade, at the
+ * bottom on phones and tablets, in a side panel on desktops.
+ */
+
+/* The scene layer, fixed behind everything. */
 .stage {
-  position: relative;
-  height: 100dvh;
-  min-height: 600px;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
   background: var(--nf-color-page);
 }
@@ -12,6 +19,18 @@
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* Behind list screens the scene stays visible, faded under a veil. */
+.stage[data-mode='dimmed'] .canvas {
+  opacity: 0.42;
+}
+
+.stage[data-mode='dimmed']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgb(5 7 10 / 0.35), rgb(5 7 10 / 0.8) 75%);
 }
 
 .labels {
@@ -26,7 +45,7 @@
   align-items: center;
   gap: 6px;
   font-family: var(--nf-font-display);
-  font-size: 12px;
+  font-size: calc(12px * min(1.2, max(1, var(--scene-scale, 1))));
   letter-spacing: var(--nf-font-label-tracking);
   color: var(--nf-color-label);
   white-space: nowrap;
@@ -37,14 +56,26 @@
 
 .me {
   font-weight: 600;
-  font-size: 13px;
+  font-size: calc(13px * min(1.2, max(1, var(--scene-scale, 1))));
   letter-spacing: 0.2em;
   color: var(--nf-color-bone);
 }
 
-/* Text on a fade to black, above the tab bar. */
+/* The screen itself: only text, over the scene. */
+.screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  pointer-events: none;
+}
+
+.screen > * {
+  pointer-events: auto;
+}
+
+/* Phones: text on a fade to black, above the tab bar. */
 .panel {
-  position: absolute;
+  position: fixed;
   inset: auto 0 0;
   z-index: 2;
   padding: 64px var(--nf-space-gutter) calc(76px + env(safe-area-inset-bottom));
@@ -63,8 +94,33 @@
   margin: 0;
   font-family: var(--nf-font-display);
   font-weight: 600;
-  font-size: clamp(38px, 12vw, 50px);
+  font-size: var(--nf-fluid-title);
   line-height: 0.92;
   letter-spacing: 0.005em;
   color: var(--nf-color-bone);
+}
+
+/* Tablets: the same panel, a column on a wider fade. */
+@media (min-width: 640px) {
+  .panel {
+    padding-inline: max(var(--nf-gutter), calc((100% - var(--nf-layout-panel-tablet)) / 2));
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Desktops: the text leaves the bottom for a side panel on a lateral fade, no frame. */
+@media (min-width: 1024px) {
+  .panel {
+    inset: 0 0 0 auto;
+    width: var(--nf-layout-panel);
+    padding: 48px 40px 48px 56px;
+    justify-content: center;
+    gap: 14px;
+    background: linear-gradient(
+      to right,
+      rgb(5 7 10 / 0) 0,
+      rgb(5 7 10 / 0.86) 64px,
+      rgb(5 7 10 / 0.94) 100%
+    );
+  }
 }

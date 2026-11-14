@@ -1,0 +1,83 @@
+/*
+ * Shared layout base for the game and the admin (ART_DIRECTION, "Responsive"; ADR 0016).
+ * Breakpoints: < 640 px phone, 640–1023 px tablet, ≥ 1024 px desktop. Media queries
+ * cannot read custom properties, so the numbers are written here and in each app's CSS;
+ * a test checks that every media query uses only these values.
+ */
+
+:root {
+  --nf-gutter: var(--nf-fluid-gutter);
+  --nf-section-gap: var(--nf-fluid-section);
+  --nf-hit: 44px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Focus is always visible, for every control, in both apps. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--nf-color-bone);
+  outline-offset: 2px;
+}
+
+/* Visually hidden, still read by screen readers. */
+.nf-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The reading column of list screens: full width on phones, a column from tablets on. */
+.nf-column {
+  width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .nf-column {
+    max-width: var(--nf-layout-column-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .nf-column {
+    max-width: var(--nf-layout-column-max);
+  }
+}
+
+/* Keyboard shortcut hints: shown only where a keyboard is likely (desktop). */
+.nf-kbd {
+  display: none;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid var(--nf-color-outline);
+  border-radius: var(--nf-space-radius);
+  font: 500 11px/16px var(--nf-font-display);
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--nf-color-label);
+}
+
+@media (min-width: 1024px) and (hover: hover) {
+  .nf-kbd {
+    display: inline-block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

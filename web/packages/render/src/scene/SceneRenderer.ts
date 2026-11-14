@@ -84,29 +84,50 @@ export class SceneRenderer {
   /**
    * Builds the crowd and pre-renders the blurred silhouettes. Call again when the
    * size or the pixel ratio changes.
+   *
+   * Figures are sized on the height (ART_DIRECTION, "Responsive"): a wider window shows
+   * more of the crowd, never bigger people. The reference 390 × 844 frame is one "tile";
+   * wider windows repeat the crowd tile after tile, so a landscape screen fills with
+   * distant figures. At the reference size the scene is exactly the reference scene.
    */
   prepare(width: number, height: number, pixelRatio: number, seed = 77): void {
-    this.width = width;
-    this.height = height;
-    const sx = width / REFERENCE_WIDTH;
+    this.setSize(width, height);
+    const unit = this.unit();
     const sy = height / REFERENCE_HEIGHT;
+    const tile = REFERENCE_WIDTH * unit;
+    const tiles = Math.max(1, Math.ceil(width / tile));
     const random = seededRandom(seed);
 
-    this.far = Array.from({ length: 18 }, () => ({
-      x: random() * width,
+    this.far = Array.from({ length: 18 * tiles }, (_, i) => ({
+      x: (Math.floor(i / 18) + random()) * tile,
       y: (40 + random() * 620) * sy,
-      scale: (0.2 + random() * 0.16) * sx,
+      scale: (0.2 + random() * 0.16) * unit,
       amplitude: 0.02 + random() * 0.03,
       phase: random() * Math.PI * 2,
-      ropeLean: (random() * 40 - 20) * sx,
+      ropeLean: (random() * 40 - 20) * unit,
     }));
-    this.middle = [
+    const middle = [
       { x: 22, y: 250, scale: 0.46, amplitude: 0.025, phase: 1.2, ropeLean: 10 },
       { x: 360, y: 330, scale: 0.5, amplitude: 0.03, phase: 2.7, ropeLean: -14 },
       { x: 40, y: 690, scale: 0.44, amplitude: 0.02, phase: 4.1, ropeLean: 18 },
       { x: 372, y: 40, scale: 0.42, amplitude: 0.02, phase: 0.4, ropeLean: -6 },
-    ].map((f) => ({ ...f, x: f.x * sx, y: f.y * sy, scale: f.scale * sx, ropeLean: f.ropeLean * sx }));
-    this.dust = Array.from({ length: 60 }, () => ({
+    ];
+    // Tiles beyond the first are mirrored and shifted, so the pattern never visibly repeats.
+    this.middle = Array.from({ length: tiles }, (_, k) =>
+      middle.map((f) => {
+        const x = k % 2 === 0 ? f.x : REFERENCE_WIDTH - f.x;
+        return {
+          ...f,
+          x: (k * REFERENCE_WIDTH + x) * unit,
+          y: (k === 0 ? f.y : (f.y + 137 * k) % 760) * sy,
+          scale: f.scale * unit,
+          ropeLean: f.ropeLean * unit,
+          phase: f.phase + k,
+        };
+      }),
+    ).flat();
+    const area = (width * height) / (REFERENCE_WIDTH * REFERENCE_HEIGHT);
+    this.dust = Array.from({ length: Math.min(200, Math.round(60 * Math.max(1, area))) }, () => ({
       x: random() * width,
       y: random() * height,
       radius: 0.4 + random() * 1.1,
@@ -123,9 +144,24 @@ export class SceneRenderer {
     );
   }
 
+  /**
+   * Cheap: follows a new window size at once (gradients, light, haze cover it), while
+   * the crowd keeps its last layout until `prepare` runs again (debounced by callers).
+   */
+  setSize(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+  }
+
+  /** Size of a reference unit on screen: on the height, never wider than the window allows. */
+  private unit(): number {
+    return Math.min(this.height / REFERENCE_HEIGHT, this.width / REFERENCE_WIDTH);
+  }
+
   drawBackground(ctx: Ctx2D, t: number): void {
     const { width: w, height: h } = this;
     const sx = w / REFERENCE_WIDTH;
+    const unit = this.unit();
 
     const background = ctx.createLinearGradient(0, 0, 0, h);
     background.addColorStop(0, palette.backgroundTop);
@@ -192,19 +228,22 @@ export class SceneRenderer {
       this.drawSprite(ctx, this.middleSprites[i], figure, sway);
     });
 
-    // Haze banks drifting slowly.
-    for (const [x, y, phase] of [
-      [80, 240, 0],
-      [300, 470, 2],
-      [150, 700, 4],
-    ] as const) {
-      const cx = (x + Math.sin(t * 0.07 + phase) * 40) * sx;
-      const cy = y * (h / REFERENCE_HEIGHT);
-      const haze = ctx.createRadialGradient(cx, cy, 10, cx, cy, 230 * sx);
-      haze.addColorStop(0, rgba(atmosphere.haze, atmosphere.hazeAlpha));
-      haze.addColorStop(1, rgba(atmosphere.haze, 0));
-      ctx.fillStyle = haze;
-      ctx.fillRect(0, 0, w, h);
+    // Haze banks drifting slowly, repeated across wide windows.
+    const tile = REFERENCE_WIDTH * unit;
+    for (let k = 0; k * tile < w; k++) {
+      for (const [x, y, phase] of [
+        [80, 240, 0],
+        [300, 470, 2],
+        [150, 700, 4],
+      ] as const) {
+        const cx = k * tile + (x + Math.sin(t * 0.07 + phase + k) * 40) * unit;
+        const cy = y * (h / REFERENCE_HEIGHT);
+        const haze = ctx.createRadialGradient(cx, cy, 10 * unit, cx, cy, 230 * unit);
+        haze.addColorStop(0, rgba(atmosphere.haze, atmosphere.hazeAlpha));
+        haze.addColorStop(1, rgba(atmosphere.haze, 0));
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, 0, w, h);
+      }
     }
   }
 
@@ -229,7 +268,10 @@ export class SceneRenderer {
       ctx.fill();
     }
 
-    const vignette = ctx.createRadialGradient(w / 2, h * 0.43, w * 0.41, w / 2, h * 0.47, w * 1.54);
+    // Sized on the diagonal, so that it frames portrait and landscape windows alike
+    // (equal to the reference vignette at 390 × 844).
+    const half = Math.hypot(w, h) / 2;
+    const vignette = ctx.createRadialGradient(w / 2, h * 0.43, half * 0.344, w / 2, h * 0.47, half * 1.292);
     vignette.addColorStop(0, 'rgba(0,0,0,0)');
     vignette.addColorStop(1, `rgba(0,0,0,${atmosphere.vignetteAlpha})`);
     ctx.fillStyle = vignette;

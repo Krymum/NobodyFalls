@@ -104,7 +104,62 @@ export const space = {
   secondaryHeight: '44px',
 } as const;
 
-export const theme = { palette, atmosphere, rope, character, sway, motion, typography, space } as const;
+/**
+ * Responsive layout (ART_DIRECTION, "Responsive"): breakpoints on the real width, never
+ * the user agent. Below `tablet` is a phone; from `desktop` on, navigation is a rail.
+ */
+export const breakpoints = {
+  tablet: 640,
+  desktop: 1024,
+} as const;
+
+/** Sizes of the shared layout, in CSS pixels (ADR 0016). */
+export const layout = {
+  /** Vertical navigation rail on desktop. */
+  railWidth: 88,
+  /** Side information panel on desktop: clamp(panelMin, panelViewport × width, panelMax). */
+  panelMin: 360,
+  panelMax: 420,
+  panelViewport: 0.3,
+  /** Reading column of list screens. */
+  columnTablet: 640,
+  columnMax: 760,
+  /** Bottom text panel on tablets. */
+  panelTablet: 560,
+} as const;
+
+/**
+ * Fluid type and spacing (`clamp()`): at 390 px wide they equal the phone sizes the
+ * screens were designed with; they grow up to the desktop sizes.
+ */
+export const fluid = {
+  title: 'clamp(38px, 3vw + 35px, 64px)',
+  heading: 'clamp(36px, 1.6vw + 34px, 56px)',
+  number: 'clamp(44px, 1.6vw + 42px, 64px)',
+  text: 'clamp(15px, 0.2vw + 14.2px, 17px)',
+  label: 'clamp(13px, 0.1vw + 12.6px, 14px)',
+  gutter: 'clamp(24px, 2vw + 16px, 40px)',
+  section: 'clamp(28px, 2vw + 20px, 44px)',
+} as const;
+
+/** Panel width at a given window width (the same formula as the CSS clamp). */
+export function panelWidth(windowWidth: number): number {
+  return Math.min(layout.panelMax, Math.max(layout.panelMin, windowWidth * layout.panelViewport));
+}
+
+export const theme = {
+  palette,
+  atmosphere,
+  rope,
+  character,
+  sway,
+  motion,
+  typography,
+  space,
+  breakpoints,
+  layout,
+  fluid,
+} as const;
 
 export type Theme = typeof theme;
 

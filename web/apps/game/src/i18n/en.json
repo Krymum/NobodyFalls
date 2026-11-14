@@ -20,6 +20,14 @@
     "friends": "Friends",
     "profile": "Profile"
   },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "sections": "Tonight, Edge, Friends, Profile",
+    "world": "The world",
+    "edgeMove": "Edge: previous or next player",
+    "edgeHold": "Edge: hold the chosen player",
+    "close": "Close a panel"
+  },
   "tonight": {
     "status": {
       "held_one": "HELD · {{count}} HAND OF {{required}}",

@@ -1,8 +1,12 @@
+import { isTypingOrModified } from '@nobodyfalls/layout';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'wouter';
 import type { DayStanding } from '../api/types.ts';
 import { toneOf, type Tone } from '../core/standing.ts';
+import { useGame } from '../core/store.ts';
 import { countdown } from '../core/time.ts';
+import { useLayout } from './useLayout.ts';
 import { useServerNow } from './useServerNow.ts';
 import styles from './ui.module.css';
 
@@ -30,33 +34,151 @@ const TABS = [
   { href: '/profile', key: 'profile', icon: 'M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8M5 21c1-4 4-6 7-6s6 2 7 6' },
 ] as const;
 
-/** Bottom tab bar: discreet, frameless, labels in spaced capitals (the map tab arrives in phase 3). */
-export function TabBar() {
+/**
+ * Main navigation (the map tab arrives in phase 3). A discreet, frameless tab bar at
+ * the bottom on phones and tablets; a vertical rail on the left on desktops, with the
+ * brand, the countdown to midnight and the keyboard shortcuts (ART_DIRECTION, "Responsive").
+ */
+export function Navigation() {
   const { t } = useTranslation();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+  const kind = useLayout();
+  const tonight = useGame((s) => s.tonight);
+  const now = useServerNow();
+  const [help, setHelp] = useState(false);
+
+  // Desktop shortcuts: 1–4 for the sections, W for the world, ? for the list.
+  useEffect(() => {
+    if (kind !== 'desktop') {
+      return undefined;
+    }
+    const onKey = (event: KeyboardEvent): void => {
+      if (isTypingOrModified(event) || document.querySelector('dialog[open]')) {
+        return;
+      }
+      const tab = TABS[Number(event.key) - 1];
+      if (tab) {
+        navigate(tab.href);
+      } else if (event.key === 'w' || event.key === 'W') {
+        navigate('/world');
+      } else if (event.key === '?') {
+        setHelp(true);
+      } else {
+        return;
+      }
+      event.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [kind, navigate]);
+
   return (
     <nav className={styles.tabs} aria-label={t('tabs.label')}>
-      {TABS.map((tab) => (
-        <Link
-          key={tab.key}
-          href={tab.href}
-          className={styles.tab}
-          aria-current={location === tab.href ? 'page' : undefined}
+      <div className={styles.railTop}>
+        <span className={styles.brand}>{t('common.brand')}</span>
+        {tonight?.seasonOpen && (
+          <Link href="/world" className={styles.night}>
+            <span>{t('common.night', { n: tonight.nightNumber })}</span>
+            {/* Same name as the header link ("Nuit 3 · 02:14:09"), stacked in the rail. */}
+            <span className="nf-sr-only"> · </span>
+            <span>{countdown(tonight.midnightAt, now)}</span>
+          </Link>
+        )}
+      </div>
+      <ul className={styles.tabList}>
+        {TABS.map((tab, index) => (
+          <li key={tab.key}>
+            <Link
+              href={tab.href}
+              className={styles.tab}
+              aria-current={location === tab.href ? 'page' : undefined}
+              aria-keyshortcuts={String(index + 1)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d={tab.icon}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {t(`tabs.${tab.key}`)}
+              <kbd className="nf-kbd" aria-hidden="true">
+                {index + 1}
+              </kbd>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className={styles.railBottom}>
+        <button
+          type="button"
+          className={styles.secondary}
+          aria-keyshortcuts="?"
+          onClick={() => {
+            setHelp(true);
+          }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d={tab.icon}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {t(`tabs.${tab.key}`)}
-        </Link>
-      ))}
+          <kbd className="nf-kbd" aria-hidden="true">
+            ?
+          </kbd>
+          <span className="nf-sr-only">{t('shortcuts.title')}</span>
+        </button>
+      </div>
+      {help && (
+        <ShortcutsHelp
+          onClose={() => {
+            setHelp(false);
+          }}
+        />
+      )}
     </nav>
+  );
+}
+
+/** The keyboard shortcuts, listed (desktop). Escape closes it, like any panel. */
+function ShortcutsHelp({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    dialog.current?.showModal();
+  }, []);
+  const rows: [string, string][] = [
+    ['1–4', t('shortcuts.sections')],
+    ['W', t('shortcuts.world')],
+    ['↑ ↓', t('shortcuts.edgeMove')],
+    ['Entrée / Enter', t('shortcuts.edgeHold')],
+    ['Échap / Esc', t('shortcuts.close')],
+  ];
+  return (
+    <dialog ref={dialog} className={styles.dialog} aria-labelledby="shortcuts-title" onClose={onClose}>
+      <h2 id="shortcuts-title" className={styles.subheading}>
+        {t('shortcuts.title')}
+      </h2>
+      <dl className={styles.shortcuts}>
+        {rows.map(([keys, label]) => (
+          <div key={keys}>
+            <dt>
+              <kbd>{keys}</kbd>
+            </dt>
+            <dd>{label}</dd>
+          </div>
+        ))}
+      </dl>
+      <button
+        type="button"
+        className={styles.secondary}
+        onClick={() => {
+          dialog.current?.close();
+        }}
+      >
+        {t('common.close')}
+      </button>
+    </dialog>
   );
 }
 

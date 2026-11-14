@@ -15,7 +15,7 @@
   margin: 0;
   font-family: var(--nf-font-display);
   font-weight: 600;
-  font-size: 48px;
+  font-size: var(--nf-fluid-number);
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--nf-color-bone);
@@ -141,4 +141,57 @@
   letter-spacing: 0.2em;
   padding: 4px 8px;
   cursor: pointer;
+}
+
+/* Edge: a list on phones and tablets; list + preview of the chosen player on desktops. */
+.edgeGrid {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .edgePage {
+    max-width: calc(var(--nf-layout-column-max) + 380px + 48px);
+  }
+
+  .edgeGrid {
+    display: grid;
+    grid-template-columns: minmax(0, var(--nf-layout-column-tablet)) minmax(300px, 380px);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .edgeGrid li[data-selected='true'] {
+    box-shadow: inset 2px 0 0 var(--nf-color-bone);
+    background: linear-gradient(to right, rgb(228 225 218 / 0.06), rgb(228 225 218 / 0));
+  }
+
+  .edgeGrid li {
+    cursor: pointer;
+    padding-left: 10px;
+  }
+
+  .edgePreview {
+    position: sticky;
+    top: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 35%, rgb(140 165 195 / 0.08), rgb(5 7 10 / 0) 70%);
+  }
+
+  .edgePreview > button {
+    align-self: stretch;
+  }
+}
+
+/* Onboarding: a column over the void on tablets and desktops. */
+@media (min-width: 640px) {
+  .onboarding {
+    max-width: var(--nf-layout-panel-tablet);
+    margin-inline: auto;
+    justify-content: center;
+  }
 }

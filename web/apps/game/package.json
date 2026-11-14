@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource/barlow-condensed": "5.3.0",
     "@microsoft/signalr": "10.0.11",
+    "@nobodyfalls/layout": "workspace:*",
     "@nobodyfalls/render": "workspace:*",
     "@nobodyfalls/theme": "workspace:*",
     "i18next": "26.6.0",

@@ -53,6 +53,12 @@ jobs:
         working-directory: web
         run: pnpm e2e
 
+      # Reference screenshots at 390 × 844, 820 × 1180 and 1440 × 900, compared inside
+      # the official Playwright image (the same fonts as when they were made).
+      - name: Responsive screenshots
+        working-directory: web
+        run: pnpm e2e:screenshots
+
       - name: Application logs
         if: failure()
         run: docker compose logs app --tail 500
