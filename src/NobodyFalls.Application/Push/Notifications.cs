@@ -15,6 +15,12 @@ public static class NotificationKinds
 
     /// <summary>One reminder a day, three hours before midnight, about friends still below the threshold.</summary>
     public const string FriendsBelow = "friends.below";
+
+    /// <summary>The team answered a request (GAME_DESIGN §9).</summary>
+    public const string TicketReplied = "ticket.replied";
+
+    /// <summary>A report was handled; the reporter never learns what was decided.</summary>
+    public const string ReportHandled = "report.handled";
 }
 
 /// <summary>What a player agreed to receive. Everything is on by default.</summary>

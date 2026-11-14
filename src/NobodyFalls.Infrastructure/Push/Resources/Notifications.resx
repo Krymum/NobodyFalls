@@ -22,4 +22,8 @@
   <data name="FriendsBelow.None" xml:space="preserve"><value>Des amis sont encore sous le seuil.</value></data>
   <data name="FriendsBelow.One" xml:space="preserve"><value>{0} ne tient plus qu'à un fil.</value></data>
   <data name="FriendsBelow.Many" xml:space="preserve"><value>{0} et {1} autres amis sont encore sous le seuil.</value></data>
+  <data name="TicketReplied.Title" xml:space="preserve"><value>L'équipe t'a répondu</value></data>
+  <data name="TicketReplied.Body" xml:space="preserve"><value>Une réponse t'attend dans Idées et contact.</value></data>
+  <data name="ReportHandled.Title" xml:space="preserve"><value>Signalement traité</value></data>
+  <data name="ReportHandled.Body" xml:space="preserve"><value>Merci : l'équipe a traité ton signalement.</value></data>
 </root>

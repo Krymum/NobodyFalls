@@ -86,13 +86,17 @@ app.MapGet("/health", async (NpgsqlDataSource db, CancellationToken ct) =>
 
 app.MapAuthEndpoints(devTools);
 
-var api = app.MapGroup("/api/v1").AddEndpointFilter<RequireApiHeader>().WithTags("Game");
+var api = app.MapGroup("/api/v1")
+    .AddEndpointFilter<RequireApiHeader>()
+    .AddEndpointFilter<BannedPlayersFilter>()
+    .WithTags("Game");
 api.MapSessionEndpoints();
 api.MapGameEndpoints();
 api.MapMeEndpoints();
 api.MapFriendEndpoints();
 api.MapPushEndpoints();
 api.MapFeedbackEndpoints();
+api.MapNoticeEndpoints();
 
 app.MapAdminEndpoints();
 

@@ -18,22 +18,41 @@ namespace NobodyFalls.Api.Tests.Admin;
 /// </summary>
 public sealed class AdminAuthorizationTests(PostgresFixture postgres)
 {
-    /// <summary>Method, route, gate, permission, sensitive.</summary>
-    private static readonly (string Method, string Route, AdminGate Gate, Permission? Permission, bool Sensitive)[] Endpoints =
+    private static readonly Permission[] Tickets = [Permission.TicketsSupport, Permission.TicketsAppeal];
+
+    /// <summary>Method, route, gate, permission, sensitive, any-of permissions.</summary>
+    private static readonly (string Method, string Route, AdminGate Gate, Permission? Permission, bool Sensitive, Permission[]? AnyOf)[] Endpoints =
     [
-        ("GET", "/api/v1/admin/session", AdminGate.Member, null, false),
-        ("POST", "/api/v1/admin/session/totp/enroll", AdminGate.Member, null, false),
-        ("POST", "/api/v1/admin/session/totp/confirm", AdminGate.Member, null, false),
-        ("POST", "/api/v1/admin/session/login", AdminGate.Member, null, false),
-        ("POST", "/api/v1/admin/session/reauth", AdminGate.SignedIn, null, false),
-        ("POST", "/api/v1/admin/session/logout", AdminGate.Member, null, false),
-        ("GET", "/api/v1/admin/staff", AdminGate.Permission, Permission.StaffManage, false),
-        ("POST", "/api/v1/admin/staff", AdminGate.Permission, Permission.StaffManage, true),
-        ("PUT", "/api/v1/admin/staff/{playerId:guid}", AdminGate.Permission, Permission.StaffManage, true),
-        ("DELETE", "/api/v1/admin/staff/{playerId:guid}", AdminGate.Permission, Permission.StaffManage, true),
-        ("POST", "/api/v1/admin/staff/{playerId:guid}/totp/reset", AdminGate.Permission, Permission.StaffManage, true),
-        ("GET", "/api/v1/admin/audit", AdminGate.Permission, Permission.AuditView, false),
-        ("GET", "/api/v1/admin/audit/verify", AdminGate.Permission, Permission.AuditView, false),
+        ("GET", "/api/v1/admin/session", AdminGate.Member, null, false, null),
+        ("POST", "/api/v1/admin/session/totp/enroll", AdminGate.Member, null, false, null),
+        ("POST", "/api/v1/admin/session/totp/confirm", AdminGate.Member, null, false, null),
+        ("POST", "/api/v1/admin/session/login", AdminGate.Member, null, false, null),
+        ("POST", "/api/v1/admin/session/reauth", AdminGate.SignedIn, null, false, null),
+        ("POST", "/api/v1/admin/session/logout", AdminGate.Member, null, false, null),
+        ("GET", "/api/v1/admin/staff", AdminGate.Permission, Permission.StaffManage, false, null),
+        ("POST", "/api/v1/admin/staff", AdminGate.Permission, Permission.StaffManage, true, null),
+        ("PUT", "/api/v1/admin/staff/{playerId:guid}", AdminGate.Permission, Permission.StaffManage, true, null),
+        ("DELETE", "/api/v1/admin/staff/{playerId:guid}", AdminGate.Permission, Permission.StaffManage, true, null),
+        ("POST", "/api/v1/admin/staff/{playerId:guid}/totp/reset", AdminGate.Permission, Permission.StaffManage, true, null),
+        ("GET", "/api/v1/admin/audit", AdminGate.Permission, Permission.AuditView, false, null),
+        ("GET", "/api/v1/admin/audit/verify", AdminGate.Permission, Permission.AuditView, false, null),
+        ("GET", "/api/v1/admin/players", AdminGate.Permission, Permission.PlayersView, false, null),
+        ("GET", "/api/v1/admin/players/{id:guid}", AdminGate.Permission, Permission.PlayersView, false, null),
+        ("GET", "/api/v1/admin/players/{id:guid}/hands", AdminGate.Permission, Permission.PlayersView, false, null),
+        ("POST", "/api/v1/admin/players/{id:guid}/sanctions", AdminGate.Permission, Permission.SanctionsWarn, false, null),
+        ("POST", "/api/v1/admin/sanctions/{id:long}/revoke", AdminGate.Permission, Permission.SanctionsRevoke, false, null),
+        ("GET", "/api/v1/admin/reports", AdminGate.Permission, Permission.ReportsView, false, null),
+        ("GET", "/api/v1/admin/reports/{id:long}", AdminGate.Permission, Permission.ReportsView, false, null),
+        ("POST", "/api/v1/admin/reports/{id:long}/assign", AdminGate.Permission, Permission.ReportsHandle, false, null),
+        ("POST", "/api/v1/admin/reports/{id:long}/resolve", AdminGate.Permission, Permission.ReportsHandle, false, null),
+        ("GET", "/api/v1/admin/tickets", AdminGate.Permission, null, false, Tickets),
+        ("GET", "/api/v1/admin/tickets/{id:long}", AdminGate.Permission, null, false, Tickets),
+        ("POST", "/api/v1/admin/tickets/{id:long}/messages", AdminGate.Permission, null, false, Tickets),
+        ("POST", "/api/v1/admin/tickets/{id:long}/status", AdminGate.Permission, null, false, Tickets),
+        ("POST", "/api/v1/admin/tickets/{id:long}/assign", AdminGate.Permission, null, false, Tickets),
+        ("GET", "/api/v1/admin/ideas", AdminGate.Permission, Permission.IdeasModerate, false, null),
+        ("PATCH", "/api/v1/admin/ideas/{id:long}", AdminGate.Permission, Permission.IdeasModerate, false, null),
+        ("POST", "/api/v1/admin/ideas/{id:long}/merge", AdminGate.Permission, Permission.IdeasModerate, false, null),
     ];
 
     public static TheoryData<string, string> Routes()
@@ -57,12 +76,12 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
             .SelectMany(e => e.Metadata.GetMetadata<IHttpMethodMetadata>()!.HttpMethods.Select(method =>
             {
                 var access = e.Metadata.GetMetadata<AdminAccessMetadata>();
-                return $"{method} {e.RoutePattern.RawText!.TrimEnd('/')} {access?.Gate} {access?.Permission} {access?.Sensitive}";
+                return $"{method} {e.RoutePattern.RawText!.TrimEnd('/')} {access?.Describe()}";
             }))
             .Order()
             .ToList();
 
-        var expected = Endpoints.Select(e => $"{e.Method} {e.Route} {e.Gate} {e.Permission} {e.Sensitive}").Order().ToList();
+        var expected = Endpoints.Select(e => $"{e.Method} {e.Route} {new AdminAccessMetadata(e.Gate, e.Permission, e.Sensitive, e.AnyOf).Describe()}").Order().ToList();
 
         Assert.Equal(expected, mapped);
     }
@@ -103,7 +122,10 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
         foreach (var (role, member) in members)
         {
             var response = await SendAsync(member.Client, endpoint);
-            if (endpoint.Permission is { } permission && !PermissionMatrix.Allows([role], permission))
+            var allowed = endpoint.Permission is { } permission
+                ? PermissionMatrix.Allows([role], permission)
+                : endpoint.AnyOf is not { } any || any.Any(p => PermissionMatrix.Allows([role], p));
+            if (!allowed)
             {
                 await AssertRefusedAsync(response, HttpStatusCode.Forbidden, "admin.forbidden");
             }
@@ -126,11 +148,14 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
         }
     }
 
-    private static Task<HttpResponseMessage> SendAsync(HttpClient client, (string Method, string Route, AdminGate, Permission?, bool) endpoint)
+    private static Task<HttpResponseMessage> SendAsync(HttpClient client, (string Method, string Route, AdminGate, Permission?, bool, Permission[]?) endpoint)
     {
-        var url = endpoint.Route.Replace("{playerId:guid}", Guid.Empty.ToString(), StringComparison.Ordinal);
+        var url = endpoint.Route
+            .Replace("{playerId:guid}", Guid.Empty.ToString(), StringComparison.Ordinal)
+            .Replace("{id:guid}", Guid.Empty.ToString(), StringComparison.Ordinal)
+            .Replace("{id:long}", "1", StringComparison.Ordinal);
         var request = new HttpRequestMessage(new HttpMethod(endpoint.Method), new Uri(url, UriKind.Relative));
-        if (endpoint.Method is "POST" or "PUT")
+        if (endpoint.Method is "POST" or "PUT" or "PATCH")
         {
             request.Content = JsonContent.Create(new { });
         }

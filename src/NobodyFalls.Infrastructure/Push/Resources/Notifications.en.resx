@@ -22,4 +22,8 @@
   <data name="FriendsBelow.None" xml:space="preserve"><value>Friends of yours are still below the threshold.</value></data>
   <data name="FriendsBelow.One" xml:space="preserve"><value>{0} is hanging by a thread.</value></data>
   <data name="FriendsBelow.Many" xml:space="preserve"><value>{0} and {1} other friends are still below the threshold.</value></data>
+  <data name="TicketReplied.Title" xml:space="preserve"><value>The team answered you</value></data>
+  <data name="TicketReplied.Body" xml:space="preserve"><value>An answer is waiting in Ideas and contact.</value></data>
+  <data name="ReportHandled.Title" xml:space="preserve"><value>Report handled</value></data>
+  <data name="ReportHandled.Body" xml:space="preserve"><value>Thank you: the team handled your report.</value></data>
 </root>

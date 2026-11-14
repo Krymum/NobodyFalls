@@ -37,6 +37,8 @@ internal sealed class ResxNotificationTexts : INotificationTexts
             NotificationKinds.SkinsUnlocked => new(Text("SkinsUnlocked.Title"), Text("SkinsUnlocked.Body"), $"/{lang}/profile", kind),
             NotificationKinds.Storm => new(Text("Storm.Title"), Text("Storm.Body"), $"/{lang}/", kind),
             NotificationKinds.FriendsBelow => new(Text("FriendsBelow.Title"), AboutNames("FriendsBelow"), $"/{lang}/friends", kind),
+            NotificationKinds.TicketReplied => new(Text("TicketReplied.Title"), Text("TicketReplied.Body"), $"/{lang}/profile/feedback?tab=contact", kind),
+            NotificationKinds.ReportHandled => new(Text("ReportHandled.Title"), Text("ReportHandled.Body"), $"/{lang}/profile/feedback?tab=report", kind),
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown notification kind."),
         };
     }

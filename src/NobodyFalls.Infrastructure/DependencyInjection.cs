@@ -8,6 +8,7 @@ using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
+using NobodyFalls.Application.Moderation;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
 using NobodyFalls.Application.Push;
@@ -21,6 +22,7 @@ using NobodyFalls.Infrastructure.Dev;
 using NobodyFalls.Infrastructure.Feedback;
 using NobodyFalls.Infrastructure.Friends;
 using NobodyFalls.Infrastructure.Hands;
+using NobodyFalls.Infrastructure.Moderation;
 using NobodyFalls.Infrastructure.Night;
 using NobodyFalls.Infrastructure.Persistence;
 using NobodyFalls.Infrastructure.Players;
@@ -90,6 +92,17 @@ public static class DependencyInjection
         services.AddSingleton<IIdeaStore, PostgresIdeaStore>();
         services.AddSingleton<ITicketStore, PostgresTicketStore>();
         services.AddSingleton<IReportStore, PostgresReportStore>();
+
+        // Phase 2: moderation (GAME_DESIGN §9).
+        services.AddSingleton<BanCache>();
+        services.AddSingleton<SanctionCacheInvalidation>();
+        services.AddSingleton<PostgresSanctionStore>();
+        services.AddSingleton<ISanctionStore>(sp => sp.GetRequiredService<PostgresSanctionStore>());
+        services.AddSingleton<IPlayerNotices>(sp => sp.GetRequiredService<PostgresSanctionStore>());
+        services.AddSingleton<IAdminPlayers, PostgresAdminPlayers>();
+        services.AddSingleton<IReportModeration, PostgresReportModeration>();
+        services.AddSingleton<ITicketModeration, PostgresTicketModeration>();
+        services.AddSingleton<IIdeaModeration, PostgresIdeaModeration>();
 
         if (options.SimulatedClock)
         {
