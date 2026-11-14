@@ -47,6 +47,17 @@ internal static class DevEndpoints
             return Results.Ok(Clock(clock, control));
         });
 
+        // Start over: an empty world, the real time, a season opening today.
+        dev.MapPost("/reset", async (IDevStore store, IClockControl control, IClock clock, INightStore night, CancellationToken ct) =>
+        {
+            await store.ResetAsync(ct);
+            await control.SetOffsetAsync(TimeSpan.Zero, ct);
+            var now = clock.UtcNow;
+            await store.EnsureSeasonAsync(GameDay.Of(now), ct);
+            await night.EnsureDayStartedAsync(GameDay.Of(now), now, ct);
+            return Results.Ok(Clock(clock, control));
+        });
+
         dev.MapPost("/season", async (IDevStore store, IClock clock, CancellationToken ct) =>
             Results.Ok(new { created = await store.EnsureSeasonAsync(GameDay.Of(clock.UtcNow), ct) }));
 

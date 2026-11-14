@@ -22,6 +22,25 @@ internal sealed class PostgresDevStore(NpgsqlDataSource dataSource, IGameSetting
         "ilan", "vera", "noam", "lou", "aiko", "theo", "sacha", "nina", "omar", "lena", "hugo", "iris", "malo", "suki",
     ];
 
+    public async Task ResetAsync(CancellationToken cancellationToken)
+    {
+        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
+        await using var tx = await connection.BeginTransactionAsync(cancellationToken);
+        await tx.LockNightExclusiveAsync(cancellationToken);
+        await tx.ExecuteAsync(
+            """
+            truncate table hands, player_days, life_debts, player_falls, season_scores, player_stats,
+                           friendships, friend_requests, blocks, hold_pairs, player_skin_unlocks,
+                           notification_outbox, push_subscriptions, notification_preferences,
+                           appearances, external_logins, storms, game_days, seasons, players
+            restart identity cascade;
+
+            delete from dev_clock;
+            """,
+            cancellationToken);
+        await tx.CommitAsync(cancellationToken);
+    }
+
     public async Task<bool> EnsureSeasonAsync(GameDay openingDay, CancellationToken cancellationToken)
     {
         await using var command = dataSource.CreateCommand(

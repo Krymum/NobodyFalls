@@ -7,6 +7,12 @@ namespace NobodyFalls.Application.Dev;
 /// <summary>Development-only data tools (GAME_DESIGN §14: seed N fake players, simulated clock).</summary>
 public interface IDevStore
 {
+    /// <summary>
+    /// Empties the game (players, days, hands, social graph, notifications) but keeps the
+    /// rules, the catalogue and the keys; the next tick opens a season again.
+    /// </summary>
+    Task ResetAsync(CancellationToken cancellationToken);
+
     /// <summary>Opens season 1 on <paramref name="openingDay"/> if no season exists yet.</summary>
     Task<bool> EnsureSeasonAsync(GameDay openingDay, CancellationToken cancellationToken);
 
