@@ -71,7 +71,7 @@ public sealed class TotpTests
         var uri = Totp.ProvisioningUri(RfcSecret, "léa");
 
         Assert.StartsWith("otpauth://totp/NobodyFalls%3Al%C3%A9a?", uri, StringComparison.Ordinal);
-        Assert.Contains("secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ", uri, StringComparison.Ordinal);
+        Assert.Contains("secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ", uri, StringComparison.Ordinal); // gitleaks:allow (RFC 6238 public test secret)
         Assert.Contains("digits=6&period=30", uri, StringComparison.Ordinal);
     }
 
