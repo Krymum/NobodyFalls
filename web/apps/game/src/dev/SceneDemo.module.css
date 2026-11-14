@@ -1,0 +1,142 @@
+/* Positions are the reference scene's own (390 × 844). */
+.stage {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--nf-color-page);
+  color: var(--nf-color-bone);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.header {
+  position: absolute;
+  inset: 0 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--nf-font-display);
+  font-size: 14px;
+  color: var(--nf-color-header);
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: var(--nf-font-header-tracking);
+}
+
+.night {
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--nf-font-display);
+  font-size: 12px;
+  letter-spacing: var(--nf-font-label-tracking);
+  color: var(--nf-color-label);
+}
+
+.me {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--nf-color-bone);
+}
+
+.attention {
+  color: var(--nf-color-attention);
+}
+
+.danger {
+  color: var(--nf-color-danger);
+}
+
+/* Text sits on a fade to black, never on a card. */
+.panel {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 64px var(--nf-space-gutter) var(--nf-space-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nf-space-gap);
+  background: linear-gradient(
+    to bottom,
+    rgb(5 7 10 / 0) 0,
+    rgb(5 7 10 / 0.88) 70px,
+    var(--nf-color-page) 120px
+  );
+}
+
+.status {
+  font-family: var(--nf-font-display);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--nf-color-header);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--nf-font-display);
+  font-weight: 600;
+  font-size: 50px;
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+}
+
+.subline {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--nf-color-text-secondary);
+}
+
+.primary,
+.done {
+  height: var(--nf-space-button-height);
+  border-radius: var(--nf-space-radius);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.primary {
+  border: 0;
+  background: var(--nf-color-action);
+  color: var(--nf-color-on-action);
+}
+
+.done {
+  border: 1px solid var(--nf-color-outline);
+  background: none;
+  color: var(--nf-color-text-secondary);
+  cursor: default;
+}
+
+.secondary {
+  height: var(--nf-space-secondary-height);
+  border: 0;
+  background: none;
+  color: var(--nf-color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
