@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Push;
+using NobodyFalls.Application.Realtime;
 using NobodyFalls.Domain.Common;
 
 namespace NobodyFalls.Application.Night;
@@ -8,7 +10,12 @@ namespace NobodyFalls.Application.Night;
 /// Drives the day/night cycle. Called every few seconds by a background worker on every
 /// server instance; the store's locks make concurrent ticks harmless.
 /// </summary>
-public sealed partial class NightCycle(INightStore store, IClock clock, ILogger<NightCycle> logger)
+public sealed partial class NightCycle(
+    INightStore store,
+    INotificationScheduler notifications,
+    IRealtimePublisher realtime,
+    IClock clock,
+    ILogger<NightCycle> logger)
 {
     public async Task<IReadOnlyList<NightRunResult>> TickAsync(CancellationToken cancellationToken)
     {
@@ -29,6 +36,7 @@ public sealed partial class NightCycle(INightStore store, IClock clock, ILogger<
                 {
                     progressed = true;
                     LogResolved(day, result.Falls, result.Streak);
+                    realtime.Publish(Audience.All, new NightResolved(day, result.Falls, result.Streak));
                 }
             }
 
@@ -50,6 +58,7 @@ public sealed partial class NightCycle(INightStore store, IClock clock, ILogger<
             LogWatcherPass(today, watchers.HandsGiven);
         }
 
+        await notifications.RunAsync(today, now, cancellationToken);
         return results;
     }
 

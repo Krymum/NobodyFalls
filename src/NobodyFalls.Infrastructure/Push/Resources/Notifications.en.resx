@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Fell.Title" xml:space="preserve"><value>You slipped into the void.</value></data>
+  <data name="Fell.Body" xml:space="preserve"><value>Nobody could hold you tonight. Come back: your place is waiting.</value></data>
+  <data name="FriendsFell.Title" xml:space="preserve"><value>A hard night</value></data>
+  <data name="FriendsFell.None" xml:space="preserve"><value>Friends of yours slipped into the void tonight.</value></data>
+  <data name="FriendsFell.One" xml:space="preserve"><value>{0} slipped into the void tonight.</value></data>
+  <data name="FriendsFell.Many" xml:space="preserve"><value>{0} and {1} other friends slipped into the void tonight.</value></data>
+  <data name="SavedBy.Title" xml:space="preserve"><value>Someone held you</value></data>
+  <data name="SavedBy.None" xml:space="preserve"><value>Tonight, a hand kept you above the void.</value></data>
+  <data name="SavedBy.One" xml:space="preserve"><value>{0} held you at the edge. Without that hand, you would have fallen.</value></data>
+  <data name="SavedBy.Many" xml:space="preserve"><value>{0} and {1} others held you tonight. Without them, you would have fallen.</value></data>
+  <data name="SkinsUnlocked.Title" xml:space="preserve"><value>Something to wear</value></data>
+  <data name="SkinsUnlocked.Body" xml:space="preserve"><value>Your solidarity earned you a new piece of clothing.</value></data>
+  <data name="Storm.Title" xml:space="preserve"><value>Storm night</value></data>
+  <data name="Storm.Body" xml:space="preserve"><value>Tonight everyone needs one more hand. See who needs yours.</value></data>
+  <data name="FriendsBelow.Title" xml:space="preserve"><value>Midnight is coming</value></data>
+  <data name="FriendsBelow.None" xml:space="preserve"><value>Friends of yours are still below the threshold.</value></data>
+  <data name="FriendsBelow.One" xml:space="preserve"><value>{0} is hanging by a thread.</value></data>
+  <data name="FriendsBelow.Many" xml:space="preserve"><value>{0} and {1} other friends are still below the threshold.</value></data>
+</root>

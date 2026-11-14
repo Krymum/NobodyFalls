@@ -33,7 +33,8 @@ Accroche : « Personne ne tombe. » / "Nobody falls."
 - Compteurs : joueurs en vie (en direct) et nombre total de morts (une
   mort par chute), par saison et depuis toujours.
 - Nuit de tempête : programmable par l'admin, seuil + 1 pour tous.
-  Annoncée à tous les joueurs 6 h avant minuit.
+  Visible dans le jeu dès le début de la journée (le seuil affiché ne change
+  jamais en cours de journée) ; notification push à tous 6 h avant minuit.
 - Score Gardien, attribué à minuit pour chaque main donnée à un joueur
   qui survit cette nuit-là :
   - +1 si le receveur est un ami, +2 s'il ne l'est pas ;

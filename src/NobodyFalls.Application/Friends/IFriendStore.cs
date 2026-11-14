@@ -11,15 +11,18 @@ public enum FriendRequestOutcome
     BecameFriends,
 }
 
+public sealed record FriendRequestResult(FriendRequestOutcome Outcome, PlayerId Target);
+
 /// <summary>
 /// Friendship, requests and blocks (GAME_DESIGN §4). Each write checks the domain's
 /// <c>FriendPolicy</c> inside its transaction.
 /// </summary>
 public interface IFriendStore
 {
-    Task<Result<FriendRequestOutcome>> RequestAsync(PlayerId from, string targetPseudo, DateTimeOffset now, CancellationToken cancellationToken);
+    Task<Result<FriendRequestResult>> RequestAsync(PlayerId from, string targetPseudo, DateTimeOffset now, CancellationToken cancellationToken);
 
-    Task<Result> AcceptAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken);
+    /// <summary>Returns the player who had asked.</summary>
+    Task<Result<PlayerId>> AcceptAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken);
 
     Task<Result> DeclineAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken);
 

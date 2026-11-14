@@ -6,12 +6,9 @@ namespace NobodyFalls.Domain.Rules;
 public static class StormPolicy
 {
     public static readonly DomainError TooLate =
-        new("storm.too_late", "A storm must be scheduled before it is announced to players.");
+        new("storm.too_late", "A storm must be scheduled before its day starts.");
 
-    public static readonly DomainError InThePast =
-        new("storm.in_the_past", "This night has already been resolved.");
-
-    /// <summary>When players are told about the storm on <paramref name="day"/>.</summary>
+    /// <summary>When players are pushed a reminder about the storm on <paramref name="day"/>.</summary>
     public static DateTimeOffset AnnouncementAt(GameDay day, GameRules rules)
     {
         ArgumentNullException.ThrowIfNull(rules);
@@ -19,18 +16,11 @@ public static class StormPolicy
     }
 
     /// <summary>
-    /// A storm can be scheduled up to the moment it must be announced, so that every
-    /// player gets the full notice. A storm on the current day therefore raises the
-    /// thresholds already set for that day.
+    /// A storm is part of its day from the first second: the threshold players see
+    /// never changes during a day. It must therefore be scheduled before the day
+    /// starts; the push announcement comes later, <see cref="GameRules.StormNotice"/>
+    /// before midnight.
     /// </summary>
-    public static Result CanSchedule(GameDay day, DateTimeOffset now, GameRules rules)
-    {
-        ArgumentNullException.ThrowIfNull(rules);
-        if (now >= day.MidnightAt)
-        {
-            return InThePast;
-        }
-
-        return now <= AnnouncementAt(day, rules) ? Result.Success() : TooLate;
-    }
+    public static Result CanSchedule(GameDay day, DateTimeOffset now) =>
+        now < day.StartsAt ? Result.Success() : TooLate;
 }

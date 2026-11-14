@@ -29,16 +29,16 @@ internal static class FriendEndpoints
         friends.MapGet("/requests", async (ClaimsPrincipal user, IFriendStore store, CancellationToken ct) =>
             Results.Ok(await store.RequestsAsync(user.RequiredPlayerId(), ct)));
 
-        friends.MapPost("/requests", async (FriendRequestBody body, ClaimsPrincipal user, IFriendStore store, IClock clock, CancellationToken ct) =>
+        friends.MapPost("/requests", async (FriendRequestBody body, ClaimsPrincipal user, FriendActions actions, CancellationToken ct) =>
         {
-            var result = await store.RequestAsync(user.RequiredPlayerId(), body.Pseudo ?? "", clock.UtcNow, ct);
+            var result = await actions.RequestAsync(user.RequiredPlayerId(), body.Pseudo ?? "", ct);
             return result.IsSuccess
-                ? Results.Ok(new FriendRequestResponse(result.Value == FriendRequestOutcome.Sent ? "sent" : "becameFriends"))
+                ? Results.Ok(new FriendRequestResponse(result.Value.Outcome == FriendRequestOutcome.Sent ? "sent" : "becameFriends"))
                 : Problems.From(result.Error!);
         }).RequireRateLimiting(RateLimits.Friends);
 
-        friends.MapPost("/requests/{id:long}/accept", async (long id, ClaimsPrincipal user, IFriendStore store, IClock clock, CancellationToken ct) =>
-            Problems.Of(await store.AcceptAsync(user.RequiredPlayerId(), id, clock.UtcNow, ct)));
+        friends.MapPost("/requests/{id:long}/accept", async (long id, ClaimsPrincipal user, FriendActions actions, CancellationToken ct) =>
+            Problems.Of(await actions.AcceptAsync(user.RequiredPlayerId(), id, ct)));
 
         friends.MapPost("/requests/{id:long}/decline", async (long id, ClaimsPrincipal user, IFriendStore store, IClock clock, CancellationToken ct) =>
             Problems.Of(await store.DeclineAsync(user.RequiredPlayerId(), id, clock.UtcNow, ct)));

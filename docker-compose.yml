@@ -44,6 +44,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-nobodyfalls};Username=${POSTGRES_USER:-nobodyfalls};Password=${POSTGRES_PASSWORD}"
+      ConnectionStrings__Redis: "redis:6379"
       Database__MigrateOnStartup: "true"
       DevTools__Enabled: "${DEV_TOOLS:-true}"
       Auth__SecureCookies: "false"

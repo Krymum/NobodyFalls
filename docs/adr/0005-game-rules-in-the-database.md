@@ -19,8 +19,10 @@ could fall at midnight because the threshold changed at 21:00.
 - When a day starts, `game_days.settings_version` records the current version.
   That day's thresholds are written into `player_days.required` and the night is
   resolved with that version. A change applies from the next day.
-- The one deliberate exception is a storm scheduled for the current day (up to
-  its announcement, 6 h before midnight): it raises the day's thresholds.
+- A storm belongs to its day from the start and must be scheduled before the
+  day starts; its push announcement still goes out 6 h before midnight. (Amended
+  2026-11-14: an earlier draft allowed same-day storms, which changed thresholds
+  under players' feet.)
 - Each instance caches versions forever (they are immutable) and re-reads
   "which version is current" every 5 seconds. No message bus is needed for
   configuration.

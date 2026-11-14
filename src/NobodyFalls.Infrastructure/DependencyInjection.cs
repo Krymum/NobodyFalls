@@ -8,7 +8,9 @@ using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
+using NobodyFalls.Application.Push;
 using NobodyFalls.Application.Queries;
+using NobodyFalls.Application.Realtime;
 using NobodyFalls.Infrastructure.Accounts;
 using NobodyFalls.Infrastructure.Clock;
 using NobodyFalls.Infrastructure.Dev;
@@ -17,6 +19,7 @@ using NobodyFalls.Infrastructure.Hands;
 using NobodyFalls.Infrastructure.Night;
 using NobodyFalls.Infrastructure.Persistence;
 using NobodyFalls.Infrastructure.Players;
+using NobodyFalls.Infrastructure.Push;
 using NobodyFalls.Infrastructure.Queries;
 using NobodyFalls.Infrastructure.Settings;
 using Npgsql;
@@ -30,7 +33,7 @@ public sealed class InfrastructureOptions
     /// <summary>Development only: the clock can be moved forward (ADR 0006).</summary>
     public bool SimulatedClock { get; init; }
 
-    /// <summary>Run the night cycle in this process (disable in tests that drive it by hand).</summary>
+    /// <summary>Run the background workers (night cycle, notifications); tests drive them by hand.</summary>
     public bool RunNightWorker { get; init; } = true;
 }
 
@@ -53,7 +56,18 @@ public static class DependencyInjection
         services.AddSingleton<IGameQueries, PostgresGameQueries>();
         services.AddSingleton<IAccountStore, PostgresAccountStore>();
         services.AddSingleton<IPlayerSettingsStore, PostgresPlayerSettingsStore>();
-        services.AddSingleton<IFriendStore, PostgresFriendStore>();
+        services.AddSingleton<PostgresFriendStore>();
+        services.AddSingleton<IFriendStore>(sp => sp.GetRequiredService<PostgresFriendStore>());
+        services.AddSingleton<IFriendGraph>(sp => sp.GetRequiredService<PostgresFriendStore>());
+        services.AddSingleton<PostgresPushStore>();
+        services.AddSingleton<IPushStore>(sp => sp.GetRequiredService<PostgresPushStore>());
+        services.AddSingleton<INotificationOutbox>(sp => sp.GetRequiredService<PostgresPushStore>());
+        services.AddSingleton<INotificationDirectory>(sp => sp.GetRequiredService<PostgresPushStore>());
+        services.AddSingleton<INotificationScheduler, PostgresNotificationScheduler>();
+        services.AddSingleton<INotificationTexts, ResxNotificationTexts>();
+        services.AddSingleton<VapidKeyStore>();
+        services.AddSingleton<IPushKeys>(sp => sp.GetRequiredService<VapidKeyStore>());
+        services.AddHttpClient<IPushSender, WebPushSender>(http => http.Timeout = TimeSpan.FromSeconds(10));
         services.AddSingleton<IDevStore, PostgresDevStore>();
         services.AddHttpClient<IHumanVerifier, TurnstileVerifier>(http => http.Timeout = TimeSpan.FromSeconds(5));
 
@@ -72,6 +86,7 @@ public static class DependencyInjection
         if (options.RunNightWorker)
         {
             services.AddHostedService<NightWorker>();
+            services.AddHostedService<NotificationWorker>();
         }
 
         return services;

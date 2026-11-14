@@ -177,16 +177,17 @@ internal static class NightSql
 
     /// <summary>
     /// 10. Notifications, written in the same transaction (outbox): they are sent after
-    /// commit, exactly once thanks to the dedupe key.
+    /// commit, exactly once thanks to the dedupe key. Surviving is the normal case and
+    /// sends nothing; falling, friends falling, being saved and new skins do. The
+    /// <c>players</c> array lists who the message is about.
     /// </summary>
     public const string Notifications = """
         insert into notification_outbox (dedupe_key, player_id, kind, payload, created_at)
-        select 'night.result:' || @day::text || ':' || pd.player_id::text, pd.player_id, 'night.result',
-               jsonb_build_object('day', @day, 'result', pd.outcome, 'points', pd.score_gained,
-                                  'received', pd.received, 'required', pd.required),
+        select 'night.fell:' || @day::text || ':' || pd.player_id::text, pd.player_id, 'night.fell',
+               jsonb_build_object('day', @day, 'players', '[]'::jsonb),
                @now
         from player_days pd
-        where pd.day = @day
+        where pd.day = @day and pd.outcome = 'fell'
         on conflict (dedupe_key) do nothing;
 
         insert into notification_outbox (dedupe_key, player_id, kind, payload, created_at)
@@ -205,7 +206,7 @@ internal static class NightSql
 
         insert into notification_outbox (dedupe_key, player_id, kind, payload, created_at)
         select 'life.saved:' || @day::text || ':' || saved_id::text, saved_id, 'life.saved',
-               jsonb_build_object('day', @day, 'savers', jsonb_agg(saver_id order by saver_id)),
+               jsonb_build_object('day', @day, 'players', jsonb_agg(saver_id order by saver_id)),
                @now
         from life_debts
         where day = @day
@@ -214,7 +215,7 @@ internal static class NightSql
 
         insert into notification_outbox (dedupe_key, player_id, kind, payload, created_at)
         select 'skins.unlocked:' || @day::text || ':' || player_id::text, player_id, 'skins.unlocked',
-               jsonb_build_object('day', @day, 'items', jsonb_agg(item_id order by item_id)),
+               jsonb_build_object('day', @day, 'players', '[]'::jsonb, 'items', jsonb_agg(item_id order by item_id)),
                @now
         from player_skin_unlocks
         where day = @day and reason = 'condition'

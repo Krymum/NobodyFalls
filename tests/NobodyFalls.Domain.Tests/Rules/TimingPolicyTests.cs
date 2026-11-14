@@ -15,13 +15,12 @@ public sealed class TimingPolicyTests
         Assert.Equal(At(18), StormPolicy.AnnouncementAt(Day, Rules));
 
     [Fact]
-    public void A_storm_can_be_scheduled_until_its_announcement()
+    public void A_storm_is_scheduled_before_its_day_starts_so_thresholds_never_move()
     {
-        Assert.True(StormPolicy.CanSchedule(Day, At(9), Rules).IsSuccess);
-        Assert.True(StormPolicy.CanSchedule(Day, At(18), Rules).IsSuccess);
-        Assert.Equal(StormPolicy.TooLate, StormPolicy.CanSchedule(Day, At(18, 1), Rules).Error);
-        Assert.Equal(StormPolicy.InThePast, StormPolicy.CanSchedule(Day, Day.MidnightAt, Rules).Error);
-        Assert.True(StormPolicy.CanSchedule(Day.AddDays(3), At(23), Rules).IsSuccess);
+        Assert.True(StormPolicy.CanSchedule(Day, Day.StartsAt.AddSeconds(-1)).IsSuccess);
+        Assert.True(StormPolicy.CanSchedule(Day.AddDays(3), At(23)).IsSuccess);
+        Assert.Equal(StormPolicy.TooLate, StormPolicy.CanSchedule(Day, Day.StartsAt).Error);
+        Assert.Equal(StormPolicy.TooLate, StormPolicy.CanSchedule(Day, At(9)).Error);
     }
 
     [Fact]

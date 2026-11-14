@@ -37,16 +37,18 @@ public sealed class TestApp : IAsyncDisposable
 
     public ManualClock Clock => (ManualClock)_services.GetRequiredService<IClock>();
 
-    public static async Task<TestApp> StartAsync(PostgresFixture postgres, DateTimeOffset now)
+    public static async Task<TestApp> StartAsync(PostgresFixture postgres, DateTimeOffset now, Action<IServiceCollection>? configure = null)
     {
         var connectionString = await postgres.CreateDatabaseAsync();
         var services = new ServiceCollection()
             .AddLogging(l => l.SetMinimumLevel(LogLevel.Warning))
             .AddApplication()
             .AddInfrastructure(new InfrastructureOptions { ConnectionString = connectionString, RunNightWorker = false })
-            .AddSingleton<IClock>(new ManualClock(now))
+            .AddSingleton<IClock>(new ManualClock(now));
+        configure?.Invoke(services);
+        var provider = services
             .BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
-        return new TestApp(services, connectionString);
+        return new TestApp(provider, connectionString);
     }
 
     public T Get<T>()

@@ -482,8 +482,10 @@ l'en-tête « NUIT 41 » de Ce soir. Tu préfères un onglet Monde à la place ?
 - Dette de vie : main décisive ⇔ le receveur a exactement le seuil
   (alors toutes ses mains humaines sont décisives).
 - Dernier rempart : fenêtre 23:00:00–23:59:59 UTC ; jamais pour un receveur immunisé.
-- Une tempête peut être programmée pour le jour même jusqu'à 18:00 UTC ; elle
-  relève alors les seuils déjà fixés pour la journée (seule exception au gel).
+- Une tempête est visible dans le jeu dès le début de sa journée ; la push
+  d'annonce part à 18:00 UTC. Pour ne jamais changer un seuil en cours de
+  journée, une tempête se programme au plus tard la veille avant minuit
+  (tranché le 14/11/2026 : « le moins pénible pour les joueurs »).
 - Les Veilleurs sont des joueurs de type `watcher` aux pseudos réservés
   (`veilleur.01`, …) ; l'interface les étiquette toujours comme Veilleurs.
 - Après une panne du serveur, les nuits manquées sont résolues dans l'ordre au
