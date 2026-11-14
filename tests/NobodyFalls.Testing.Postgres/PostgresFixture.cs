@@ -1,17 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
+using NobodyFalls.Infrastructure;
 using NobodyFalls.Infrastructure.Persistence;
-using NobodyFalls.Infrastructure.Tests.Support;
 using Npgsql;
 using Testcontainers.PostgreSql;
+using Xunit;
 
-[assembly: AssemblyFixture(typeof(PostgresFixture))]
-
-namespace NobodyFalls.Infrastructure.Tests.Support;
+namespace NobodyFalls.Testing.Postgres;
 
 /// <summary>
 /// One real PostgreSQL for the whole test run. Migrations are applied once to a
 /// template database; every test then gets its own copy, which is fast and lets
-/// tests run in parallel without sharing state.
+/// tests run in parallel without sharing state. Register it in each test project with
+/// <c>[assembly: AssemblyFixture(typeof(PostgresFixture))]</c>.
 /// </summary>
 public sealed class PostgresFixture : IAsyncLifetime
 {

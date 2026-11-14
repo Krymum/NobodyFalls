@@ -9,7 +9,6 @@
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="FsCheck" />
     <PackageReference Include="FsCheck.Xunit.v3" />
-    <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
@@ -21,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\NobodyFalls.Infrastructure\NobodyFalls.Infrastructure.csproj" />
     <ProjectReference Include="..\NobodyFalls.Testing\NobodyFalls.Testing.csproj" />
+    <ProjectReference Include="..\NobodyFalls.Testing.Postgres\NobodyFalls.Testing.Postgres.csproj" />
   </ItemGroup>
 
 </Project>

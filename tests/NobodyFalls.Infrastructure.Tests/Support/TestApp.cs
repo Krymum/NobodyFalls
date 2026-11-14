@@ -5,6 +5,7 @@ using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
+using NobodyFalls.Testing.Postgres;
 using Npgsql;
 
 namespace NobodyFalls.Infrastructure.Tests.Support;

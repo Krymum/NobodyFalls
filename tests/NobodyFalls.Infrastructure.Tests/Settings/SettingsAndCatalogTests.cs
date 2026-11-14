@@ -3,6 +3,7 @@ using NobodyFalls.Domain.Rules;
 using NobodyFalls.Domain.Skins;
 using NobodyFalls.Infrastructure.Persistence;
 using NobodyFalls.Infrastructure.Tests.Support;
+using NobodyFalls.Testing.Postgres;
 
 namespace NobodyFalls.Infrastructure.Tests.Settings;
 

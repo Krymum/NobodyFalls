@@ -2,7 +2,7 @@ using NobodyFalls.Domain.Common;
 using NobodyFalls.Domain.Friends;
 using Npgsql;
 
-namespace NobodyFalls.Infrastructure.Tests.Support;
+namespace NobodyFalls.Testing.Postgres;
 
 /// <summary>Writes test data straight into the tables, bypassing the rules on purpose.</summary>
 public sealed class Seeder(NpgsqlDataSource data)

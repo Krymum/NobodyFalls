@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Infrastructure.Clock;
-using NobodyFalls.Infrastructure.Tests.Support;
+using NobodyFalls.Testing.Postgres;
 
 namespace NobodyFalls.Infrastructure.Tests.Settings;
 
