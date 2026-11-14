@@ -37,24 +37,36 @@ internal static class SpaHosting
         }
     }
 
-    public static void UseSpaStaticFiles(this WebApplication app) =>
+    public static void UseSpaStaticFiles(this WebApplication app)
+    {
+        var files = app.Environment.WebRootFileProvider ?? new NullFileProvider();
+        app.UsePrecompressedFiles(files);
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = app.Environment.WebRootFileProvider ?? new NullFileProvider(),
+            FileProvider = files,
+            ContentTypeProvider = new PrecompressedFiles.ContentTypes(),
             OnPrepareResponse = context =>
             {
-                // Hashed build assets never change; the service worker must always be fresh.
-                var path = context.Context.Request.Path;
-                if (path.StartsWithSegments("/assets", StringComparison.Ordinal))
+                var headers = context.Context.Response.Headers;
+                var served = context.Context.Request.Path.Value ?? "";
+                if (PrecompressedFiles.EncodingOf(served) is { } encoding)
                 {
-                    context.Context.Response.Headers[HeaderNames.CacheControl] = "public, max-age=31536000, immutable";
+                    headers[HeaderNames.ContentEncoding] = encoding;
                 }
-                else if (path == "/sw.js" || path == "/manifest.webmanifest")
+
+                // Hashed build assets never change; the service worker must always be fresh.
+                var path = PrecompressedFiles.OriginalPath(served);
+                if (path.StartsWith("/assets/", StringComparison.Ordinal))
                 {
-                    context.Context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
+                    headers[HeaderNames.CacheControl] = "public, max-age=31536000, immutable";
+                }
+                else if (path is "/sw.js" or "/manifest.webmanifest")
+                {
+                    headers[HeaderNames.CacheControl] = "no-cache";
                 }
             },
         });
+    }
 
     private static string FromHeader(string acceptLanguage)
     {

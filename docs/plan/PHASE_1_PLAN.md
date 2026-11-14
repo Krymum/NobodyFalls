@@ -507,3 +507,22 @@ l'en-tête « NUIT 41 » de Ce soir. Tu préfères un onglet Monde à la place ?
   complète sans compte externe.
 - Les positions sur la carte des inscrits de phase 1 seront attribuées en
   phase 3 par un backfill (ordre d'inscription + arbre d'invitation).
+
+---
+
+## 10. Écarts constatés à la livraison
+
+- **Types d'API côté front** écrits à la main (`web/apps/game/src/api/types.ts`)
+  au lieu d'un paquet `api-types` généré depuis l'OpenAPI : les tests d'API
+  figent le contrat côté serveur, la génération reste possible (ADR 0010).
+- **Budgets** vérifiés par un petit script sans dépendance
+  (`web/scripts/check-budgets.mjs`) plutôt que `size-limit` : il lit
+  `index.html`, additionne le JS et le CSS initiaux en gzip et liste les chunks
+  différés.
+- **Compression** : le premier passage de Lighthouse en CI a donné 87 en
+  performance, car le JS partait non compressé. Le build écrit désormais des
+  copies brotli et gzip servies selon `Accept-Encoding` (98 ensuite).
+- **Workflows** : `ci.yml` (.NET + web), `e2e.yml` (docker compose, Lighthouse,
+  Playwright) et `gitleaks.yml`, comme prévu ; Lighthouse ne mesure que les
+  pages publiques (l'accueil `/fr/` et `/en/`), les écrans connectés étant
+  couverts par les budgets et Playwright.

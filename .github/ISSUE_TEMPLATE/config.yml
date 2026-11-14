@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/Krymum/NobodyFalls/security/advisories/new
+    about: Cheating the rules, acting as another player, leaking data — please report privately.

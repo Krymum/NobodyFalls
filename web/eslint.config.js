@@ -39,7 +39,7 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.serviceworker } },
   },
   {
-    files: ['*.config.{js,ts}', 'eslint.config.js', 'apps/game/scripts/**'],
+    files: ['*.config.{js,ts}', 'eslint.config.js', 'scripts/**', 'apps/game/scripts/**'],
     ...tseslint.configs.disableTypeChecked,
     languageOptions: { globals: { ...globals.node } },
   },
