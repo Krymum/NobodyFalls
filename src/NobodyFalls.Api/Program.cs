@@ -3,14 +3,17 @@ using NobodyFalls.Api.Auth;
 using NobodyFalls.Api.Endpoints;
 using NobodyFalls.Api.Hosting;
 using NobodyFalls.Api.Http;
+using NobodyFalls.Api.Realtime;
 using NobodyFalls.Application;
 using NobodyFalls.Infrastructure;
 using NobodyFalls.Infrastructure.Accounts;
+using NobodyFalls.Infrastructure.Push;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var devTools = DevToolsOptions.From(configuration, builder.Environment);
+var runWorkers = configuration.GetValue("Night:RunWorker", true);
 
 var connectionString = configuration.GetConnectionString("Postgres");
 if (string.IsNullOrWhiteSpace(connectionString))
@@ -25,9 +28,11 @@ builder.Services
     {
         ConnectionString = connectionString,
         SimulatedClock = devTools.Enabled,
-        RunNightWorker = configuration.GetValue("Night:RunWorker", true),
+        RunNightWorker = runWorkers,
     })
     .Configure<TurnstileOptions>(configuration.GetSection(TurnstileOptions.Section))
+    .Configure<PushOptions>(configuration.GetSection(PushOptions.Section))
+    .AddNobodyFallsRealtime(configuration, runWorkers)
     .AddNobodyFallsAuth(configuration, devTools.Enabled)
     .AddNobodyFallsRateLimits(configuration.GetSection("RateLimits").Get<RateLimitOptions>() ?? new())
     .AddProblemDetails()
@@ -81,6 +86,9 @@ api.MapSessionEndpoints();
 api.MapGameEndpoints();
 api.MapMeEndpoints();
 api.MapFriendEndpoints();
+api.MapPushEndpoints();
+
+app.MapHub<GameHub>(GameHub.Path);
 
 if (devTools.Enabled)
 {
