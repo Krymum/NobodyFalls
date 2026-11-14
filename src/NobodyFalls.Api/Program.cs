@@ -69,6 +69,7 @@ app.UseSpaStaticFiles();
 // so that /admin/assets/… never falls into the admin's catch-all page route.
 app.UseRouting();
 app.UseAuthentication();
+app.UseActivityTracking();
 app.UseRateLimiter();
 app.UseAuthorization();
 

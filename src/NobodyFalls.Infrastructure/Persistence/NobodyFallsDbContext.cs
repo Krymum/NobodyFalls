@@ -49,6 +49,8 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<TicketMessageRow> TicketMessages => Set<TicketMessageRow>();
     public DbSet<ReportRow> Reports => Set<ReportRow>();
     public DbSet<SanctionRow> Sanctions => Set<SanctionRow>();
+    public DbSet<LoginEventRow> LoginEvents => Set<LoginEventRow>();
+    public DbSet<PlayerVisitRow> PlayerVisits => Set<PlayerVisitRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +68,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigureStaff(modelBuilder);
         ConfigureFeedback(modelBuilder);
         ConfigureSanctions(modelBuilder);
+        ConfigureActivity(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -527,6 +530,33 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.HasIndex(s => new { s.PlayerId, s.StartsAt });
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(s => s.PlayerId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne<ReportRow>().WithMany().HasForeignKey(s => s.ReportId).OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private static void ConfigureActivity(ModelBuilder b)
+    {
+        b.Entity<LoginEventRow>(e =>
+        {
+            e.ToTable("login_events", t => t.HasCheckConstraint("ck_login_events_kind", "kind in ('sign_in', 'visit')"));
+            e.HasKey(l => l.Id);
+            e.Property(l => l.Id).UseIdentityAlwaysColumn();
+            e.Property(l => l.Ip).HasMaxLength(64);
+            e.Property(l => l.DeviceId).HasMaxLength(64);
+            e.Property(l => l.UserAgentFamily).HasMaxLength(32);
+            e.Property(l => l.Kind).HasMaxLength(8);
+            e.HasIndex(l => new { l.PlayerId, l.Day, l.Ip, l.DeviceId }).IsUnique();
+            e.HasIndex(l => l.Ip);
+            e.HasIndex(l => l.DeviceId);
+            e.HasIndex(l => l.At);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(l => l.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<PlayerVisitRow>(e =>
+        {
+            e.ToTable("player_visits");
+            e.HasKey(v => new { v.PlayerId, v.Day });
+            e.HasIndex(v => v.Day);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(v => v.PlayerId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

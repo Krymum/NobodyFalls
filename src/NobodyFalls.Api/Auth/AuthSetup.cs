@@ -137,5 +137,6 @@ internal static class AuthSetup
     {
         var version = await context.RequestServices.GetRequiredService<ISessionVersions>().GetAsync(player, context.RequestAborted);
         await context.SignInAsync(PlayerPrincipal.Scheme, PlayerPrincipal.ForPlayer(player, version));
+        await NobodyFalls.Api.Hosting.ActivityTracking.RecordSignInAsync(context, player);
     }
 }

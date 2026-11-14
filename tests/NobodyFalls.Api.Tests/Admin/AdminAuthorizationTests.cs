@@ -36,6 +36,10 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
         ("POST", "/api/v1/admin/staff/{playerId:guid}/totp/reset", AdminGate.Permission, Permission.StaffManage, true, null),
         ("GET", "/api/v1/admin/audit", AdminGate.Permission, Permission.AuditView, false, null),
         ("GET", "/api/v1/admin/audit/verify", AdminGate.Permission, Permission.AuditView, false, null),
+        ("GET", "/api/v1/admin/dashboard", AdminGate.Permission, Permission.DashboardView, false, null),
+        ("GET", "/api/v1/admin/players/{id:guid}/links", AdminGate.Permission, Permission.PlayersViewLinks, false, null),
+        ("GET", "/api/v1/admin/players/{id:guid}/export", AdminGate.Permission, Permission.GdprExport, false, null),
+        ("DELETE", "/api/v1/admin/players/{id:guid}", AdminGate.Permission, Permission.GdprDelete, true, null),
         ("GET", "/api/v1/admin/players", AdminGate.Permission, Permission.PlayersView, false, null),
         ("GET", "/api/v1/admin/players/{id:guid}", AdminGate.Permission, Permission.PlayersView, false, null),
         ("GET", "/api/v1/admin/players/{id:guid}/hands", AdminGate.Permission, Permission.PlayersView, false, null),
@@ -155,7 +159,7 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
             .Replace("{id:guid}", Guid.Empty.ToString(), StringComparison.Ordinal)
             .Replace("{id:long}", "1", StringComparison.Ordinal);
         var request = new HttpRequestMessage(new HttpMethod(endpoint.Method), new Uri(url, UriKind.Relative));
-        if (endpoint.Method is "POST" or "PUT" or "PATCH")
+        if (endpoint.Method is "POST" or "PUT" or "PATCH" or "DELETE")
         {
             request.Content = JsonContent.Create(new { });
         }

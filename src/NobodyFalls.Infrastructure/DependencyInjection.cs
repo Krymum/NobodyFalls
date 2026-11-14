@@ -8,6 +8,7 @@ using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
+using NobodyFalls.Application.Insights;
 using NobodyFalls.Application.Moderation;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
@@ -22,6 +23,7 @@ using NobodyFalls.Infrastructure.Dev;
 using NobodyFalls.Infrastructure.Feedback;
 using NobodyFalls.Infrastructure.Friends;
 using NobodyFalls.Infrastructure.Hands;
+using NobodyFalls.Infrastructure.Insights;
 using NobodyFalls.Infrastructure.Moderation;
 using NobodyFalls.Infrastructure.Night;
 using NobodyFalls.Infrastructure.Persistence;
@@ -104,6 +106,12 @@ public static class DependencyInjection
         services.AddSingleton<ITicketModeration, PostgresTicketModeration>();
         services.AddSingleton<IIdeaModeration, PostgresIdeaModeration>();
 
+        // Phase 2: dashboard, linked accounts and personal data (GAME_DESIGN §9).
+        services.AddSingleton<IActivityRecorder, PostgresActivityRecorder>();
+        services.AddSingleton<IDashboardQueries, PostgresDashboardQueries>();
+        services.AddSingleton<IAccountLinks, PostgresAccountLinks>();
+        services.AddSingleton<IPersonalData, PostgresPersonalData>();
+
         if (options.SimulatedClock)
         {
             services.AddSingleton<SimulatedClock>();
@@ -120,6 +128,7 @@ public static class DependencyInjection
         {
             services.AddHostedService<NightWorker>();
             services.AddHostedService<NotificationWorker>();
+            services.AddHostedService<RetentionWorker>();
         }
 
         return services;
