@@ -1,0 +1,27 @@
+name: Idea or rule change
+description: Suggest a feature, or question a rule of the game.
+labels: [idea]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The rules live in [`docs/GAME_DESIGN.md`](https://github.com/Krymum/NobodyFalls/blob/main/docs/GAME_DESIGN.md). Changes to them are discussed here before any code is written.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What is hard, unfair, missing or confusing today — for which players?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Your proposal
+      description: What would change. If it touches a rule, which section of GAME_DESIGN.md?
+    validations:
+      required: true
+  - type: textarea
+    id: abuse
+    attributes:
+      label: How could it be abused?
+      description: The score only rewards helping others. Could two friends, a group or bots game this?

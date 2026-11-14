@@ -1,0 +1,47 @@
+name: Bug report
+description: Something does not work as the rules or the screens say it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Security problems** (cheating the rules, acting as someone else, data leaks): please use [private reporting](https://github.com/Krymum/NobodyFalls/security/advisories/new) instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: In dev mode if you can (DEV panel, simulated clock), so that anyone can replay it.
+      placeholder: |
+        1. Sign up as "alice" and "bob"
+        2. Give a hand from alice to bob
+        3. Move the clock to midnight minus 10 s
+        4. …
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - nobodyfalls.com
+        - Local (docker compose)
+        - Local (dotnet run / pnpm dev)
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Browser and device
+      placeholder: Safari on iPhone 14, iOS 19 — installed app
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Browser console, `docker compose logs app`, screenshots. Remove anything personal.
