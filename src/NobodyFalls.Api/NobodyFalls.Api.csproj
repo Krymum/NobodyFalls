@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>NobodyFalls.Api</RootNamespace>
+    <Description>HTTP API, authentication, realtime hub and background workers of NobodyFalls.</Description>
+    <UserSecretsId>nobodyfalls-api</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" />
+    <PackageReference Include="AspNet.Security.OAuth.Discord" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="NobodyFalls.Api.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NobodyFalls.Infrastructure\NobodyFalls.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
