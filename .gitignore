@@ -25,3 +25,4 @@ test-results/
 !.vscode/extensions.json
 .DS_Store
 Thumbs.db
+src/NobodyFalls.Api/wwwroot/
