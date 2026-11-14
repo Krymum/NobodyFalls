@@ -1,4 +1,4 @@
-// Checks the performance budgets on the production build (GAME_DESIGN §13, ADR 0010, 0016):
+// Checks the performance budgets on the production build (GAME_DESIGN §13, ADR 0010, 0017):
 // - game: initial JavaScript ≤ 150 KB and CSS ≤ 30 KB gzip, and the initial JavaScript may
 //   not grow by more than 1 KB over the baseline recorded in budgets.json (phase 2 must not
 //   make the game heavier: the admin is a separate bundle);

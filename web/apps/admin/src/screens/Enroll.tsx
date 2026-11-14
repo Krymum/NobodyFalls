@@ -29,7 +29,7 @@ function QrCode({ text, label }: { text: string; label: string }) {
   );
 }
 
-/** First visit of a team member: set up an authenticator, then keep the recovery codes (ADR 0018). */
+/** First visit of a team member: set up an authenticator, then keep the recovery codes (ADR 0019). */
 export function Enroll() {
   const { t } = useTranslation();
   const load = useAdmin((s) => s.load);

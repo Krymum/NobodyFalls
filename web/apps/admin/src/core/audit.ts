@@ -22,7 +22,7 @@ function fields(value: Json): Record<string, Json> {
 
 /**
  * The fields of an audit entry, side by side: what it was, what it became. Entries keep
- * only the fields that changed (ADR 0019), so every field present is listed.
+ * only the fields that changed (ADR 0020), so every field present is listed.
  */
 export function changes(before: Json, after: Json): FieldChange[] {
   const b = fields(before);

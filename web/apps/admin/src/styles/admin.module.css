@@ -1,7 +1,8 @@
 /*
  * The admin in the game's art direction, made dense: night background, bone text,
  * condensed titles, spaced capitals for labels, thin rules instead of cards or shadows.
- * Status colours are kept for statuses. Desktop first; the sidebar folds on phones.
+ * Status colours are kept for statuses. Same layout system as the game (ADR 0016):
+ * desktop first (≥ 1024 px, sidebar), a drawer under a top bar on tablets and phones.
  */
 
 /* Single-purpose pages (sign-in, enrolment, errors). */
@@ -35,12 +36,12 @@
   margin: 0;
   font-family: var(--nf-font-display);
   font-weight: var(--nf-font-title-weight);
-  font-size: 32px;
-  line-height: 1.1;
+  font-size: var(--nf-fluid-heading);
+  line-height: 1.05;
 }
 
 .pageTitle {
-  font-size: 28px;
+  font-size: clamp(26px, 1vw + 22px, 34px);
   margin-bottom: 8px;
 }
 
@@ -197,6 +198,17 @@
   font-size: 13px;
 }
 
+/* Touch screens: every target at least 44 px (ART_DIRECTION, "Responsive"). */
+@media (pointer: coarse) {
+  .small,
+  .smallSecondary,
+  .smallDanger,
+  .chip,
+  .link {
+    min-height: 44px;
+  }
+}
+
 .smallDanger {
   background: transparent;
   color: var(--nf-color-danger);
@@ -348,7 +360,7 @@
 }
 
 .content {
-  padding: 28px 32px 64px;
+  padding: 28px var(--nf-gutter) 64px;
   min-width: 0;
 }
 
@@ -434,10 +446,12 @@
   margin: 0;
 }
 
-/* Phones: the sidebar becomes a drawer under a top bar. */
-@media (max-width: 760px) {
+/* Tablets and phones: the sidebar becomes a drawer under a top bar. */
+@media (max-width: 1023px) {
   .shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    align-content: start;
   }
 
   .topbar {
@@ -471,10 +485,33 @@
   }
 
   .content {
-    padding: 20px 16px 48px;
+    padding: 20px var(--nf-gutter) 48px;
   }
+}
 
+@media (max-width: 639px) {
   .recovery {
     columns: 1;
+  }
+
+  .inlineForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (hover: hover) {
+  .primary:not(:disabled):hover {
+    background: var(--nf-color-bone);
+  }
+
+  .secondary:not(:disabled):hover,
+  .smallSecondary:not(:disabled):hover,
+  .chip:hover {
+    border-color: var(--nf-color-bone);
+  }
+
+  .table tbody tr:hover {
+    background: rgb(228 225 218 / 0.03);
   }
 }

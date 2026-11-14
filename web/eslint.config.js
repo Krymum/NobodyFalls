@@ -30,7 +30,7 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
-    // ADR 0016: the game never imports the admin, so the admin can never weigh on it.
+    // ADR 0017: the game never imports the admin, so the admin can never weigh on it.
     files: ['apps/game/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [

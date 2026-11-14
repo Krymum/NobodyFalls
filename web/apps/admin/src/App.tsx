@@ -8,7 +8,7 @@ import { Shell } from './screens/Shell.tsx';
 import { useAdmin } from './store.ts';
 
 /**
- * The admin, step by step (ADR 0018): a player session, a team role, an authenticator
+ * The admin, step by step (ADR 0019): a player session, a team role, an authenticator
  * set up, then a code to open the admin session. The server enforces each step.
  */
 export function App() {

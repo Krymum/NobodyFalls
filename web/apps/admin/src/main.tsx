@@ -1,6 +1,7 @@
 import '@fontsource/barlow-condensed/500.css';
 import '@fontsource/barlow-condensed/600.css';
 import '@nobodyfalls/theme/tokens.css';
+import '@nobodyfalls/layout/layout.css';
 import './styles/global.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

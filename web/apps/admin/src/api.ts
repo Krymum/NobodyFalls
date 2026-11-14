@@ -1,4 +1,4 @@
-/** The admin API (`/api/v1/admin`, ADR 0016). Types are written by hand, as in the game (ADR 0010). */
+/** The admin API (`/api/v1/admin`, ADR 0017). Types are written by hand, as in the game (ADR 0010). */
 
 export type Locale = 'fr' | 'en';
 export type Role = 'admin' | 'moderator' | 'support';

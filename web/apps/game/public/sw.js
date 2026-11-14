@@ -29,7 +29,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }
-  // Live game data is never cached, and the admin (a separate app, ADR 0016) is never touched.
+  // Live game data is never cached, and the admin (a separate app, ADR 0017) is never touched.
   if (/^\/(api|hubs|auth|dev|admin)(\/|$)/.test(url.pathname)) {
     return;
   }

@@ -12,7 +12,7 @@ export function Loading() {
   );
 }
 
-/** The admin rides on the player session: sign in to the game first (ADR 0018). */
+/** The admin rides on the player session: sign in to the game first (ADR 0019). */
 export function SignedOut() {
   const { t } = useTranslation();
   return (

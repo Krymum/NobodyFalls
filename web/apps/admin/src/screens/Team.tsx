@@ -129,7 +129,7 @@ function MemberRow({
   );
 }
 
-/** Who is in the team, with which roles (ADR 0017). Every change asks for a fresh code. */
+/** Who is in the team, with which roles (ADR 0018). Every change asks for a fresh code. */
 export function Team({ me }: { me: string }) {
   const { t } = useTranslation();
   const sensitive = useAdmin((s) => s.sensitive);

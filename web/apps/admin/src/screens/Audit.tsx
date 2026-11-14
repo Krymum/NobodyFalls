@@ -51,7 +51,7 @@ function Row({ entry }: { entry: AuditEntry }) {
   );
 }
 
-/** The audit log (ADR 0019): read-only, newest first, filtered by family of action or target. */
+/** The audit log (ADR 0020): read-only, newest first, filtered by family of action or target. */
 export function Audit() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<AuditFilter>({});

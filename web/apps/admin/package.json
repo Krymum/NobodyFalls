@@ -2,7 +2,7 @@
   "name": "@nobodyfalls/admin",
   "private": true,
   "type": "module",
-  "description": "The NobodyFalls admin (GAME_DESIGN §9), a separate bundle served under /admin/ (ADR 0016).",
+  "description": "The NobodyFalls admin (GAME_DESIGN §9), a separate bundle served under /admin/ (ADR 0017).",
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "5.3.0",
+    "@nobodyfalls/layout": "workspace:*",
     "@nobodyfalls/theme": "workspace:*",
     "i18next": "26.6.0",
     "react": "19.3.1",
