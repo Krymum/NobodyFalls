@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NobodyFalls.Api\NobodyFalls.Api.csproj" />
+    <ProjectReference Include="..\NobodyFalls.Testing\NobodyFalls.Testing.csproj" />
+    <ProjectReference Include="..\NobodyFalls.Testing.Postgres\NobodyFalls.Testing.Postgres.csproj" />
+  </ItemGroup>
+
+</Project>
