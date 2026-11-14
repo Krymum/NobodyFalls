@@ -2,7 +2,7 @@ using NobodyFalls.Domain.Common;
 using NobodyFalls.Domain.Friends;
 using NobodyFalls.Domain.Night;
 using NobodyFalls.Domain.Players;
-using NobodyFalls.Domain.Tests.Support;
+using NobodyFalls.Testing;
 
 namespace NobodyFalls.Domain.Tests.Night;
 

@@ -87,6 +87,24 @@ public sealed class Player
             : new Player(id, PlayerKind.Human, pseudo, PlayerStatus.Waitlisted, null, invitedBy);
     }
 
+    /// <summary>Rebuilds a player loaded from storage. No rule is checked: the data was valid when saved.</summary>
+    public static Player Restore(
+        PlayerId id,
+        PlayerKind kind,
+        Pseudo pseudo,
+        PlayerStatus status,
+        GameDay? joinedDay,
+        PlayerId? invitedBy,
+        int fallsCount,
+        GameDay? lastFallDay,
+        GameDay? returnsOnDay) =>
+        new(id, kind, pseudo, status, joinedDay, invitedBy)
+        {
+            FallsCount = fallsCount,
+            LastFallDay = lastFallDay,
+            ReturnsOnDay = returnsOnDay,
+        };
+
     public static Player CreateWatcher(PlayerId id, Pseudo pseudo)
     {
         ArgumentNullException.ThrowIfNull(pseudo);

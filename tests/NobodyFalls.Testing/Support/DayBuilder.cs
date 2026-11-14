@@ -4,10 +4,10 @@ using NobodyFalls.Domain.Night;
 using NobodyFalls.Domain.Players;
 using NobodyFalls.Domain.Rules;
 
-namespace NobodyFalls.Domain.Tests.Support;
+namespace NobodyFalls.Testing;
 
 /// <summary>Builds a day to resolve, in the vocabulary of the rules.</summary>
-internal sealed class DayBuilder
+public sealed class DayBuilder
 {
     public static readonly GameDay Day = GameDay.Parse("2026-11-13");
 

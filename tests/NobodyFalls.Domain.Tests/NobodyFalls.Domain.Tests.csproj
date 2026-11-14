@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\NobodyFalls.Domain\NobodyFalls.Domain.csproj" />
+    <ProjectReference Include="..\NobodyFalls.Testing\NobodyFalls.Testing.csproj" />
   </ItemGroup>
 
 </Project>
