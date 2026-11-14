@@ -12,7 +12,9 @@ export default tseslint.config(
     languageOptions: {
       globals: { ...globals.browser },
       parserOptions: {
-        projectService: { allowDefaultProject: ['eslint.config.js', 'vitest.config.ts'] },
+        projectService: {
+          allowDefaultProject: ['eslint.config.js', 'vitest.config.ts', 'playwright.config.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -28,7 +30,16 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
-    files: ['**/*.config.{js,ts}', 'eslint.config.js'],
+    // Plain JavaScript: the service worker and Node scripts are not type-checked.
+    files: ['**/*.{js,mjs}'],
+    ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['apps/game/public/sw.js'],
+    languageOptions: { globals: { ...globals.serviceworker } },
+  },
+  {
+    files: ['*.config.{js,ts}', 'eslint.config.js', 'apps/game/scripts/**'],
     ...tseslint.configs.disableTypeChecked,
     languageOptions: { globals: { ...globals.node } },
   },

@@ -43,10 +43,15 @@ internal static class SpaHosting
             FileProvider = app.Environment.WebRootFileProvider ?? new NullFileProvider(),
             OnPrepareResponse = context =>
             {
-                // Hashed build assets never change; everything else is revalidated.
-                if (context.Context.Request.Path.StartsWithSegments("/assets", StringComparison.Ordinal))
+                // Hashed build assets never change; the service worker must always be fresh.
+                var path = context.Context.Request.Path;
+                if (path.StartsWithSegments("/assets", StringComparison.Ordinal))
                 {
                     context.Context.Response.Headers[HeaderNames.CacheControl] = "public, max-age=31536000, immutable";
+                }
+                else if (path == "/sw.js" || path == "/manifest.webmanifest")
+                {
+                    context.Context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
                 }
             },
         });

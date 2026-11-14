@@ -1,0 +1,307 @@
+{
+  "common": {
+    "brand": "NOBODYFALLS",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "close": "Close",
+    "night": "NIGHT {{n}}",
+    "me": "YOU",
+    "watcher": "WATCHER",
+    "thread": "A THREAD",
+    "firstNight": "FIRST NIGHT",
+    "friend": "FRIEND",
+    "fallen": "IN THE VOID"
+  },
+  "tabs": {
+    "label": "Main navigation",
+    "tonight": "Tonight",
+    "edge": "The edge",
+    "friends": "Friends",
+    "profile": "Profile"
+  },
+  "tonight": {
+    "status": {
+      "held_one": "HELD · {{count}} HAND OF {{required}}",
+      "held_other": "HELD · {{count}} HANDS OF {{required}}",
+      "attention_one": "BELOW THE THRESHOLD · {{count}} HAND OF {{required}}",
+      "attention_other": "BELOW THE THRESHOLD · {{count}} HANDS OF {{required}}",
+      "danger": "NO HAND · {{required}} NEEDED",
+      "firstNight": "FIRST NIGHT · YOU CANNOT FALL",
+      "fallen": "IN THE VOID",
+      "waitlisted": "WAITING LIST",
+      "noSeason": "BETWEEN SEASONS"
+    },
+    "title": {
+      "held": "You are still holding on.",
+      "attention": "You need one more hand.",
+      "danger": "You are hanging by a thread.",
+      "firstNight": "Your first night.",
+      "fallen": "You slipped into the void.",
+      "waitlisted": "The season has not begun.",
+      "noSeason": "The void is waiting."
+    },
+    "handsLeft_one": "You have one hand left.",
+    "handsLeft_other": "You have {{count}} hands left.",
+    "handsLeft_zero": "You have given all three hands.",
+    "candidate": "{{name}} is hanging by a thread.",
+    "candidateAttention": "{{name}} needs one more hand.",
+    "firstNightBody": "Tonight you cannot fall. Tomorrow you will need {{required}} hands.",
+    "fellOn": "Last night, nobody could hold you.",
+    "backToday": "Your place is waiting: you need {{required}} hands before midnight.",
+    "backTomorrow": "You will be back in play tomorrow, from midnight.",
+    "waitlistedBody": "The first night opens for everyone at once. Invite your people until then.",
+    "storm": "Storm night: everyone needs one more hand.",
+    "lastHour": "Last hour: the hand that saves counts double.",
+    "holdCandidate": "Reach out to {{name}}",
+    "holdCandidateLast": "Give your last hand to {{name}}",
+    "held": "Hand given to {{name}}",
+    "toEdge_one": "On the edge · {{count}}",
+    "toEdge_other": "On the edge · {{count}}",
+    "toEdgeEmpty": "The edge",
+    "more": "+{{count}}",
+    "sceneHeld": "You hang above the void, held by {{holders}}.",
+    "sceneAlone": "You hang above the void. Nobody holds you yet.",
+    "sceneHolding": "You hold {{held}}.",
+    "sceneCandidate": "{{name}} is hanging by a thread.",
+    "world": "The world"
+  },
+  "edge": {
+    "title": "The edge of the void",
+    "intro": "They do not have enough hands yet. Sometimes one is enough.",
+    "empty": "Nobody is on the edge. For now.",
+    "hold": "Hold",
+    "holding": "…",
+    "count": "{{received}}/{{required}}",
+    "more": "Show more",
+    "noHands": "You have given all three hands today. Come back tomorrow.",
+    "handsLeft_one": "You have one hand left.",
+    "handsLeft_other": "You have {{count}} hands left."
+  },
+  "friends": {
+    "title": "Friends",
+    "addLabel": "Add by name",
+    "addPlaceholder": "name",
+    "add": "Add",
+    "sent": "Request sent to {{name}}.",
+    "becameFriends": "You and {{name}} are friends.",
+    "invite": "Your invitation link",
+    "inviteHint": "Whoever follows it becomes your friend.",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Link copied.",
+    "shareText": "Come and hold me above the void.",
+    "incoming": "They want to be your friends",
+    "accept": "Accept",
+    "decline": "Decline",
+    "outgoing": "Waiting for an answer",
+    "suggestions": "You held each other",
+    "nights_one": "{{count}} night together",
+    "nights_other": "{{count}} nights together",
+    "list_one": "Your friend",
+    "list_other": "Your friends · {{count}}",
+    "empty": "No friends yet. Share your link, or hold someone on the edge.",
+    "hold": "Hold",
+    "remove": "Remove",
+    "block": "Block",
+    "actions": "Actions for {{name}}",
+    "confirmBlock": "Block {{name}}? You will no longer see nor hold each other."
+  },
+  "profile": {
+    "title": "Profile",
+    "score": "GUARDIAN SCORE",
+    "falls": "FALLS",
+    "titles": "TITLES",
+    "titlesSoon": "Titles come with the end of the season.",
+    "savedBy": "They saved you",
+    "saved": "You saved",
+    "nobody": "Nobody yet.",
+    "settings": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "enablePush": "Turn on notifications",
+    "pushOn": "Notifications are on for this device.",
+    "pushOff": "Turn off on this device",
+    "pushUnsupported": "This browser cannot receive notifications. On iPhone, install the app first.",
+    "pushDenied": "Notifications are blocked in the browser settings.",
+    "pref": {
+      "fell": "You slipped into the void",
+      "friendFell": "A friend slipped into the void",
+      "savedMe": "Someone saved you",
+      "friendBelow": "Evening reminder: friends still below the threshold",
+      "storm": "Storm night"
+    },
+    "map": "Who sees your name on the map",
+    "mapValue": {
+      "friends": "My friends",
+      "everyone": "Everyone",
+      "nobody": "Nobody"
+    },
+    "blocked": "Blocked players",
+    "unblock": "Unblock",
+    "logout": "Sign out"
+  },
+  "world": {
+    "title": "The world",
+    "season": "{{name}} · night {{n}}",
+    "streak_one": "NIGHT WITHOUT A FALL",
+    "streak_other": "NIGHTS WITHOUT A FALL",
+    "lastNight": "FALLS LAST NIGHT",
+    "alive": "ALIVE",
+    "underThreshold": "BELOW THE THRESHOLD",
+    "deathsSeason": "DEATHS THIS SEASON",
+    "deathsAllTime": "DEATHS SINCE THE BEGINNING",
+    "storm": "Storm tonight: everyone needs one more hand.",
+    "none": "—"
+  },
+  "onboarding": {
+    "rules": [
+      {
+        "title": "Nobody falls.",
+        "body": "Everyone hangs above the void. You cannot hold yourself: you hold on thanks to others."
+      },
+      {
+        "title": "Three hands a day.",
+        "body": "Every day you have three hands to give. At midnight UTC, those who did not receive enough slip into the void."
+      },
+      {
+        "title": "Holding is winning.",
+        "body": "Your score only counts the help you give. And whoever slips comes back as soon as they reopen the game."
+      }
+    ],
+    "step": "Step {{n}} of {{total}}",
+    "next": "Next",
+    "skip": "Skip",
+    "signInTitle": "To hold you, we need to know you.",
+    "signInBody": "No password. We only keep your id at the provider.",
+    "google": "Continue with Google",
+    "discord": "Continue with Discord",
+    "devName": "Test name",
+    "devLogin": "Development sign-in",
+    "noProvider": "No sign-in method is configured on this server.",
+    "characterTitle": "Your character",
+    "pseudo": "Your name",
+    "pseudoHint": "3 to 20 characters: letters, digits, _ and .",
+    "slot": {
+      "skinTone": "Skin",
+      "coat": "Coat",
+      "headwear": "Head",
+      "hair": "Hair",
+      "scarf": "Scarf",
+      "gloves": "Gloves"
+    },
+    "style": "Style",
+    "colour": "Colour",
+    "none": "None",
+    "create": "Step into the void",
+    "invitedBy": "{{name}} invited you: you will be friends.",
+    "installTitle": "Keep the game close",
+    "installBody": "Install the app to be told when a friend slips, a storm comes, or someone saved you.",
+    "iosHint": "On iPhone: tap Share, then “Add to Home Screen”.",
+    "install": "Install the app",
+    "later": "Later",
+    "done": "Let's go",
+    "swatch": "Colour {{n}}"
+  },
+  "dev": {
+    "panel": "Dev tools",
+    "toMidnight": "Midnight − 10 s",
+    "plusHour": "+1 h",
+    "resetClock": "Real time",
+    "seed": "+20 players",
+    "bots": "Bots play",
+    "tick": "Run the night",
+    "done": "Done."
+  },
+  "errors": {
+    "request": {
+      "failed": "Something went wrong. Please try again.",
+      "rate_limited": "Easy: too many requests. Try again in a moment.",
+      "missing_header": "Request refused."
+    },
+    "network": {
+      "offline": "No network. Try again once you are connected."
+    },
+    "auth": {
+      "required": "Your session has expired. Please sign in again."
+    },
+    "hand": {
+      "season_closed": "The season has not begun yet.",
+      "night_resolving": "Midnight is passing. Try again in a moment.",
+      "receiver_not_found": "This player cannot be found.",
+      "self": "You cannot hold yourself.",
+      "receiver_is_watcher": "Watchers do not need to be held.",
+      "receiver_not_in_play": "This player is not in play today.",
+      "none_left": "You have given all three hands today.",
+      "duplicate": "You already hold this player today."
+    },
+    "friend": {
+      "self": "You cannot add yourself.",
+      "not_found": "No player with this name.",
+      "already_friends": "You are already friends.",
+      "already_requested": "Your request is already waiting for an answer.",
+      "limit_reached": "You have reached the maximum number of friends.",
+      "target_limit_reached": "This player has reached the maximum number of friends."
+    },
+    "friend_request": {
+      "not_found": "This request no longer exists."
+    },
+    "pseudo": {
+      "length": "Your name needs 3 to 20 characters.",
+      "characters": "Letters, digits, _ and . only, with at least one letter.",
+      "reserved": "This name is reserved.",
+      "taken": "This name is already taken."
+    },
+    "appearance": {
+      "skin_tone": "This skin tone does not exist.",
+      "missing_slot": "A coat, trousers and boots are required.",
+      "unknown_item": "This item does not exist.",
+      "wrong_slot": "This item does not go there.",
+      "not_owned": "You have not unlocked this item yet.",
+      "color": "This colour is not available for this item."
+    },
+    "account": {
+      "already_registered": "This account already has a character.",
+      "locale": "Unsupported language.",
+      "verification_failed": "The anti-bot check failed. Please try again.",
+      "not_signed_in": "Sign in first."
+    },
+    "settings": {
+      "map_name_visibility": "Unknown choice."
+    },
+    "push": {
+      "invalid_subscription": "This device cannot receive notifications."
+    }
+  },
+  "wardrobe": {
+    "coat": {
+      "long": "Long",
+      "hooded": "Hooded",
+      "oilskin": "Oilskin"
+    },
+    "trousers": {
+      "plain": "Plain"
+    },
+    "boots": {
+      "plain": "Plain"
+    },
+    "hair": {
+      "short": "Short",
+      "long": "Long"
+    },
+    "headwear": {
+      "beanie": "Beanie",
+      "hood": "Hood",
+      "brim": "Hat",
+      "wide-brim": "Wide hat"
+    },
+    "scarf": {
+      "wool": "Wool",
+      "long": "Long"
+    },
+    "gloves": {
+      "wool": "Wool",
+      "fingerless": "Fingerless"
+    }
+  }
+}

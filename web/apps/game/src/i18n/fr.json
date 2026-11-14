@@ -1,0 +1,307 @@
+{
+  "common": {
+    "brand": "NOBODYFALLS",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "night": "NUIT {{n}}",
+    "me": "TOI",
+    "watcher": "VEILLEUR",
+    "thread": "UN FIL",
+    "firstNight": "PREMIÈRE NUIT",
+    "friend": "AMI",
+    "fallen": "DANS LE VIDE"
+  },
+  "tabs": {
+    "label": "Navigation principale",
+    "tonight": "Ce soir",
+    "edge": "Bord du vide",
+    "friends": "Amis",
+    "profile": "Profil"
+  },
+  "tonight": {
+    "status": {
+      "held_one": "TENU · {{count}} MAIN SUR {{required}}",
+      "held_other": "TENU · {{count}} MAINS SUR {{required}}",
+      "attention_one": "SOUS LE SEUIL · {{count}} MAIN SUR {{required}}",
+      "attention_other": "SOUS LE SEUIL · {{count}} MAINS SUR {{required}}",
+      "danger": "AUCUNE MAIN · IL EN FAUT {{required}}",
+      "firstNight": "PREMIÈRE NUIT · TU NE PEUX PAS TOMBER",
+      "fallen": "DANS LE VIDE",
+      "waitlisted": "LISTE D'ATTENTE",
+      "noSeason": "ENTRE DEUX SAISONS"
+    },
+    "title": {
+      "held": "Tu tiens encore.",
+      "attention": "Il te manque une main.",
+      "danger": "Tu ne tiens plus qu'à un fil.",
+      "firstNight": "Ta première nuit.",
+      "fallen": "Tu as glissé dans le vide.",
+      "waitlisted": "La saison n'a pas commencé.",
+      "noSeason": "Le vide attend."
+    },
+    "handsLeft_one": "Il te reste une main.",
+    "handsLeft_other": "Il te reste {{count}} mains.",
+    "handsLeft_zero": "Tu as tendu tes trois mains.",
+    "candidate": "{{name}} ne tient plus qu'à un fil.",
+    "candidateAttention": "Il manque une main à {{name}}.",
+    "firstNightBody": "Cette nuit, tu ne peux pas tomber. Demain, il te faudra {{required}} mains.",
+    "fellOn": "Cette nuit, personne n'a pu te tenir.",
+    "backToday": "Tu reprends ta place : il te faut {{required}} mains avant minuit.",
+    "backTomorrow": "Tu reprendras ta place demain, dès minuit.",
+    "waitlistedBody": "La première nuit s'ouvrira pour tout le monde en même temps. Invite tes proches d'ici là.",
+    "storm": "Nuit de tempête : il faut une main de plus pour tenir.",
+    "lastHour": "Dernière heure : la main qui sauve compte double.",
+    "holdCandidate": "Tendre ta main à {{name}}",
+    "holdCandidateLast": "Tendre ta dernière main à {{name}}",
+    "held": "Main tendue à {{name}}",
+    "toEdge_one": "Au bord du vide · {{count}}",
+    "toEdge_other": "Au bord du vide · {{count}}",
+    "toEdgeEmpty": "Au bord du vide",
+    "more": "+{{count}}",
+    "sceneHeld": "Tu es suspendu au-dessus du vide, retenu par {{holders}}.",
+    "sceneAlone": "Tu es suspendu au-dessus du vide. Personne ne te tient encore.",
+    "sceneHolding": "Tu tiens {{held}}.",
+    "sceneCandidate": "{{name}} ne tient plus qu'à un fil.",
+    "world": "Le monde"
+  },
+  "edge": {
+    "title": "Au bord du vide",
+    "intro": "Ils n'ont pas encore assez de mains. Une seule suffit parfois.",
+    "empty": "Personne n'est au bord du vide. Pour l'instant.",
+    "hold": "Tenir",
+    "holding": "…",
+    "count": "{{received}}/{{required}}",
+    "more": "Voir plus",
+    "noHands": "Tu as tendu tes trois mains aujourd'hui. Reviens demain.",
+    "handsLeft_one": "Il te reste une main.",
+    "handsLeft_other": "Il te reste {{count}} mains."
+  },
+  "friends": {
+    "title": "Amis",
+    "addLabel": "Ajouter par pseudo",
+    "addPlaceholder": "pseudo",
+    "add": "Ajouter",
+    "sent": "Demande envoyée à {{name}}.",
+    "becameFriends": "{{name}} et toi êtes amis.",
+    "invite": "Ton lien d'invitation",
+    "inviteHint": "Ceux qui le suivent deviennent tes amis.",
+    "share": "Partager",
+    "copy": "Copier",
+    "copied": "Lien copié.",
+    "shareText": "Viens me tenir au-dessus du vide.",
+    "incoming": "Ils veulent être tes amis",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "outgoing": "En attente de réponse",
+    "suggestions": "Vous vous êtes tenus",
+    "nights_one": "{{count}} nuit ensemble",
+    "nights_other": "{{count}} nuits ensemble",
+    "list_one": "Ton ami",
+    "list_other": "Tes amis · {{count}}",
+    "empty": "Pas encore d'amis. Partage ton lien, ou tiens quelqu'un au bord du vide.",
+    "hold": "Tenir",
+    "remove": "Retirer",
+    "block": "Bloquer",
+    "actions": "Actions pour {{name}}",
+    "confirmBlock": "Bloquer {{name}} ? Vous ne vous verrez plus et ne pourrez plus vous tenir."
+  },
+  "profile": {
+    "title": "Profil",
+    "score": "SCORE GARDIEN",
+    "falls": "CHUTES",
+    "titles": "TITRES",
+    "titlesSoon": "Les titres arrivent avec la fin de saison.",
+    "savedBy": "T'ont sauvé",
+    "saved": "Tu as sauvé",
+    "nobody": "Personne pour l'instant.",
+    "settings": "Réglages",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "enablePush": "Activer les notifications",
+    "pushOn": "Notifications actives sur cet appareil.",
+    "pushOff": "Désactiver sur cet appareil",
+    "pushUnsupported": "Ce navigateur ne reçoit pas de notifications. Sur iPhone, installe d'abord l'app.",
+    "pushDenied": "Les notifications sont bloquées dans les réglages du navigateur.",
+    "pref": {
+      "fell": "Tu as glissé dans le vide",
+      "friendFell": "Un ami a glissé dans le vide",
+      "savedMe": "Quelqu'un t'a sauvé",
+      "friendBelow": "Rappel du soir : tes amis encore sous le seuil",
+      "storm": "Nuit de tempête"
+    },
+    "map": "Qui voit ton nom sur la carte",
+    "mapValue": {
+      "friends": "Mes amis",
+      "everyone": "Tout le monde",
+      "nobody": "Personne"
+    },
+    "blocked": "Joueurs bloqués",
+    "unblock": "Débloquer",
+    "logout": "Se déconnecter"
+  },
+  "world": {
+    "title": "Le monde",
+    "season": "{{name}} · nuit {{n}}",
+    "streak_one": "NUIT SANS CHUTE",
+    "streak_other": "NUITS SANS CHUTE",
+    "lastNight": "CHUTES LA NUIT DERNIÈRE",
+    "alive": "EN VIE",
+    "underThreshold": "SOUS LE SEUIL",
+    "deathsSeason": "MORTS CETTE SAISON",
+    "deathsAllTime": "MORTS DEPUIS LE DÉBUT",
+    "storm": "Tempête ce soir : il faut une main de plus pour tenir.",
+    "none": "—"
+  },
+  "onboarding": {
+    "rules": [
+      {
+        "title": "Personne ne tombe.",
+        "body": "Chacun est suspendu au-dessus du vide. On ne peut pas se tenir soi-même : on tient grâce aux autres."
+      },
+      {
+        "title": "Trois mains par jour.",
+        "body": "Chaque jour, tu as trois mains à tendre. À minuit UTC, ceux qui n'en ont pas reçu assez glissent dans le vide."
+      },
+      {
+        "title": "Tenir, c'est gagner.",
+        "body": "Ton score ne compte que l'aide que tu donnes. Et qui glisse revient dès qu'il rouvre le jeu."
+      }
+    ],
+    "step": "Étape {{n}} sur {{total}}",
+    "next": "Suivant",
+    "skip": "Passer",
+    "signInTitle": "Pour te tenir, il faut te reconnaître.",
+    "signInBody": "Aucun mot de passe. Nous ne gardons que ton identifiant chez le fournisseur.",
+    "google": "Continuer avec Google",
+    "discord": "Continuer avec Discord",
+    "devName": "Nom de test",
+    "devLogin": "Connexion de développement",
+    "noProvider": "Aucun moyen de connexion n'est configuré sur ce serveur.",
+    "characterTitle": "Ton personnage",
+    "pseudo": "Ton pseudo",
+    "pseudoHint": "3 à 20 caractères : lettres, chiffres, _ et .",
+    "slot": {
+      "skinTone": "Peau",
+      "coat": "Manteau",
+      "headwear": "Tête",
+      "hair": "Cheveux",
+      "scarf": "Écharpe",
+      "gloves": "Gants"
+    },
+    "style": "Forme",
+    "colour": "Couleur",
+    "none": "Rien",
+    "create": "Entrer dans le vide",
+    "invitedBy": "{{name}} t'a invité : vous serez amis.",
+    "installTitle": "Garde le jeu à portée de main",
+    "installBody": "Installe l'app pour être prévenu : un ami qui glisse, une tempête, quelqu'un qui t'a sauvé.",
+    "iosHint": "Sur iPhone : touche Partager, puis « Sur l'écran d'accueil ».",
+    "install": "Installer l'app",
+    "later": "Plus tard",
+    "done": "C'est parti",
+    "swatch": "Couleur {{n}}"
+  },
+  "dev": {
+    "panel": "Outils de dev",
+    "toMidnight": "Minuit − 10 s",
+    "plusHour": "+1 h",
+    "resetClock": "Heure réelle",
+    "seed": "+20 joueurs",
+    "bots": "Les bots jouent",
+    "tick": "Lancer la nuit",
+    "done": "Fait."
+  },
+  "errors": {
+    "request": {
+      "failed": "Quelque chose n'a pas marché. Réessaie.",
+      "rate_limited": "Doucement : trop de demandes. Réessaie dans un instant.",
+      "missing_header": "Requête refusée."
+    },
+    "network": {
+      "offline": "Pas de réseau. Réessaie quand tu seras connecté."
+    },
+    "auth": {
+      "required": "Ta session a expiré. Reconnecte-toi."
+    },
+    "hand": {
+      "season_closed": "La saison n'a pas encore commencé.",
+      "night_resolving": "Minuit est en train de passer. Réessaie dans un instant.",
+      "receiver_not_found": "Ce joueur est introuvable.",
+      "self": "On ne peut pas se tenir soi-même.",
+      "receiver_is_watcher": "Les Veilleurs n'ont pas besoin d'être tenus.",
+      "receiver_not_in_play": "Ce joueur n'est pas en jeu aujourd'hui.",
+      "none_left": "Tu as tendu tes trois mains aujourd'hui.",
+      "duplicate": "Tu tiens déjà ce joueur aujourd'hui."
+    },
+    "friend": {
+      "self": "Tu ne peux pas t'ajouter toi-même.",
+      "not_found": "Aucun joueur avec ce pseudo.",
+      "already_friends": "Vous êtes déjà amis.",
+      "already_requested": "Ta demande attend déjà une réponse.",
+      "limit_reached": "Tu as atteint le nombre maximum d'amis.",
+      "target_limit_reached": "Ce joueur a atteint le nombre maximum d'amis."
+    },
+    "friend_request": {
+      "not_found": "Cette demande n'existe plus."
+    },
+    "pseudo": {
+      "length": "Ton pseudo doit faire de 3 à 20 caractères.",
+      "characters": "Lettres, chiffres, _ et . seulement, avec au moins une lettre.",
+      "reserved": "Ce pseudo est réservé.",
+      "taken": "Ce pseudo est déjà pris."
+    },
+    "appearance": {
+      "skin_tone": "Cette teinte n'existe pas.",
+      "missing_slot": "Il faut un manteau, un pantalon et des bottes.",
+      "unknown_item": "Ce vêtement n'existe pas.",
+      "wrong_slot": "Ce vêtement ne va pas là.",
+      "not_owned": "Tu n'as pas encore débloqué ce vêtement.",
+      "color": "Cette couleur n'existe pas pour ce vêtement."
+    },
+    "account": {
+      "already_registered": "Ce compte a déjà un personnage.",
+      "locale": "Langue non prise en charge.",
+      "verification_failed": "La vérification anti-robot a échoué. Réessaie.",
+      "not_signed_in": "Connecte-toi d'abord."
+    },
+    "settings": {
+      "map_name_visibility": "Choix inconnu."
+    },
+    "push": {
+      "invalid_subscription": "Cet appareil ne peut pas recevoir de notifications."
+    }
+  },
+  "wardrobe": {
+    "coat": {
+      "long": "Long",
+      "hooded": "À capuche",
+      "oilskin": "Ciré"
+    },
+    "trousers": {
+      "plain": "Simple"
+    },
+    "boots": {
+      "plain": "Simples"
+    },
+    "hair": {
+      "short": "Courts",
+      "long": "Longs"
+    },
+    "headwear": {
+      "beanie": "Bonnet",
+      "hood": "Capuche",
+      "brim": "Chapeau",
+      "wide-brim": "Grand chapeau"
+    },
+    "scarf": {
+      "wool": "Laine",
+      "long": "Longue"
+    },
+    "gloves": {
+      "wool": "Laine",
+      "fingerless": "Mitaines"
+    }
+  }
+}

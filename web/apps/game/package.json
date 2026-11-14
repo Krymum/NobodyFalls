@@ -6,14 +6,20 @@
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "icons": "node scripts/icons.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "5.3.0",
+    "@microsoft/signalr": "10.0.11",
     "@nobodyfalls/render": "workspace:*",
     "@nobodyfalls/theme": "workspace:*",
+    "i18next": "26.6.0",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "react-i18next": "17.1.9",
+    "wouter": "3.13.0",
+    "zustand": "5.0.16"
   },
   "devDependencies": {
     "@types/react": "19.3.0",

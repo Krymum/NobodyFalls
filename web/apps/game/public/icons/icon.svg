@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- A figure hanging from two ropes, in the cold key light. Source of the PNG icons (scripts/icons.mjs). -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E141D"/>
+      <stop offset="1" stop-color="#030405"/>
+    </linearGradient>
+    <linearGradient id="light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8CA5C3" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#8CA5C3" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <path d="M120 0 H300 L470 512 H-60 Z" fill="url(#light)"/>
+  <g stroke="#6B5E4F" stroke-width="9" stroke-linecap="round">
+    <path d="M196 0 L210 168"/>
+    <path d="M318 0 L302 168"/>
+  </g>
+  <g stroke="#B3A48A" stroke-width="2.5" stroke-linecap="round" opacity="0.6">
+    <path d="M193 0 L207 168"/>
+    <path d="M315 0 L299 168"/>
+  </g>
+  <g stroke="#4A5463" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M226 252 L206 214 L210 170"/>
+    <path d="M286 252 L306 214 L302 170"/>
+  </g>
+  <path d="M220 248 Q256 236 292 248 Q300 310 298 352 Q256 362 214 352 Q212 310 220 248 Z" fill="#4A5463"/>
+  <rect x="213" y="324" width="86" height="12" fill="#17191D"/>
+  <circle cx="256" cy="330" r="6" fill="#8A8F96"/>
+  <g stroke="#262A31" stroke-width="22" stroke-linecap="round">
+    <path d="M240 352 L236 410"/>
+    <path d="M272 352 L276 410"/>
+  </g>
+  <ellipse cx="256" cy="214" rx="38" ry="42" fill="#C9C3B9"/>
+  <path d="M218 206 A38 40 0 0 1 294 206 L294 196 A38 38 0 0 0 218 196 Z" fill="#7A3931"/>
+  <path d="M216 214 A40 42 0 0 1 256 172 A40 42 0 0 1 296 214 L296 200 Q256 168 216 200 Z" fill="#7A3931"/>
+  <ellipse cx="242" cy="222" rx="5" ry="7" fill="#0A0B0D"/>
+  <ellipse cx="270" cy="222" rx="5" ry="7" fill="#0A0B0D"/>
+  <circle cx="210" cy="170" r="11" fill="#2E3238"/>
+  <circle cx="302" cy="170" r="11" fill="#2E3238"/>
+</svg>

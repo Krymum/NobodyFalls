@@ -25,11 +25,20 @@ internal sealed partial class TurnstileVerifier(HttpClient http, IOptions<Turnst
 {
     public static readonly Uri Endpoint = new("https://challenges.cloudflare.com/turnstile/v0/siteverify");
 
+    public const string AlwaysPassesTestSecret = "1x0000000000000000000000000000000AA";
+
     public async Task<bool> VerifyAsync(string? token, string? remoteIp, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(token) || string.IsNullOrEmpty(options.Value.SecretKey))
         {
             return false;
+        }
+
+        // Cloudflare's public "always passes" test secret: answer like Cloudflare would,
+        // without the network, so development and end-to-end tests work offline.
+        if (options.Value.SecretKey == AlwaysPassesTestSecret)
+        {
+            return true;
         }
 
         var form = new Dictionary<string, string> { ["secret"] = options.Value.SecretKey, ["response"] = token };
