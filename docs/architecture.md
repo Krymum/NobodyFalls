@@ -101,13 +101,18 @@ at 18:00 UTC, the night's outcome after midnight.
 `web/` is a pnpm workspace ([ADR 0014](adr/0014-web-workspace.md)):
 
 - `packages/theme` — design tokens from the art direction, generated as CSS
-  variables.
+  variables, including breakpoints, layout sizes and fluid type.
+- `packages/layout` — the responsive layout shared by the game and the admin:
+  < 640 px phone, 640–1023 px tablet, ≥ 1024 px desktop (rail on the left, side
+  panel, reading columns), base CSS and keyboard helpers
+  ([ADR 0016](adr/0016-responsive-layout-and-scene-camera.md)).
 - `packages/render` — Canvas 2D: a character rig drawn from part sets, ropes, and
   the scene with its depth layers. No `ctx.filter` (Safari): distant silhouettes
   are blurred once into offscreen canvases ([ADR 0011](adr/0011-character-rig-and-part-sets.md),
   [ADR 0012](adr/0012-depth-without-canvas-filter.md)).
 - `apps/game` — React 19, wouter, zustand. Pure logic in `src/core` (layout of the
-  neighbourhood, label placement, standing, countdowns) with unit tests; the store
+  neighbourhood, label placement, the scene camera, standing, countdowns) with unit
+  tests; the scene is one full-window layer mounted by the shell; the store
   calls the API and applies real-time events; screens read the store and render
   ([ADR 0010](adr/0010-front-end-stack-and-budgets.md)).
 
@@ -116,7 +121,7 @@ error codes that the interface translates ([ADR 0013](adr/0013-internationalisat
 The app is an installable PWA with a hand-written service worker.
 
 **Budgets** (GAME_DESIGN §13): initial JS ≤ 150 KB and CSS ≤ 30 KB gzip — about
-112 KB and 3 KB today; SignalR loads after the first screen. The build writes
+114 KB and 4 KB today; SignalR loads after the first screen. The build writes
 brotli and gzip copies of every text file, served by `Accept-Encoding`.
 Lighthouse mobile ≥ 90 in performance and accessibility. CI enforces all three.
 
@@ -129,6 +134,7 @@ Lighthouse mobile ≥ 90 in performance and accessibility. CI enforces all three
 | API | `tests/NobodyFalls.Api.Tests` | the real app over HTTP and SignalR: authorization of every endpoint, CSRF header, errors |
 | Front end | Vitest next to the modules | layout, catalogues parity, store |
 | End to end | `web/e2e` (Playwright) | the whole loop in Chromium, Firefox, WebKit, Pixel 7 and iPhone 14, against `docker compose` |
+| Responsive | `web/e2e/responsive.spec.ts` | 390 × 844, 820 × 1180, 1440 × 900: structure and reference screenshots (`pnpm e2e:screenshots`) |
 
 ## Extension points for later phases
 
