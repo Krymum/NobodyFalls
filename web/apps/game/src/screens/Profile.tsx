@@ -1,7 +1,7 @@
 import { DEFAULT_LOOK, resolveLook } from '@nobodyfalls/render';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { api } from '../api/client.ts';
 import type {
   LifeDebt,
@@ -116,6 +116,11 @@ export function Profile() {
           </div>
 
           <Blocked />
+
+          <h3 className={ui.subheading}>{t('profile.feedbackTitle')}</h3>
+          <Link href="/profile/feedback" className={ui.secondary}>
+            {t('profile.feedback')}
+          </Link>
 
           <button
             type="button"

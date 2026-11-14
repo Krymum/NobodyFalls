@@ -180,6 +180,21 @@ test('main screens', async ({ page, browser }) => {
   await expect(page.getByRole('heading').first()).toBeVisible();
   await expectNoHorizontalScroll(page);
   await shoot(page, 'world');
+
+  // "Ideas and contact", with one idea.
+  await page.request.post('/api/v1/ideas', {
+    headers: API_HEADER,
+    data: {
+      title: 'Une carte du filet',
+      body: 'Voir qui tient qui, à l’échelle du monde.',
+      category: 'gameplay',
+      turnstileToken: 'XXXX.DUMMY.TOKEN.XXXX',
+    },
+  });
+  await page.goto('/fr/profile/feedback');
+  await expect(page.getByRole('heading', { name: 'Une carte du filet' })).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await shoot(page, 'feedback');
 });
 
 test('desktop keyboard shortcuts', async ({ page, browser }) => {

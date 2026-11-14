@@ -306,3 +306,80 @@ internal sealed class AuditLogRow
     public byte[]? PrevHash { get; set; }
     public byte[] Hash { get; set; } = [];
 }
+
+internal sealed class IdeaRow
+{
+    public long Id { get; set; }
+    public Guid AuthorId { get; set; }
+    public string Title { get; set; } = "";
+    public string Body { get; set; } = "";
+    public string Category { get; set; } = "";
+    public string Locale { get; set; } = "fr";
+    public string Status { get; set; } = "new";
+    public string? StaffAnswer { get; set; }
+    public DateTimeOffset? AnsweredAt { get; set; }
+    public DateTimeOffset? HiddenAt { get; set; }
+    public string? HiddenReason { get; set; }
+    public long? MergedIntoId { get; set; }
+    public int VotesCount { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class IdeaVoteRow
+{
+    public long IdeaId { get; set; }
+    public Guid PlayerId { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class TicketRow
+{
+    public long Id { get; set; }
+    public Guid PlayerId { get; set; }
+    public string Category { get; set; } = "";
+    public long? SanctionId { get; set; }
+    public string Subject { get; set; } = "";
+    public string Status { get; set; } = "open";
+    public Guid? AssigneeId { get; set; }
+    public string Locale { get; set; } = "fr";
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
+}
+
+internal sealed class TicketMessageRow
+{
+    public long Id { get; set; }
+    public long TicketId { get; set; }
+    public string AuthorKind { get; set; } = "player";
+    public Guid? AuthorId { get; set; }
+    public string Body { get; set; } = "";
+
+    /// <summary>A team note, never shown to the player.</summary>
+    public bool Internal { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class ReportRow
+{
+    public long Id { get; set; }
+    public Guid ReporterId { get; set; }
+    public string TargetType { get; set; } = "player";
+    public string TargetId { get; set; } = "";
+
+    /// <summary>The player concerned (the target, or the author of a reported idea), for the player sheet.</summary>
+    public Guid? TargetPlayerId { get; set; }
+
+    public string Category { get; set; } = "";
+    public string Details { get; set; } = "";
+
+    /// <summary>What the target looked like when reported (a pseudo can change).</summary>
+    public string TargetSnapshot { get; set; } = "{}";
+
+    public string Status { get; set; } = "open";
+    public Guid? AssigneeId { get; set; }
+    public string? ResolutionNote { get; set; }
+    public long? SanctionId { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? ResolvedAt { get; set; }
+}

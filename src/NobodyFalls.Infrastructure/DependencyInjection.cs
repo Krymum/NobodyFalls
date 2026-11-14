@@ -5,6 +5,7 @@ using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Audit;
 using NobodyFalls.Application.Dev;
+using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
@@ -17,6 +18,7 @@ using NobodyFalls.Infrastructure.Accounts;
 using NobodyFalls.Infrastructure.Audit;
 using NobodyFalls.Infrastructure.Clock;
 using NobodyFalls.Infrastructure.Dev;
+using NobodyFalls.Infrastructure.Feedback;
 using NobodyFalls.Infrastructure.Friends;
 using NobodyFalls.Infrastructure.Hands;
 using NobodyFalls.Infrastructure.Night;
@@ -83,6 +85,11 @@ public static class DependencyInjection
         services.AddSingleton<IStaffStore, PostgresStaffStore>();
         services.AddSingleton<ITotpStore, PostgresTotpStore>();
         services.AddSingleton<ISecretProtector, DataProtectionSecretProtector>();
+
+        // Phase 2: what players send to the team (GAME_DESIGN §8).
+        services.AddSingleton<IIdeaStore, PostgresIdeaStore>();
+        services.AddSingleton<ITicketStore, PostgresTicketStore>();
+        services.AddSingleton<IReportStore, PostgresReportStore>();
 
         if (options.SimulatedClock)
         {

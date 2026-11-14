@@ -18,6 +18,10 @@ import { useLayout } from './ui/useLayout.ts';
 
 // The reference scene demo is a development page: kept out of the main bundle.
 const SceneDemo = lazy(() => import('./dev/SceneDemo.tsx').then((m) => ({ default: m.SceneDemo })));
+// "Ideas and contact" is opened from the profile: its own chunk, texts included.
+const FeedbackScreen = lazy(() =>
+  import('./feedback/FeedbackScreen.tsx').then((m) => ({ default: m.FeedbackScreen })),
+);
 
 /** `/fr/...` and `/en/...` (GAME_DESIGN §11); anything else is sent to the right language. */
 export function App() {
@@ -140,6 +144,11 @@ function Game() {
             </Route>
             <Route path="/profile">
               <Profile />
+            </Route>
+            <Route path="/profile/feedback">
+              <Suspense fallback={<main className={ui.page} aria-busy="true" />}>
+                <FeedbackScreen />
+              </Suspense>
             </Route>
             <Route path="/world">
               <World />

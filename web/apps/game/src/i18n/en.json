@@ -147,7 +147,9 @@
     },
     "blocked": "Blocked players",
     "unblock": "Unblock",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "feedbackTitle": "Ideas and contact",
+    "feedback": "Suggest an idea, write to the team, report a player"
   },
   "world": {
     "title": "The world",

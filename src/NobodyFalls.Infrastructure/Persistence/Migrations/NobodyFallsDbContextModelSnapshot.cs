@@ -546,6 +546,128 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.IdeaRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset?>("AnsweredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("answered_at");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_id");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("body");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset?>("HiddenAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("hidden_at");
+
+                    b.Property<string>("HiddenReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("hidden_reason");
+
+                    b.Property<string>("Locale")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("locale");
+
+                    b.Property<long?>("MergedIntoId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("merged_into_id");
+
+                    b.Property<string>("StaffAnswer")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("staff_answer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("new")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("VotesCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("votes_count");
+
+                    b.HasKey("Id")
+                        .HasName("pk_ideas");
+
+                    b.HasIndex("MergedIntoId")
+                        .HasDatabaseName("ix_ideas_merged_into_id");
+
+                    b.HasIndex("AuthorId", "CreatedAt")
+                        .HasDatabaseName("ix_ideas_author_id_created_at");
+
+                    b.HasIndex("Status", "VotesCount")
+                        .HasDatabaseName("ix_ideas_status_votes_count");
+
+                    b.ToTable("ideas", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_ideas_category", "category in ('gameplay', 'social', 'interface', 'other')");
+
+                            t.HasCheckConstraint("ck_ideas_not_merged_into_itself", "merged_into_id is null or merged_into_id <> id");
+
+                            t.HasCheckConstraint("ck_ideas_status", "status in ('new', 'under_review', 'planned', 'shipped', 'declined')");
+                        });
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.IdeaVoteRow", b =>
+                {
+                    b.Property<long>("IdeaId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("idea_id");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.HasKey("IdeaId", "PlayerId")
+                        .HasName("pk_idea_votes");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_idea_votes_player_id");
+
+                    b.ToTable("idea_votes", (string)null);
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.LifeDebtRow", b =>
                 {
                     b.Property<DateOnly>("Day")
@@ -997,6 +1119,105 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("push_subscriptions", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.ReportRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<Guid?>("AssigneeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("assignee_id");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("details");
+
+                    b.Property<Guid>("ReporterId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reporter_id");
+
+                    b.Property<string>("ResolutionNote")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("resolution_note");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("resolved_at");
+
+                    b.Property<long?>("SanctionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("sanction_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("open")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TargetId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("target_id");
+
+                    b.Property<Guid?>("TargetPlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_player_id");
+
+                    b.Property<string>("TargetSnapshot")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("target_snapshot");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("target_type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_reports");
+
+                    b.HasIndex("TargetPlayerId")
+                        .HasDatabaseName("ix_reports_target_player_id");
+
+                    b.HasIndex("Status", "CreatedAt")
+                        .HasDatabaseName("ix_reports_status_created_at");
+
+                    b.HasIndex("ReporterId", "TargetType", "TargetId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_reports_one_open_per_target")
+                        .HasFilter("status in ('open', 'in_review')");
+
+                    b.ToTable("reports", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_reports_category", "category in ('pseudo', 'harassment', 'cheating', 'other')");
+
+                            t.HasCheckConstraint("ck_reports_status", "status in ('open', 'in_review', 'actioned', 'dismissed')");
+
+                            t.HasCheckConstraint("ck_reports_target_type", "target_type in ('player', 'idea')");
+                        });
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SeasonRow", b =>
                 {
                     b.Property<int>("Id")
@@ -1215,6 +1436,127 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasName("pk_storms");
 
                     b.ToTable("storms", (string)null);
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TicketMessageRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<Guid?>("AuthorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_id");
+
+                    b.Property<string>("AuthorKind")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("author_kind");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("Internal")
+                        .HasColumnType("boolean")
+                        .HasColumnName("internal");
+
+                    b.Property<long>("TicketId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("ticket_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_ticket_messages");
+
+                    b.HasIndex("TicketId")
+                        .HasDatabaseName("ix_ticket_messages_ticket_id");
+
+                    b.ToTable("ticket_messages", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_ticket_messages_author", "author_kind in ('player', 'staff')");
+                        });
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TicketRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<Guid?>("AssigneeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("assignee_id");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Locale")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("locale");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<long?>("SanctionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("sanction_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("open")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("subject");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tickets");
+
+                    b.HasIndex("PlayerId", "UpdatedAt")
+                        .HasDatabaseName("ix_tickets_player_id_updated_at");
+
+                    b.HasIndex("Status", "UpdatedAt")
+                        .HasDatabaseName("ix_tickets_status_updated_at");
+
+                    b.ToTable("tickets", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_tickets_category", "category in ('support', 'appeal', 'account_deletion')");
+
+                            t.HasCheckConstraint("ck_tickets_status", "status in ('open', 'waiting_player', 'resolved', 'closed')");
+                        });
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TotpCredentialRow", b =>
@@ -1443,6 +1785,39 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_hold_pairs_players_player_low");
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.IdeaRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ideas_players_author_id");
+
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.IdeaRow", null)
+                        .WithMany()
+                        .HasForeignKey("MergedIntoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_ideas_ideas_merged_into_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.IdeaVoteRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.IdeaRow", null)
+                        .WithMany()
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_idea_votes_ideas_idea_id");
+
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_idea_votes_players_player_id");
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.LifeDebtRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
@@ -1560,6 +1935,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_push_subscriptions_players_player_id");
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.ReportRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("ReporterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_reports_players_reporter_id");
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SeasonScoreRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
@@ -1585,6 +1970,26 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_staff_members_players_player_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TicketMessageRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.TicketRow", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ticket_messages_tickets_ticket_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TicketRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tickets_players_player_id");
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.TotpCredentialRow", b =>

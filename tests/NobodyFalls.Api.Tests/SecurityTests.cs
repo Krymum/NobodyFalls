@@ -29,6 +29,16 @@ public sealed class SecurityTests(PostgresFixture postgres)
         { "GET", "/api/v1/blocks" },
         { "PUT", "/api/v1/blocks/00000000-0000-0000-0000-000000000001" },
         { "DELETE", "/api/v1/blocks/00000000-0000-0000-0000-000000000001" },
+        { "GET", "/api/v1/ideas" },
+        { "GET", "/api/v1/ideas/1" },
+        { "POST", "/api/v1/ideas" },
+        { "PUT", "/api/v1/ideas/1/vote" },
+        { "DELETE", "/api/v1/ideas/1/vote" },
+        { "GET", "/api/v1/tickets" },
+        { "GET", "/api/v1/tickets/1" },
+        { "POST", "/api/v1/tickets" },
+        { "POST", "/api/v1/tickets/1/messages" },
+        { "POST", "/api/v1/reports" },
     };
 
     [Theory]
