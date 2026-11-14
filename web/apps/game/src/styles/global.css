@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Fluid from the phone size (24 px at 390 px wide) to 40 px on wide screens. */
+  --nf-space-gutter: var(--nf-fluid-gutter);
+}
+
 html,
 body {
   margin: 0;
@@ -15,16 +20,4 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-:focus-visible {
-  outline: 2px solid var(--nf-color-bone);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+/* Focus rings and reduced motion come from @nobodyfalls/layout/layout.css. */

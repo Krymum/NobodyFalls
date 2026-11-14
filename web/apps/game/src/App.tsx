@@ -11,8 +11,10 @@ import { Onboarding } from './screens/Onboarding.tsx';
 import { Profile } from './screens/Profile.tsx';
 import { Tonight } from './screens/tonight/Tonight.tsx';
 import { World } from './screens/World.tsx';
-import { TabBar } from './ui/Chrome.tsx';
+import { SceneLayer } from './screens/tonight/SceneLayer.tsx';
+import { Navigation } from './ui/Chrome.tsx';
 import ui from './ui/ui.module.css';
+import { useLayout } from './ui/useLayout.ts';
 
 // The reference scene demo is a development page: kept out of the main bundle.
 const SceneDemo = lazy(() => import('./dev/SceneDemo.tsx').then((m) => ({ default: m.SceneDemo })));
@@ -73,6 +75,7 @@ function Game() {
   const [failed, setFailed] = useState(false);
   const [location] = useLocation();
   const { t } = useTranslation();
+  const layout = useLayout();
 
   useEffect(() => {
     game.loadSession().catch(() => {
@@ -114,36 +117,43 @@ function Game() {
   }
 
   const registered = session.state === 'player';
+  const onTonight = registered && location === '/';
+  // The scene fills the window behind every screen from tablets on (dimmed behind lists,
+  // the void alone before sign-up); on phones only "Tonight" draws it, to save battery.
+  const scene = onTonight ? 'full' : layout !== 'mobile' ? 'dimmed' : null;
   return (
-    <div className={ui.shell}>
-      {!registered ? (
-        <Onboarding />
-      ) : (
-        <Switch>
-          <Route path="/">
-            <Tonight />
-          </Route>
-          <Route path="/edge">
-            <Edge />
-          </Route>
-          <Route path="/friends">
-            <Friends />
-          </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
-          <Route path="/world">
-            <World />
-          </Route>
-          <Route path="/onboarding">
-            <Onboarding afterRegistration />
-          </Route>
-          <Route>
-            <Redirect to="/" replace />
-          </Route>
-        </Switch>
-      )}
-      {registered && location !== '/onboarding' && <TabBar />}
+    <div className={ui.shell} data-layout={layout}>
+      {scene && <SceneLayer mode={scene} />}
+      <div className={ui.main}>
+        {!registered ? (
+          <Onboarding />
+        ) : (
+          <Switch>
+            <Route path="/">
+              <Tonight />
+            </Route>
+            <Route path="/edge">
+              <Edge />
+            </Route>
+            <Route path="/friends">
+              <Friends />
+            </Route>
+            <Route path="/profile">
+              <Profile />
+            </Route>
+            <Route path="/world">
+              <World />
+            </Route>
+            <Route path="/onboarding">
+              <Onboarding afterRegistration />
+            </Route>
+            <Route>
+              <Redirect to="/" replace />
+            </Route>
+          </Switch>
+        )}
+      </div>
+      {registered && location !== '/onboarding' && <Navigation />}
       {session.devTools && <DevPanel />}
     </div>
   );

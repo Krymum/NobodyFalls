@@ -38,13 +38,8 @@ const appearance = {
   },
 };
 
-/** Another player, created through the API in a separate browser context. */
-export async function anotherPlayer(
-  browser: Browser,
-  pseudo: string,
-): Promise<{ request: APIRequestContext; id: string }> {
-  const context = await browser.newContext();
-  const request = context.request;
+/** Signs a browser context up through the dev login and the API (no interface). */
+export async function signUpByApi(request: APIRequestContext, pseudo: string): Promise<string> {
   await request.get(`/auth/login/dev?name=${encodeURIComponent(pseudo)}&returnUrl=/fr/`);
   const created = await request.post('/api/v1/registration', {
     headers: API_HEADER,
@@ -52,7 +47,17 @@ export async function anotherPlayer(
   });
   expect(created.status()).toBe(201);
   const { id } = (await created.json()) as { id: string };
-  return { request, id };
+  return id;
+}
+
+/** Another player, created through the API in a separate browser context. */
+export async function anotherPlayer(
+  browser: Browser,
+  pseudo: string,
+): Promise<{ request: APIRequestContext; id: string }> {
+  const context = await browser.newContext();
+  const request = context.request;
+  return { request, id: await signUpByApi(request, pseudo) };
 }
 
 export async function dev(request: APIRequestContext, path: string, data: object = {}): Promise<unknown> {

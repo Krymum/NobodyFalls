@@ -1,18 +1,45 @@
-/* Shared interface pieces: floating on the scene, no cards, no frames (ART_DIRECTION, "Interface"). */
+/*
+ * Shared interface pieces: floating on the scene, no cards, no frames (ART_DIRECTION,
+ * "Interface"). Layout follows "Responsive": < 640 px phone, 640–1023 px tablet,
+ * ≥ 1024 px desktop (navigation rail on the left, scene always full window).
+ */
 
 .shell {
   position: relative;
-  max-width: 480px;
   min-height: 100dvh;
-  margin: 0 auto;
   background: var(--nf-color-page);
+}
+
+/* Everything but the scene layer, above it. */
+.main {
+  position: relative;
+  z-index: 1;
 }
 
 .page {
   padding: 72px var(--nf-space-gutter) 120px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--nf-fluid-section);
+}
+
+@media (min-width: 640px) {
+  .page {
+    max-width: var(--nf-layout-column-tablet);
+    margin-inline: auto;
+    padding-bottom: 136px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding-left: var(--nf-layout-rail-width);
+  }
+
+  .page {
+    max-width: var(--nf-layout-column-max);
+    padding: 56px var(--nf-space-gutter) 64px;
+  }
 }
 
 .header {
@@ -45,12 +72,23 @@
   position: fixed;
   inset: auto 0 0;
   z-index: 3;
-  max-width: 480px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
   padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
   background: linear-gradient(to bottom, rgb(5 7 10 / 0), var(--nf-color-page) 40%);
+}
+
+.tabList {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Brand, countdown and shortcuts: in the rail only (the header shows them elsewhere). */
+.railTop,
+.railBottom {
+  display: none;
 }
 
 .tab {
@@ -72,6 +110,93 @@
   color: var(--nf-color-bone);
 }
 
+@media (hover: hover) {
+  .tab:hover,
+  .secondary:hover,
+  .night:hover {
+    color: var(--nf-color-bone);
+  }
+
+  .primary:not(:disabled):hover {
+    background: var(--nf-color-bone);
+  }
+}
+
+@media (min-width: 640px) {
+  .tabList {
+    max-width: var(--nf-layout-panel-tablet);
+  }
+}
+
+/* Desktop: the tab bar becomes a vertical rail on the left (icon and label). */
+@media (min-width: 1024px) {
+  .header {
+    display: none;
+  }
+
+  .tabs {
+    inset: 0 auto 0 0;
+    width: var(--nf-layout-rail-width);
+    padding: 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: linear-gradient(to right, var(--nf-color-page) 55%, rgb(5 7 10 / 0));
+  }
+
+  .tabList {
+    max-width: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tab {
+    min-height: 64px;
+    padding: 6px 4px;
+    border-left: 2px solid transparent;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+
+  .tab[aria-current='page'] {
+    border-left-color: var(--nf-color-bone);
+  }
+
+  .railTop,
+  .railBottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .railBottom {
+    margin-top: auto;
+  }
+
+  .railTop .brand {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 13px;
+    color: var(--nf-color-header);
+  }
+
+  .railTop .night {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 44px;
+    justify-content: center;
+    font-family: var(--nf-font-display);
+    font-size: 11px;
+    color: var(--nf-color-header);
+  }
+}
+
 .label {
   font-family: var(--nf-font-display);
   font-weight: 500;
@@ -85,7 +210,7 @@
   margin: 0;
   font-family: var(--nf-font-display);
   font-weight: 600;
-  font-size: 40px;
+  font-size: var(--nf-fluid-heading);
   line-height: 0.95;
   color: var(--nf-color-bone);
 }
@@ -102,7 +227,7 @@
 
 .text {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--nf-fluid-text);
   line-height: 1.45;
   color: var(--nf-color-text-secondary);
 }
@@ -180,6 +305,12 @@
   border-bottom: 1px solid rgb(127 139 152 / 0.12);
 }
 
+@media (hover: hover) {
+  .row:hover {
+    background: linear-gradient(to right, rgb(228 225 218 / 0.04), rgb(228 225 218 / 0));
+  }
+}
+
 .rowBody {
   flex: 1;
   min-width: 0;
@@ -236,4 +367,45 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* Keyboard shortcuts panel (desktop). */
+.dialog {
+  max-width: 420px;
+  width: calc(100% - 32px);
+  padding: 24px 28px;
+  border: 1px solid var(--nf-color-outline);
+  border-radius: var(--nf-space-radius);
+  background: var(--nf-color-background-top);
+  color: var(--nf-color-bone);
+}
+
+.dialog::backdrop {
+  background: rgb(3 4 5 / 0.75);
+}
+
+.shortcuts {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--nf-color-text-secondary);
+}
+
+.shortcuts div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+}
+
+.shortcuts dt,
+.shortcuts dd {
+  margin: 0;
+}
+
+.shortcuts kbd {
+  font: 500 13px var(--nf-font-display);
+  letter-spacing: 0.06em;
+  color: var(--nf-color-bone);
 }

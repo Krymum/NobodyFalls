@@ -20,6 +20,14 @@
     "friends": "Amis",
     "profile": "Profil"
   },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "sections": "Ce soir, Bord du vide, Amis, Profil",
+    "world": "Le monde",
+    "edgeMove": "Bord du vide : joueur précédent ou suivant",
+    "edgeHold": "Bord du vide : tenir le joueur choisi",
+    "close": "Fermer un panneau"
+  },
   "tonight": {
     "status": {
       "held_one": "TENU · {{count}} MAIN SUR {{required}}",
