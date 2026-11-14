@@ -67,6 +67,20 @@ public sealed class DifferentialNightTests(PostgresFixture postgres)
                 kind: DbValues.Of(kind));
         }
 
+        // Receivers no longer in play: banned during the day (their day row was removed).
+        var created = inPlay.Concat(snapshot.Hands.Where(h => !inPlay.Contains(h.Giver)).Select(h => h.Giver)).ToHashSet();
+        foreach (var receiver in snapshot.Hands.Select(h => h.Receiver).Where(r => !created.Contains(r)).Distinct())
+        {
+            await seed.PlayerAsync(receiver);
+            await seed.ExecAsync("update players set banned_until = @until where id = @id", ("id", receiver.Value), ("until", day.MidnightAt.AddDays(3)));
+            created.Add(receiver);
+        }
+
+        foreach (var player in snapshot.ScoreExcluded ?? new HashSet<PlayerId>())
+        {
+            await seed.ExecAsync("update players set score_excluded_until = @until where id = @id", ("id", player.Value), ("until", day.MidnightAt.AddDays(1)));
+        }
+
         foreach (var byGiver in snapshot.Hands.GroupBy(h => h.Giver))
         {
             short slot = 0;

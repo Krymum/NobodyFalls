@@ -23,10 +23,19 @@ public sealed record HandRecord(
 /// <summary>Everything needed to resolve one midnight, and nothing more.</summary>
 /// <param name="PreviousStreak">World streak (nights without any fall) before this night.</param>
 /// <param name="PreviousDeathsAllTime">Falls since launch before this night.</param>
+/// <param name="Players">
+/// Players in play. A player banned during the day is no longer in play: hands they
+/// received count for nothing, hands they gave still count for their receivers.
+/// </param>
+/// <param name="ScoreExcluded">Players under a score exclusion: their hands earn no points (GAME_DESIGN §9).</param>
 public sealed record DaySnapshot(
     GameDay Day,
     GameRules Rules,
     IReadOnlyList<PlayerDayEntry> Players,
     IReadOnlyList<HandRecord> Hands,
     int PreviousStreak,
-    long PreviousDeathsAllTime);
+    long PreviousDeathsAllTime,
+    IReadOnlySet<PlayerId>? ScoreExcluded = null)
+{
+    public bool IsScoreExcluded(PlayerId player) => ScoreExcluded?.Contains(player) == true;
+}

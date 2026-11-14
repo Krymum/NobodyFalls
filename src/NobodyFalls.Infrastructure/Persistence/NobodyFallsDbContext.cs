@@ -48,6 +48,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<TicketRow> Tickets => Set<TicketRow>();
     public DbSet<TicketMessageRow> TicketMessages => Set<TicketMessageRow>();
     public DbSet<ReportRow> Reports => Set<ReportRow>();
+    public DbSet<SanctionRow> Sanctions => Set<SanctionRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,6 +65,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigurePush(modelBuilder);
         ConfigureStaff(modelBuilder);
         ConfigureFeedback(modelBuilder);
+        ConfigureSanctions(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -85,6 +87,8 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         e.Property(p => p.GuardianScore).HasDefaultValue(0);
         e.Property(p => p.FallsCount).HasDefaultValue(0);
         e.Property(p => p.SessionVersion).HasDefaultValue(0);
+        e.Property(p => p.PseudoResetPending).HasDefaultValue(false);
+        e.HasIndex(p => p.BannedUntil).HasFilter("banned_until is not null");
         e.HasIndex(p => p.PseudoKey).IsUnique();
         e.HasIndex(p => p.InviteCode).IsUnique();
         e.HasIndex(p => new { p.Kind, p.Status });
@@ -502,6 +506,27 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
                 .HasFilter("status in ('open', 'in_review')")
                 .HasDatabaseName("ix_reports_one_open_per_target");
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.ReporterId).OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureSanctions(ModelBuilder b)
+    {
+        b.Entity<SanctionRow>(e =>
+        {
+            e.ToTable("sanctions", t =>
+            {
+                t.HasCheckConstraint("ck_sanctions_kind", "kind in ('warning', 'pseudo_reset', 'score_exclusion', 'ban')");
+                t.HasCheckConstraint("ck_sanctions_period", "ends_at is null or ends_at > starts_at");
+            });
+            e.HasKey(s => s.Id);
+            e.Property(s => s.Id).UseIdentityAlwaysColumn();
+            e.Property(s => s.Kind).HasMaxLength(16);
+            e.Property(s => s.Reason).HasMaxLength(500);
+            e.Property(s => s.PublicMessage).HasMaxLength(500);
+            e.Property(s => s.RevokeReason).HasMaxLength(500);
+            e.HasIndex(s => new { s.PlayerId, s.StartsAt });
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(s => s.PlayerId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<ReportRow>().WithMany().HasForeignKey(s => s.ReportId).OnDelete(DeleteBehavior.SetNull);
         });
     }
 }

@@ -878,6 +878,10 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTimeOffset?>("BannedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("banned_until");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -960,9 +964,19 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(64)")
                         .HasColumnName("pseudo_key");
 
+                    b.Property<bool>("PseudoResetPending")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("pseudo_reset_pending");
+
                     b.Property<DateOnly?>("ReturnsOnDay")
                         .HasColumnType("date")
                         .HasColumnName("returns_on_day");
+
+                    b.Property<DateTimeOffset?>("ScoreExcludedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("score_excluded_until");
 
                     b.Property<int>("SessionVersion")
                         .ValueGeneratedOnAdd()
@@ -986,6 +1000,10 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_players");
+
+                    b.HasIndex("BannedUntil")
+                        .HasDatabaseName("ix_players_banned_until")
+                        .HasFilter("banned_until is not null");
 
                     b.HasIndex("InviteCode")
                         .IsUnique()
@@ -1215,6 +1233,86 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_reports_status", "status in ('open', 'in_review', 'actioned', 'dismissed')");
 
                             t.HasCheckConstraint("ck_reports_target_type", "target_type in ('player', 'idea')");
+                        });
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SanctionRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset?>("AcknowledgedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("acknowledged_at");
+
+                    b.Property<DateTimeOffset?>("EndsAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ends_at");
+
+                    b.Property<Guid?>("IssuedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("issued_by");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("kind");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("PublicMessage")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("public_message");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<long?>("ReportId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("report_id");
+
+                    b.Property<string>("RevokeReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("revoke_reason");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_at");
+
+                    b.Property<Guid?>("RevokedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("revoked_by");
+
+                    b.Property<DateTimeOffset>("StartsAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("starts_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sanctions");
+
+                    b.HasIndex("ReportId")
+                        .HasDatabaseName("ix_sanctions_report_id");
+
+                    b.HasIndex("PlayerId", "StartsAt")
+                        .HasDatabaseName("ix_sanctions_player_id_starts_at");
+
+                    b.ToTable("sanctions", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_sanctions_kind", "kind in ('warning', 'pseudo_reset', 'score_exclusion', 'ban')");
+
+                            t.HasCheckConstraint("ck_sanctions_period", "ends_at is null or ends_at > starts_at");
                         });
                 });
 
@@ -1943,6 +2041,22 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_reports_players_reporter_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SanctionRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_sanctions_players_player_id");
+
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.ReportRow", null)
+                        .WithMany()
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_sanctions_reports_report_id");
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SeasonScoreRow", b =>
