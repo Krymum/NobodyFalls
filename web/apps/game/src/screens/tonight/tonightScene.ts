@@ -8,20 +8,28 @@ import {
   type Frame,
   type Vec2,
 } from '@nobodyfalls/render';
+import { frame as frameCamera, type Camera, type Focus, type Insets } from '../../core/camera.ts';
 import type { Link, Neighbourhood, Person } from '../../core/neighbourhood.ts';
-import { SCENE_HEIGHT, SCENE_WIDTH } from '../../core/neighbourhood.ts';
 import type { Throw } from '../../core/store.ts';
 
 /**
- * The Tonight scene: my neighbourhood drawn like the reference scene, full screen.
- * The composition is laid out for 390 × 844 and stretched to the screen; characters
- * keep their proportions (scaled with the width).
+ * The Tonight scene: my neighbourhood drawn like the reference scene, over the whole
+ * window. The composition (390 × 844) is projected by the camera: one uniform scale
+ * sized on the height, centred in the part of the window the interface leaves free.
  */
 export interface TonightScene {
   resize(width: number, height: number, pixelRatio: number): void;
-  show(neighbourhood: Neighbourhood, lastThrow: Throw | null, reducedMotion: boolean): void;
+  /** What the interface covers, and what the camera must keep in view. */
+  view(insets: Insets, focus: Focus): void;
+  /** `null`: the background alone (onboarding, loading). */
+  show(neighbourhood: Neighbourhood | null, lastThrow: Throw | null, reducedMotion: boolean): void;
   draw(frame: Frame): void;
+  /** Stops pending work (the debounced crowd rebuild). */
+  dispose(): void;
 }
+
+/** Rebuilding the blurred crowd waits until the window stops changing size. */
+const REBUILD_DELAY_MS = 150;
 
 export function createTonightScene(): TonightScene {
   const characters = new CharacterRenderer(new CodePartSet());
@@ -30,11 +38,17 @@ export function createTonightScene(): TonightScene {
   let current: Neighbourhood | null = null;
   let thrown: Throw | null = null;
   let instant = false;
+  let insets: Insets = { left: 0, right: 0, top: 0, bottom: 0 };
+  let focus: Focus = 'full';
+  let prepared = false;
+  let rebuild: ReturnType<typeof setTimeout> | undefined;
 
-  const place = (person: Person, width: number, height: number): Person => {
-    const ux = width / SCENE_WIDTH;
-    return { ...person, x: person.x * ux, y: person.y * (height / SCENE_HEIGHT), scale: person.scale * ux };
-  };
+  const place = (person: Person, camera: Camera): Person => ({
+    ...person,
+    x: camera.offsetX + person.x * camera.scale,
+    y: camera.offsetY + person.y * camera.scale,
+    scale: person.scale * camera.scale,
+  });
 
   const handOf = (anchors: Anchors, person: Person, link: Link): Vec2 => {
     // People hanging on a thread or catching a rope hold it with both hands together.
@@ -54,7 +68,27 @@ export function createTonightScene(): TonightScene {
 
   return {
     resize(width, height, pixelRatio) {
-      scene.prepare(width, height, pixelRatio);
+      // The first layout is immediate; while a window is being resized, the size follows
+      // at once and the crowd is rebuilt once it settles (no flicker, no wasted blurs).
+      clearTimeout(rebuild);
+      if (!prepared) {
+        prepared = true;
+        scene.prepare(width, height, pixelRatio);
+        return;
+      }
+      scene.setSize(width, height);
+      rebuild = setTimeout(() => {
+        scene.prepare(width, height, pixelRatio);
+      }, REBUILD_DELAY_MS);
+    },
+
+    view(nextInsets, nextFocus) {
+      insets = nextInsets;
+      focus = nextFocus;
+    },
+
+    dispose() {
+      clearTimeout(rebuild);
     },
 
     show(neighbourhood, lastThrow, reducedMotion) {
@@ -70,8 +104,9 @@ export function createTonightScene(): TonightScene {
         return;
       }
 
-      const unit = width / SCENE_WIDTH;
-      const people = current.people.map((p) => place(p, width, height));
+      const camera = frameCamera(width, height, insets, focus);
+      const unit = camera.scale;
+      const people = current.people.map((p) => place(p, camera));
       const byId = new Map(people.map((p) => [p.id, p]));
       const anchors = new Map(people.map((p) => [p.id, characters.anchors({ ...p, opacity: 1 }, t)]));
       const me = people.find((p) => p.role === 'me');
