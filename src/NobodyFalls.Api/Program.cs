@@ -64,6 +64,10 @@ if (configuration.GetValue<bool>("Proxy:TrustForwardedHeaders"))
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseSpaStaticFiles();
+
+// Explicitly after static files: built files are served before any route is matched,
+// so that /admin/assets/… never falls into the admin's catch-all page route.
+app.UseRouting();
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();

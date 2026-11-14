@@ -46,9 +46,9 @@ internal static class SpaHosting
     private static void MapAdminApp(WebApplication app)
     {
         var index = app.Environment.WebRootFileProvider.GetFileInfo("admin/index.html");
-        app.MapGet("/admin", () => Results.Redirect("/admin/")).ExcludeFromDescription();
         app.MapGet("/admin/{**path}", (HttpContext context, string? path) =>
         {
+            // A missing build file is a 404, not the page (static files are served before routing).
             if (!index.Exists || (path is not null && path.StartsWith("assets/", StringComparison.Ordinal)))
             {
                 return Results.NotFound();

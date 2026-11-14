@@ -68,6 +68,16 @@ export function DevPanel() {
       <button type="button" className={ui.secondary} onClick={run(() => devApi.tick())}>
         {t('dev.tick')}
       </button>
+      <button
+        type="button"
+        className={ui.secondary}
+        onClick={run(async () => {
+          await devApi.staffMe();
+          window.location.assign('/admin/');
+        })}
+      >
+        {t('dev.admin')}
+      </button>
       {status && (
         <span className={ui.text} role="status">
           {status}

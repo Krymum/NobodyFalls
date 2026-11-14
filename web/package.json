@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "pnpm --filter @nobodyfalls/game dev",
-    "build": "pnpm --filter @nobodyfalls/game build",
+    "build": "pnpm --filter @nobodyfalls/game build && pnpm --filter @nobodyfalls/admin build && node scripts/compress.mjs",
+    "dev:admin": "pnpm --filter @nobodyfalls/admin dev",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "lint": "eslint .",

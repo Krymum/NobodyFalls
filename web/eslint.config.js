@@ -30,6 +30,16 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
+    // ADR 0016: the game never imports the admin, so the admin can never weigh on it.
+    files: ['apps/game/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['@nobodyfalls/admin', '@nobodyfalls/admin/*', '**/admin/src/**'] },
+      ],
+    },
+  },
+  {
     // Plain JavaScript: the service worker and Node scripts are not type-checked.
     files: ['**/*.{js,mjs}'],
     ...tseslint.configs.disableTypeChecked,

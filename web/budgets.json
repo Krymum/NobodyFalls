@@ -1,0 +1,16 @@
+{
+  "game": {
+    "index": "index.html",
+    "assets": "assets",
+    "js": 153600,
+    "css": 30720,
+    "jsBaseline": 114323,
+    "jsGrowthAllowance": 1024
+  },
+  "admin": {
+    "index": "admin/index.html",
+    "assets": "admin/assets",
+    "js": 204800,
+    "css": 30720
+  }
+}
