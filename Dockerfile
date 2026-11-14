@@ -13,7 +13,7 @@ COPY web/ ./
 # Writes into /repo/src/NobodyFalls.Api/wwwroot (vite.config.ts).
 RUN mkdir -p /repo/src/NobodyFalls.Api && pnpm build
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 WORKDIR /src
 
 # Restore first, from project files only, so that code changes reuse the cached layer.
