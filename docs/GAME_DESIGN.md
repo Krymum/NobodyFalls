@@ -133,16 +133,21 @@ Application séparée sous `/admin`, bundle distinct (n'alourdit pas le jeu).
 - Tableau de bord : joueurs actifs, chutes par nuit, série mondiale,
   rétention J1/J7/J30, invitations, comptes suspects.
 - Joueurs : recherche, fiche (mains, chutes, amis, signalements), sanctions
-  (avertissement, pseudo réinitialisé, exclusion du compteur, ban temporaire
-  ou définitif avec motif), comptes liés suspects (IP/appareil), export et
+  (avertissement, pseudo réinitialisé, exclusion du score — le joueur continue
+  de jouer et reste compté parmi les vivants et les morts, mais ses mains ne
+  rapportent plus de points et son score est masqué —, ban temporaire ou
+  définitif avec motif ; un ban retire du jeu sans compter comme une mort et
+  laisse valables les mains déjà données), comptes liés suspects (IP/appareil), export et
   suppression des données (RGPD).
 - Signalements : file de modération avec statut, assignation, action prise.
 - Demandes : tickets (support, contestation de sanction, suppression de
   compte) avec statut et réponse envoyée au joueur.
 - Idées : modération, fusion des doublons, statut public (nouvelle, à
   l'étude, prévue, livrée, refusée), réponse visible des joueurs.
-- Configuration en direct : seuils, Veilleurs, tempêtes, saisons, catalogue
-  de skins et conditions, feature flags (tout passe par l'audit).
+- Configuration en direct : seuils, Veilleurs, tempêtes, saisons, feature
+  flags (tout passe par l'audit). Catalogue de skins et conditions : phase 3,
+  avec le vestiaire.
+- Interface d'administration en français et en anglais.
 - Annonces : in-app et push, à tous ou à un segment.
 
 ## 10. Écrans (joueur)

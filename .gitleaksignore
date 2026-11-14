@@ -1,0 +1,3 @@
+# Known false positives. Each line is a gitleaks fingerprint (commit:file:rule:line).
+# RFC 6238 test vector: the public secret "12345678901234567890" in base32, not a key.
+c123bef7e0d8182d1f870a28c708d22181743fc8:tests/NobodyFalls.Domain.Tests/Security/TotpTests.cs:generic-api-key:74

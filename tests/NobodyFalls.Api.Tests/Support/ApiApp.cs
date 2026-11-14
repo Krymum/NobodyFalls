@@ -11,6 +11,7 @@ using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Domain.Common;
+using NobodyFalls.Testing;
 using NobodyFalls.Testing.Postgres;
 using Npgsql;
 
@@ -46,6 +47,9 @@ public sealed class ApiApp : WebApplicationFactory<Program>
 
     public ManualClock Clock { get; } = new(Day.StartsAt.AddHours(12));
 
+    /// <summary>Real time (sign-in codes, admin sessions), separate from the game clock.</summary>
+    public ManualTimeProvider Time { get; } = new(DateTimeOffset.UtcNow);
+
     public Seeder Seed => new(Services.GetRequiredService<NpgsqlDataSource>());
 
     /// <summary>A running season and a started day, as on any ordinary afternoon.</summary>
@@ -62,6 +66,7 @@ public sealed class ApiApp : WebApplicationFactory<Program>
             ["RateLimits:HandsPerPlayerPerMinute"] = "100",
             ["RateLimits:FriendsPerPlayerPerMinute"] = "100",
             ["RateLimits:RegistrationsPerIpPerHour"] = "100",
+            ["RateLimits:AdminSignInPerPlayerPerMinute"] = "1000",
             ["RateLimits:PerIpPerMinute"] = "10000",
             ["Realtime:FlushInterval"] = "00:00:00.05",
         };
@@ -165,6 +170,7 @@ public sealed class ApiApp : WebApplicationFactory<Program>
         builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<IClock>(Clock);
+            services.AddSingleton<TimeProvider>(Time);
             services.AddSingleton<IHumanVerifier, FakeHumanVerifier>();
         });
     }

@@ -1,4 +1,11 @@
-import { expect, test, type APIRequestContext, type Browser, type Page } from '@playwright/test';
+import {
+  expect,
+  test,
+  type APIRequestContext,
+  type Browser,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 import { API_HEADER, resetWorld, signUpByApi } from './support.ts';
 
 /**
@@ -78,11 +85,14 @@ async function settle(page: Page): Promise<void> {
   );
 }
 
-async function shoot(page: Page, name: string): Promise<void> {
+async function shoot(page: Page, name: string, alsoMask: Locator[] = []): Promise<void> {
   await settle(page);
   await fixRandomTexts(page);
   if (SCREENSHOTS) {
-    await expect(page).toHaveScreenshot(`${name}.png`, { mask: moving(page), animations: 'disabled' });
+    await expect(page).toHaveScreenshot(`${name}.png`, {
+      mask: [...moving(page), ...alsoMask],
+      animations: 'disabled',
+    });
   }
 }
 
@@ -198,4 +208,45 @@ test('desktop keyboard shortcuts', async ({ page, browser }) => {
     () => getComputedStyle(document.activeElement ?? document.body).outlineStyle,
   );
   expect(outline).toBe('solid');
+});
+
+test('admin', async ({ page }) => {
+  // Same layout system as the game (ADR 0016): desktop first, usable on a phone.
+  const viewport = page.viewportSize() ?? { width: 0, height: 0 };
+  const bossId = await signUpByApi(page.request, 'chief');
+  await page.request.post('/dev/staff/me', { headers: API_HEADER, data: { roles: ['admin'] } });
+  const code = async (): Promise<string> =>
+    ((await (await page.request.get(`/dev/totp/${bossId}`)).json()) as { code: string }).code;
+
+  // Enrolment: a single centred column at every size.
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Configurer mon application' }).click();
+  await expect(page.getByRole('img', { name: /Code QR/ })).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await page.evaluate(() => {
+    // The secret and the QR code are random: show fixed ones in the screenshot.
+    const secret = document.querySelector('[data-testid="totp-secret"]');
+    if (secret) {
+      secret.textContent = 'ABCD EFGH IJKL MNOP QRST UVWX YZ23 4567';
+    }
+  });
+  await shoot(page, 'admin-enroll', [page.getByRole('img', { name: /Code QR/ })]);
+  await page.getByLabel('Code à 6 chiffres').fill(await code());
+  await page.getByRole('button', { name: 'Confirmer' }).click();
+  await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
+
+  // The team: a sidebar on desktops, a drawer behind "Menu" on tablets and phones.
+  const menu = page.getByRole('button', { name: 'Menu' });
+  if (viewport.width >= 1024) {
+    await expect(menu).toBeHidden();
+    const sidebar = await page.getByRole('navigation', { name: 'Navigation' }).boundingBox();
+    expect(sidebar).toMatchObject({ x: 0, y: 0 });
+  } else {
+    await expect(menu).toBeVisible();
+    await menu.click();
+  }
+  await page.getByRole('navigation').getByRole('link', { name: 'Équipe' }).click();
+  await expect(page.getByRole('heading', { name: 'Équipe' })).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await shoot(page, 'admin-team', [page.getByRole('cell').filter({ hasText: /\d{4}/ })]);
 });

@@ -1,0 +1,184 @@
+{
+  "app": {
+    "title": "Administration",
+    "utc": "Heures en UTC",
+    "skip": "Aller au contenu"
+  },
+  "nav": {
+    "label": "Navigation",
+    "menu": "Menu",
+    "home": "Accueil",
+    "team": "Équipe",
+    "audit": "Journal d'audit",
+    "signOut": "Se déconnecter de l'admin",
+    "language": "Langue"
+  },
+  "roles": {
+    "admin": "Admin",
+    "moderator": "Modérateur",
+    "support": "Support"
+  },
+  "gate": {
+    "loading": "Chargement…",
+    "signedOut": {
+      "title": "Connecte-toi d'abord au jeu.",
+      "body": "L'administration utilise ton compte de joueur, puis te demande un code de ton application d'authentification.",
+      "action": "Aller au jeu"
+    },
+    "noAccess": {
+      "title": "Accès réservé à l'équipe.",
+      "body": "Ton compte n'a aucun rôle dans l'équipe NobodyFalls.",
+      "action": "Retour au jeu"
+    },
+    "error": {
+      "title": "Impossible de charger l'administration.",
+      "retry": "Réessayer"
+    }
+  },
+  "enroll": {
+    "title": "Protège ton accès",
+    "intro": "L'administration exige une double authentification. Il te faut une application comme Aegis, Google Authenticator ou 1Password.",
+    "start": "Configurer mon application",
+    "scan": "1. Scanne ce code avec ton application.",
+    "qr": "Code QR à scanner avec l'application d'authentification",
+    "manual": "Ou saisis cette clé à la main :",
+    "enter": "2. Saisis le code à 6 chiffres qu'elle affiche.",
+    "code": "Code à 6 chiffres",
+    "confirm": "Confirmer",
+    "recoveryTitle": "Tes codes de secours",
+    "recoveryBody": "Chacun te permet d'entrer une fois si tu perds ton téléphone. Garde-les en lieu sûr : ils ne seront plus jamais affichés.",
+    "copy": "Copier les codes",
+    "copied": "Copiés.",
+    "done": "Je les ai mis en lieu sûr"
+  },
+  "login": {
+    "title": "Code d'authentification",
+    "body": "Saisis le code à 6 chiffres de ton application.",
+    "code": "Code à 6 chiffres",
+    "submit": "Entrer",
+    "useRecovery": "J'ai perdu mon téléphone",
+    "useCode": "Utiliser mon application",
+    "recovery": "Code de secours",
+    "recoveryHint": "Un code de secours ne sert qu'une fois."
+  },
+  "reauth": {
+    "title": "Confirme avec un code",
+    "body": "Cette action est sensible. Saisis un code récent de ton application.",
+    "code": "Code à 6 chiffres",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "home": {
+    "title": "Bonjour {{pseudo}}.",
+    "roles": "Tes rôles",
+    "permissions": "Ce que tu peux faire",
+    "soon": "Les joueurs, signalements, demandes, idées, la configuration et les annonces arrivent dans les prochaines étapes."
+  },
+  "team": {
+    "title": "Équipe",
+    "addTitle": "Ajouter un membre",
+    "pseudo": "Pseudo du joueur",
+    "roles": "Rôles",
+    "add": "Ajouter",
+    "added": "{{pseudo}} fait partie de l'équipe.",
+    "columns": {
+      "pseudo": "Membre",
+      "roles": "Rôles",
+      "totp": "Double authentification",
+      "since": "Depuis",
+      "actions": "Actions"
+    },
+    "totpOn": "Active",
+    "totpOff": "À configurer",
+    "you": "toi",
+    "save": "Enregistrer",
+    "saved": "Rôles de {{pseudo}} enregistrés.",
+    "remove": "Retirer",
+    "removeConfirm": "Retirer {{pseudo}} de l'équipe ?",
+    "removed": "{{pseudo}} ne fait plus partie de l'équipe.",
+    "resetTotp": "Réinitialiser la 2FA",
+    "resetConfirm": "Réinitialiser la double authentification de {{pseudo}} ? Ses sessions seront fermées et il ou elle devra la configurer de nouveau.",
+    "resetDone": "Double authentification de {{pseudo}} réinitialisée.",
+    "empty": "Personne dans l'équipe."
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "intro": "Chaque action de l'équipe, non modifiable. Chaque entrée est chaînée à la précédente.",
+    "action": "Action",
+    "target": "Cible (identifiant)",
+    "allActions": "Toutes les actions",
+    "apply": "Filtrer",
+    "columns": {
+      "at": "Quand",
+      "actor": "Qui",
+      "action": "Quoi",
+      "target": "Sur quoi",
+      "change": "Avant → après",
+      "reason": "Motif"
+    },
+    "system": "Système",
+    "more": "Plus ancien",
+    "verify": "Vérifier l'intégrité",
+    "valid_one": "Chaîne intacte : {{count}} entrée vérifiée.",
+    "valid_other": "Chaîne intacte : {{count}} entrées vérifiées.",
+    "broken": "Chaîne rompue à l'entrée n° {{id}}. Le journal a été modifié hors de l'application.",
+    "empty": "Aucune entrée.",
+    "families": {
+      "admin": "Connexions",
+      "staff": "Équipe",
+      "audit": "Audit"
+    },
+    "actions": {
+      "staff": {
+        "bootstrapped": "Premier admin créé",
+        "added": "Membre ajouté",
+        "roles_changed": "Rôles modifiés",
+        "removed": "Membre retiré",
+        "totp_reset": "2FA réinitialisée"
+      },
+      "admin": {
+        "totp_enrolled": "2FA configurée",
+        "signed_in": "Connexion",
+        "sign_in_failed": "Code refusé",
+        "sign_in_locked": "Accès verrouillé"
+      },
+      "audit": {
+        "viewed": "Journal consulté",
+        "verified": "Intégrité vérifiée"
+      }
+    }
+  },
+  "errors": {
+    "auth": {
+      "required": "Ta session a expiré. Reconnecte-toi au jeu."
+    },
+    "admin": {
+      "forbidden": "Tes rôles ne permettent pas cette action.",
+      "totp_required": "Ta session d'administration a expiré.",
+      "reauth_required": "Confirme avec un code récent.",
+      "reauth_cancelled": "Action annulée.",
+      "totp_not_enrolled": "Configure d'abord ton application d'authentification.",
+      "totp_already_enrolled": "Ton application d'authentification est déjà configurée.",
+      "totp_invalid": "Ce code n'est pas valide.",
+      "totp_locked": "Trop de codes erronés. Réessaie dans quelques minutes."
+    },
+    "staff": {
+      "self": "Personne ne modifie ses propres rôles.",
+      "no_roles": "Choisis au moins un rôle, ou retire le membre.",
+      "unknown_role": "Rôle inconnu.",
+      "not_found": "Cette personne ne fait pas partie de l'équipe.",
+      "player_not_found": "Aucun joueur ne porte ce pseudo.",
+      "already_member": "Ce joueur fait déjà partie de l'équipe.",
+      "last_admin": "L'équipe doit garder au moins un admin.",
+      "not_human": "Seuls les joueurs humains peuvent rejoindre l'équipe."
+    },
+    "request": {
+      "failed": "Une erreur est survenue. Réessaie.",
+      "rate_limited": "Doucement : trop de tentatives. Réessaie dans un instant.",
+      "missing_header": "Requête refusée."
+    },
+    "network": {
+      "offline": "Pas de réseau. Réessaie une fois connecté."
+    }
+  }
+}

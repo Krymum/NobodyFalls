@@ -219,6 +219,7 @@
     "seed": "+20 joueurs",
     "bots": "Les bots jouent",
     "tick": "Lancer la nuit",
+    "admin": "Devenir admin",
     "done": "Fait."
   },
   "errors": {

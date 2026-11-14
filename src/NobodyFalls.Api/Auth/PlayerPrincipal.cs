@@ -17,10 +17,22 @@ internal static class PlayerPrincipal
     public const string ExternalScheme = "nf.external";
 
     public const string PlayerClaim = "nf:player";
+
+    /// <summary>The player's session version when the cookie was issued (ADR 0021).</summary>
+    public const string SessionVersionClaim = "nf:sv";
     public const string Policy = "player";
 
-    public static ClaimsPrincipal ForPlayer(PlayerId player) =>
-        new(new ClaimsIdentity([new Claim(PlayerClaim, player.ToString())], Scheme));
+    public static ClaimsPrincipal ForPlayer(PlayerId player, int sessionVersion) =>
+        new(new ClaimsIdentity(
+            [
+                new Claim(PlayerClaim, player.ToString()),
+                new Claim(SessionVersionClaim, sessionVersion.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+            ],
+            Scheme));
+
+    /// <summary>Cookies issued before session versions existed carry none: they count as version 0.</summary>
+    public static int SessionVersion(this ClaimsPrincipal user) =>
+        int.TryParse(user.FindFirst(SessionVersionClaim)?.Value, System.Globalization.CultureInfo.InvariantCulture, out var version) ? version : 0;
 
     public static PlayerId? PlayerId(this ClaimsPrincipal user) =>
         user.FindFirst(PlayerClaim)?.Value is { } value && Guid.TryParse(value, out var id) ? new PlayerId(id) : null;

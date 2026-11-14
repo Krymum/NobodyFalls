@@ -39,6 +39,10 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<PushSubscriptionRow> PushSubscriptions => Set<PushSubscriptionRow>();
     public DbSet<NotificationPreferencesRow> NotificationPreferences => Set<NotificationPreferencesRow>();
     public DbSet<VapidKeysRow> VapidKeys => Set<VapidKeysRow>();
+    public DbSet<StaffMemberRow> StaffMembers => Set<StaffMemberRow>();
+    public DbSet<TotpCredentialRow> TotpCredentials => Set<TotpCredentialRow>();
+    public DbSet<TotpRecoveryCodeRow> TotpRecoveryCodes => Set<TotpRecoveryCodeRow>();
+    public DbSet<AuditLogRow> AuditLog => Set<AuditLogRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +57,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigureOperations(modelBuilder);
         ConfigureAccounts(modelBuilder);
         ConfigurePush(modelBuilder);
+        ConfigureStaff(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -73,6 +78,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         e.Property(p => p.MapNameVisibility).HasMaxLength(16).HasDefaultValue("friends");
         e.Property(p => p.GuardianScore).HasDefaultValue(0);
         e.Property(p => p.FallsCount).HasDefaultValue(0);
+        e.Property(p => p.SessionVersion).HasDefaultValue(0);
         e.HasIndex(p => p.PseudoKey).IsUnique();
         e.HasIndex(p => p.InviteCode).IsUnique();
         e.HasIndex(p => new { p.Kind, p.Status });
@@ -349,6 +355,55 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.ToTable("vapid_keys", t => t.HasCheckConstraint("ck_vapid_keys_single_row", "id = 1"));
             e.HasKey(k => k.Id);
             e.Property(k => k.Id).ValueGeneratedNever();
+        });
+    }
+
+    private static void ConfigureStaff(ModelBuilder b)
+    {
+        b.Entity<StaffMemberRow>(e =>
+        {
+            e.ToTable("staff_members", t => t.HasCheckConstraint(
+                "ck_staff_members_roles",
+                "cardinality(roles) > 0 and roles <@ array['admin', 'moderator', 'support']::text[]"));
+            e.HasKey(m => m.PlayerId);
+            e.HasOne<PlayerRow>().WithOne().HasForeignKey<StaffMemberRow>(m => m.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<TotpCredentialRow>(e =>
+        {
+            e.ToTable("totp_credentials");
+            e.HasKey(c => c.PlayerId);
+            e.Property(c => c.FailedAttempts).HasDefaultValue(0);
+            e.HasOne<PlayerRow>().WithOne().HasForeignKey<TotpCredentialRow>(c => c.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<TotpRecoveryCodeRow>(e =>
+        {
+            e.ToTable("totp_recovery_codes");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Id).UseIdentityAlwaysColumn();
+            e.HasIndex(c => c.PlayerId);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(c => c.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // No foreign key on purpose: the log outlives what it describes (ADR 0020).
+        b.Entity<AuditLogRow>(e =>
+        {
+            e.ToTable("audit_log");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).UseIdentityAlwaysColumn();
+            e.Property(a => a.Action).HasMaxLength(64);
+            e.Property(a => a.TargetType).HasMaxLength(32);
+            e.Property(a => a.TargetId).HasMaxLength(64);
+            e.Property(a => a.Before).HasColumnType("jsonb");
+            e.Property(a => a.After).HasColumnType("jsonb");
+            e.Property(a => a.Reason).HasMaxLength(1000);
+            e.Property(a => a.Ip).HasMaxLength(64);
+            e.Property(a => a.RequestId).HasMaxLength(64);
+            e.HasIndex(a => a.At);
+            e.HasIndex(a => a.ActorId);
+            e.HasIndex(a => new { a.TargetType, a.TargetId });
+            e.HasIndex(a => a.Action);
         });
     }
 }

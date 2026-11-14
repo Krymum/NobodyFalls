@@ -7,7 +7,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { brotliCompressSync, constants, gzipSync } from 'node:zlib';
 
-const root = fileURLToPath(new URL('../../../../src/NobodyFalls.Api/wwwroot', import.meta.url));
+const root = fileURLToPath(new URL('../../src/NobodyFalls.Api/wwwroot', import.meta.url));
 const COMPRESSIBLE = /\.(js|css|svg|webmanifest|json)$/;
 
 function* walk(dir) {

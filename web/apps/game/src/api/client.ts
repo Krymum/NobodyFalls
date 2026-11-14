@@ -128,4 +128,5 @@ export const devApi = {
     request<{ players: number }>('POST', '/dev/seed', { players, friendsPerPlayer: 3 }),
   bots: (ratio: number) => request<{ bots: number; handsGiven: number }>('POST', '/dev/bots/play', { ratio }),
   tick: () => request<unknown>('POST', '/dev/night/tick'),
+  staffMe: () => request<{ roles: string[] }>('POST', '/dev/staff/me', {}),
 };

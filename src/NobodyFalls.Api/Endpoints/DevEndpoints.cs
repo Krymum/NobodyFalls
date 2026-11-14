@@ -1,8 +1,12 @@
+using System.Security.Claims;
 using NobodyFalls.Api.Auth;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Night;
+using NobodyFalls.Application.Staff;
 using NobodyFalls.Domain.Common;
+using NobodyFalls.Domain.Security;
+using NobodyFalls.Domain.Staff;
 
 namespace NobodyFalls.Api.Endpoints;
 
@@ -13,6 +17,8 @@ public sealed record ClockResponse(DateTimeOffset Now, GameDay Day, DateTimeOffs
 public sealed record SeedRequest(int? Players, int? FriendsPerPlayer);
 
 public sealed record BotsRequest(double? Ratio);
+
+public sealed record DevStaffRequest(IReadOnlyList<string>? Roles);
 
 /// <summary>
 /// Development tools (GAME_DESIGN §14): fake players, bots, simulated clock, running the
@@ -78,6 +84,42 @@ internal static class DevEndpoints
         {
             await context.SignInPlayerAsync(new PlayerId(id));
             return Results.NoContent();
+        });
+
+        // Phase 2: become a team member without the bootstrap command (default: every role).
+        dev.MapPost("/staff/me", async (DevStaffRequest? body, ClaimsPrincipal user, IDevStore store, CancellationToken ct) =>
+        {
+            if (user.PlayerId() is not { } player)
+            {
+                return Results.Unauthorized();
+            }
+
+            var roles = StaffRoles.ParseSet(body?.Roles is { Count: > 0 } names ? names : ["admin", "moderator", "support"]);
+            if (roles.IsFailure)
+            {
+                return Http.Problems.From(roles.Error!);
+            }
+
+            await store.GrantStaffAsync(player, roles.Value, ct);
+            return Results.Ok(new { roles = roles.Value.Select(r => r.Name()) });
+        });
+
+        // The code an authenticator would show now, for end-to-end tests. Skips a step
+        // already used, so that a test can sign in twice in the same 30 seconds.
+        dev.MapGet("/totp/{id:guid}", async (Guid id, ITotpStore totp, ISecretProtector protector, TimeProvider time, CancellationToken ct) =>
+        {
+            if (await totp.GetAsync(new PlayerId(id), ct) is not { } credential)
+            {
+                return Results.NotFound();
+            }
+
+            var step = Totp.StepAt(time.GetUtcNow());
+            if (credential.LastStep is { } last && step <= last)
+            {
+                step = last + 1;
+            }
+
+            return Results.Ok(new { code = Totp.Code(protector.Unprotect(credential.ProtectedSecret), step) });
         });
     }
 

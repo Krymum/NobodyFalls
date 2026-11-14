@@ -219,6 +219,7 @@
     "seed": "+20 players",
     "bots": "Bots play",
     "tick": "Run the night",
+    "admin": "Become admin",
     "done": "Done."
   },
   "errors": {

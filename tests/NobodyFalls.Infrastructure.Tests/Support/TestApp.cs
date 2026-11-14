@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NobodyFalls.Application;
@@ -45,6 +46,7 @@ public sealed class TestApp : IAsyncDisposable
             .AddApplication()
             .AddInfrastructure(new InfrastructureOptions { ConnectionString = connectionString, RunNightWorker = false })
             .AddSingleton<IClock>(new ManualClock(now));
+        services.AddDataProtection().UseEphemeralDataProtectionProvider();
         configure?.Invoke(services);
         var provider = services
             .BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });

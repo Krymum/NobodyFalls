@@ -1,0 +1,184 @@
+{
+  "app": {
+    "title": "Administration",
+    "utc": "Times in UTC",
+    "skip": "Skip to content"
+  },
+  "nav": {
+    "label": "Navigation",
+    "menu": "Menu",
+    "home": "Home",
+    "team": "Team",
+    "audit": "Audit log",
+    "signOut": "Sign out of the admin",
+    "language": "Language"
+  },
+  "roles": {
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "support": "Support"
+  },
+  "gate": {
+    "loading": "Loading…",
+    "signedOut": {
+      "title": "Sign in to the game first.",
+      "body": "The admin uses your player account, then asks for a code from your authenticator app.",
+      "action": "Go to the game"
+    },
+    "noAccess": {
+      "title": "For the team only.",
+      "body": "Your account has no role in the NobodyFalls team.",
+      "action": "Back to the game"
+    },
+    "error": {
+      "title": "The admin could not be loaded.",
+      "retry": "Try again"
+    }
+  },
+  "enroll": {
+    "title": "Protect your access",
+    "intro": "The admin requires two-factor authentication. You need an app such as Aegis, Google Authenticator or 1Password.",
+    "start": "Set up my app",
+    "scan": "1. Scan this code with your app.",
+    "qr": "QR code to scan with the authenticator app",
+    "manual": "Or type this key by hand:",
+    "enter": "2. Enter the 6-digit code it shows.",
+    "code": "6-digit code",
+    "confirm": "Confirm",
+    "recoveryTitle": "Your recovery codes",
+    "recoveryBody": "Each one lets you in once if you lose your phone. Keep them somewhere safe: they will never be shown again.",
+    "copy": "Copy the codes",
+    "copied": "Copied.",
+    "done": "I have put them somewhere safe"
+  },
+  "login": {
+    "title": "Authentication code",
+    "body": "Enter the 6-digit code from your app.",
+    "code": "6-digit code",
+    "submit": "Enter",
+    "useRecovery": "I lost my phone",
+    "useCode": "Use my app",
+    "recovery": "Recovery code",
+    "recoveryHint": "A recovery code works only once."
+  },
+  "reauth": {
+    "title": "Confirm with a code",
+    "body": "This action is sensitive. Enter a fresh code from your app.",
+    "code": "6-digit code",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "home": {
+    "title": "Hello {{pseudo}}.",
+    "roles": "Your roles",
+    "permissions": "What you can do",
+    "soon": "Players, reports, requests, ideas, configuration and announcements arrive in the next steps."
+  },
+  "team": {
+    "title": "Team",
+    "addTitle": "Add a member",
+    "pseudo": "Player's name",
+    "roles": "Roles",
+    "add": "Add",
+    "added": "{{pseudo}} is now in the team.",
+    "columns": {
+      "pseudo": "Member",
+      "roles": "Roles",
+      "totp": "Two-factor",
+      "since": "Since",
+      "actions": "Actions"
+    },
+    "totpOn": "On",
+    "totpOff": "To set up",
+    "you": "you",
+    "save": "Save",
+    "saved": "{{pseudo}}'s roles saved.",
+    "remove": "Remove",
+    "removeConfirm": "Remove {{pseudo}} from the team?",
+    "removed": "{{pseudo}} is no longer in the team.",
+    "resetTotp": "Reset 2FA",
+    "resetConfirm": "Reset {{pseudo}}'s two-factor authentication? Their sessions will end and they will have to set it up again.",
+    "resetDone": "{{pseudo}}'s two-factor authentication was reset.",
+    "empty": "Nobody in the team."
+  },
+  "audit": {
+    "title": "Audit log",
+    "intro": "Every team action, unalterable. Each entry is chained to the one before.",
+    "action": "Action",
+    "target": "Target (id)",
+    "allActions": "All actions",
+    "apply": "Filter",
+    "columns": {
+      "at": "When",
+      "actor": "Who",
+      "action": "What",
+      "target": "On what",
+      "change": "Before → after",
+      "reason": "Reason"
+    },
+    "system": "System",
+    "more": "Older",
+    "verify": "Verify integrity",
+    "valid_one": "Chain intact: {{count}} entry checked.",
+    "valid_other": "Chain intact: {{count}} entries checked.",
+    "broken": "Chain broken at entry #{{id}}. The log was changed outside the application.",
+    "empty": "No entries.",
+    "families": {
+      "admin": "Sign-ins",
+      "staff": "Team",
+      "audit": "Audit"
+    },
+    "actions": {
+      "staff": {
+        "bootstrapped": "First admin created",
+        "added": "Member added",
+        "roles_changed": "Roles changed",
+        "removed": "Member removed",
+        "totp_reset": "2FA reset"
+      },
+      "admin": {
+        "totp_enrolled": "2FA set up",
+        "signed_in": "Signed in",
+        "sign_in_failed": "Code refused",
+        "sign_in_locked": "Access locked"
+      },
+      "audit": {
+        "viewed": "Log viewed",
+        "verified": "Integrity verified"
+      }
+    }
+  },
+  "errors": {
+    "auth": {
+      "required": "Your session has expired. Sign in to the game again."
+    },
+    "admin": {
+      "forbidden": "Your roles do not allow this.",
+      "totp_required": "Your admin session has expired.",
+      "reauth_required": "Confirm with a fresh code.",
+      "reauth_cancelled": "Action cancelled.",
+      "totp_not_enrolled": "Set up your authenticator app first.",
+      "totp_already_enrolled": "Your authenticator app is already set up.",
+      "totp_invalid": "This code is not valid.",
+      "totp_locked": "Too many wrong codes. Try again in a few minutes."
+    },
+    "staff": {
+      "self": "Nobody changes their own roles.",
+      "no_roles": "Pick at least one role, or remove the member.",
+      "unknown_role": "Unknown role.",
+      "not_found": "This person is not in the team.",
+      "player_not_found": "No player has this name.",
+      "already_member": "This player is already in the team.",
+      "last_admin": "The team needs at least one admin.",
+      "not_human": "Only human players can join the team."
+    },
+    "request": {
+      "failed": "Something went wrong. Please try again.",
+      "rate_limited": "Easy: too many attempts. Try again in a moment.",
+      "missing_header": "Request refused."
+    },
+    "network": {
+      "offline": "No network. Try again once you are connected."
+    }
+  }
+}

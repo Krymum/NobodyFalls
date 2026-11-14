@@ -6,6 +6,7 @@ RUN corepack enable
 # Dependencies first, so that code changes reuse the cached layer.
 COPY web/package.json web/pnpm-lock.yaml web/pnpm-workspace.yaml ./
 COPY web/apps/game/package.json apps/game/
+COPY web/apps/admin/package.json apps/admin/
 COPY web/packages/theme/package.json packages/theme/
 COPY web/packages/render/package.json packages/render/
 RUN pnpm install --frozen-lockfile

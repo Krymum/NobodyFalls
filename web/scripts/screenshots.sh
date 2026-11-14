@@ -4,6 +4,7 @@
 # are made and compared there, so that fonts render the same locally and in CI.
 #   scripts/screenshots.sh            compare with e2e/__screenshots__
 #   scripts/screenshots.sh --update   regenerate the references
+#   scripts/screenshots.sh --missing  add references for new screens only
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -11,9 +12,10 @@ version=$(node -p "require('./package.json').devDependencies['@playwright/test']
 pnpm_version=$(node -p "require('./package.json').packageManager.split('@')[1]")
 base_url=${E2E_BASE_URL:-http://host.docker.internal:8080}
 update=""
-if [[ "${1:-}" == "--update" ]]; then
-  update="--update-snapshots"
-fi
+case "${1:-}" in
+  --update) update="--update-snapshots=all" ;;
+  --missing) update="--update-snapshots=missing" ;;
+esac
 
 mkdir -p e2e/__screenshots__ test-results
 # MSYS_NO_PATHCONV: keep container paths intact under Git Bash on Windows.

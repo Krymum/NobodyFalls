@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using NobodyFalls.Api.Admin;
 using NobodyFalls.Api.Auth;
 using NobodyFalls.Api.Endpoints;
 using NobodyFalls.Api.Hosting;
@@ -63,6 +64,10 @@ if (configuration.GetValue<bool>("Proxy:TrustForwardedHeaders"))
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseSpaStaticFiles();
+
+// Explicitly after static files: built files are served before any route is matched,
+// so that /admin/assets/… never falls into the admin's catch-all page route.
+app.UseRouting();
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();
@@ -88,6 +93,8 @@ api.MapMeEndpoints();
 api.MapFriendEndpoints();
 api.MapPushEndpoints();
 
+app.MapAdminEndpoints();
+
 app.MapHub<GameHub>(GameHub.Path);
 
 if (devTools.Enabled)
@@ -98,6 +105,13 @@ if (devTools.Enabled)
 app.MapSpa();
 
 await app.PrepareDatabaseAsync(devTools);
+
+// Operator commands (e.g. `staff grant <pseudo>`) run once and exit instead of serving.
+if (await StaffCommand.TryRunAsync(app, args))
+{
+    return;
+}
+
 await app.RunAsync();
 
 /// <summary>Entry point, public for integration tests (WebApplicationFactory).</summary>

@@ -43,6 +43,10 @@ internal static class Problems
         _ when code.EndsWith("not_found", StringComparison.Ordinal) => StatusCodes.Status404NotFound,
         "hand.night_resolving" => StatusCodes.Status503ServiceUnavailable,
         "account.verification_failed" => StatusCodes.Status403Forbidden,
+        "admin.forbidden" or "admin.totp_required" => StatusCodes.Status403Forbidden,
+        "admin.reauth_required" => StatusCodes.Status401Unauthorized,
+        "admin.totp_locked" => StatusCodes.Status429TooManyRequests,
+        "staff.last_admin" or "staff.admin_exists" => StatusCodes.Status409Conflict,
         _ when code.Contains("duplicate", StringComparison.Ordinal)
                || code.Contains("already", StringComparison.Ordinal)
                || code.EndsWith(".taken", StringComparison.Ordinal)

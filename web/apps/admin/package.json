@@ -1,0 +1,29 @@
+{
+  "name": "@nobodyfalls/admin",
+  "private": true,
+  "type": "module",
+  "description": "The NobodyFalls admin (GAME_DESIGN §9), a separate bundle served under /admin/ (ADR 0017).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "5.3.0",
+    "@nobodyfalls/layout": "workspace:*",
+    "@nobodyfalls/theme": "workspace:*",
+    "i18next": "26.6.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-i18next": "17.1.9",
+    "uqr": "0.1.3",
+    "wouter": "3.13.0",
+    "zustand": "5.0.16"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.5"
+  }
+}
