@@ -1,6 +1,10 @@
+using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Mvc.Testing.Handlers;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NobodyFalls.Application.Abstractions;
@@ -59,6 +63,7 @@ public sealed class ApiApp : WebApplicationFactory<Program>
             ["RateLimits:FriendsPerPlayerPerMinute"] = "100",
             ["RateLimits:RegistrationsPerIpPerHour"] = "100",
             ["RateLimits:PerIpPerMinute"] = "10000",
+            ["Realtime:FlushInterval"] = "00:00:00.05",
         };
         configure?.Invoke(settings);
 
@@ -94,6 +99,33 @@ public sealed class ApiApp : WebApplicationFactory<Program>
         response.EnsureSuccessStatusCode();
         var created = await response.Content.ReadFromJsonAsync<IdBody>();
         return (client, created!.Id);
+    }
+
+    /// <summary>
+    /// Signs up with a cookie jar the test owns, so that a SignalR connection can share
+    /// the session (long polling, the fallback transport, over the test server).
+    /// </summary>
+    public async Task<(HttpClient Client, Guid Id, HubConnection Hub)> ConnectAsync(string pseudo)
+    {
+        var cookies = new CookieContainer();
+        var client = new HttpClient(new CookieContainerHandler(cookies) { InnerHandler = Server.CreateHandler() })
+        {
+            BaseAddress = new Uri("https://localhost"),
+        };
+        client.DefaultRequestHeaders.Add("X-NF-Request", "1");
+        await DevLoginAsync(client, pseudo);
+        var response = await client.PostAsJsonAsync("/api/v1/registration", Registration(pseudo));
+        response.EnsureSuccessStatusCode();
+        var id = (await response.Content.ReadFromJsonAsync<IdBody>())!.Id;
+
+        var hub = new HubConnectionBuilder()
+            .WithUrl(new Uri("https://localhost/hubs/game"), options =>
+            {
+                options.Transports = HttpTransportType.LongPolling;
+                options.HttpMessageHandlerFactory = _ => new CookieContainerHandler(cookies) { InnerHandler = Server.CreateHandler() };
+            })
+            .Build();
+        return (client, id, hub);
     }
 
     public static async Task DevLoginAsync(HttpClient client, string name)
