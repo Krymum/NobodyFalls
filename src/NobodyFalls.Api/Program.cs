@@ -92,6 +92,7 @@ api.MapGameEndpoints();
 api.MapMeEndpoints();
 api.MapFriendEndpoints();
 api.MapPushEndpoints();
+api.MapFeedbackEndpoints();
 
 app.MapAdminEndpoints();
 

@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Dev;
+using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
@@ -26,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<FriendActions>();
         services.AddScoped<DispatchNotifications>();
         services.AddScoped<AdminAuthentication>();
+        services.AddScoped<FeedbackActions>();
         services.TryAddSingleton<IRealtimePublisher, NullRealtimePublisher>();
         return services;
     }

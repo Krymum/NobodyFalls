@@ -43,6 +43,11 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<TotpCredentialRow> TotpCredentials => Set<TotpCredentialRow>();
     public DbSet<TotpRecoveryCodeRow> TotpRecoveryCodes => Set<TotpRecoveryCodeRow>();
     public DbSet<AuditLogRow> AuditLog => Set<AuditLogRow>();
+    public DbSet<IdeaRow> Ideas => Set<IdeaRow>();
+    public DbSet<IdeaVoteRow> IdeaVotes => Set<IdeaVoteRow>();
+    public DbSet<TicketRow> Tickets => Set<TicketRow>();
+    public DbSet<TicketMessageRow> TicketMessages => Set<TicketMessageRow>();
+    public DbSet<ReportRow> Reports => Set<ReportRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,6 +63,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigureAccounts(modelBuilder);
         ConfigurePush(modelBuilder);
         ConfigureStaff(modelBuilder);
+        ConfigureFeedback(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -404,6 +410,98 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.HasIndex(a => a.ActorId);
             e.HasIndex(a => new { a.TargetType, a.TargetId });
             e.HasIndex(a => a.Action);
+        });
+    }
+
+    private static void ConfigureFeedback(ModelBuilder b)
+    {
+        b.Entity<IdeaRow>(e =>
+        {
+            e.ToTable("ideas", t =>
+            {
+                t.HasCheckConstraint("ck_ideas_status", "status in ('new', 'under_review', 'planned', 'shipped', 'declined')");
+                t.HasCheckConstraint("ck_ideas_category", "category in ('gameplay', 'social', 'interface', 'other')");
+                t.HasCheckConstraint("ck_ideas_not_merged_into_itself", "merged_into_id is null or merged_into_id <> id");
+            });
+            e.HasKey(i => i.Id);
+            e.Property(i => i.Id).UseIdentityAlwaysColumn();
+            e.Property(i => i.Title).HasMaxLength(80);
+            e.Property(i => i.Body).HasMaxLength(1000);
+            e.Property(i => i.Category).HasMaxLength(16);
+            e.Property(i => i.Locale).HasMaxLength(8);
+            e.Property(i => i.Status).HasMaxLength(16).HasDefaultValue("new");
+            e.Property(i => i.StaffAnswer).HasMaxLength(2000);
+            e.Property(i => i.HiddenReason).HasMaxLength(500);
+            e.Property(i => i.VotesCount).HasDefaultValue(0);
+            e.HasIndex(i => new { i.Status, i.VotesCount });
+            e.HasIndex(i => new { i.AuthorId, i.CreatedAt });
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(i => i.AuthorId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<IdeaRow>().WithMany().HasForeignKey(i => i.MergedIntoId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        b.Entity<IdeaVoteRow>(e =>
+        {
+            e.ToTable("idea_votes");
+            e.HasKey(v => new { v.IdeaId, v.PlayerId });
+            e.HasIndex(v => v.PlayerId);
+            e.HasOne<IdeaRow>().WithMany().HasForeignKey(v => v.IdeaId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(v => v.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<TicketRow>(e =>
+        {
+            e.ToTable("tickets", t =>
+            {
+                t.HasCheckConstraint("ck_tickets_category", "category in ('support', 'appeal', 'account_deletion')");
+                t.HasCheckConstraint("ck_tickets_status", "status in ('open', 'waiting_player', 'resolved', 'closed')");
+            });
+            e.HasKey(t => t.Id);
+            e.Property(t => t.Id).UseIdentityAlwaysColumn();
+            e.Property(t => t.Category).HasMaxLength(24);
+            e.Property(t => t.Subject).HasMaxLength(120);
+            e.Property(t => t.Status).HasMaxLength(16).HasDefaultValue("open");
+            e.Property(t => t.Locale).HasMaxLength(8);
+            e.HasIndex(t => new { t.PlayerId, t.UpdatedAt });
+            e.HasIndex(t => new { t.Status, t.UpdatedAt });
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(t => t.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<TicketMessageRow>(e =>
+        {
+            e.ToTable("ticket_messages", t => t.HasCheckConstraint("ck_ticket_messages_author", "author_kind in ('player', 'staff')"));
+            e.HasKey(m => m.Id);
+            e.Property(m => m.Id).UseIdentityAlwaysColumn();
+            e.Property(m => m.AuthorKind).HasMaxLength(8);
+            e.Property(m => m.Body).HasMaxLength(2000);
+            e.HasIndex(m => m.TicketId);
+            e.HasOne<TicketRow>().WithMany().HasForeignKey(m => m.TicketId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<ReportRow>(e =>
+        {
+            e.ToTable("reports", t =>
+            {
+                t.HasCheckConstraint("ck_reports_target_type", "target_type in ('player', 'idea')");
+                t.HasCheckConstraint("ck_reports_category", "category in ('pseudo', 'harassment', 'cheating', 'other')");
+                t.HasCheckConstraint("ck_reports_status", "status in ('open', 'in_review', 'actioned', 'dismissed')");
+            });
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Id).UseIdentityAlwaysColumn();
+            e.Property(r => r.TargetType).HasMaxLength(8);
+            e.Property(r => r.TargetId).HasMaxLength(64);
+            e.Property(r => r.Category).HasMaxLength(16);
+            e.Property(r => r.Details).HasMaxLength(1000);
+            e.Property(r => r.TargetSnapshot).HasColumnType("jsonb");
+            e.Property(r => r.Status).HasMaxLength(16).HasDefaultValue("open");
+            e.Property(r => r.ResolutionNote).HasMaxLength(2000);
+            e.HasIndex(r => new { r.Status, r.CreatedAt });
+            e.HasIndex(r => r.TargetPlayerId);
+            // One open report per reporter and target: a second one would only add noise.
+            e.HasIndex(r => new { r.ReporterId, r.TargetType, r.TargetId })
+                .IsUnique()
+                .HasFilter("status in ('open', 'in_review')")
+                .HasDatabaseName("ix_reports_one_open_per_target");
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.ReporterId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
