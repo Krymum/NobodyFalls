@@ -32,6 +32,14 @@ public sealed class PseudoTests
     public void Rejects_other_characters_and_names_without_letters(string raw) =>
         Assert.Equal(PseudoErrors.Characters, Pseudo.Create(raw).Error);
 
+    [Theory]
+    [InlineData("veilleur.01", true)]
+    [InlineData("Veilleur_X", true)]
+    [InlineData("VÉILLEUR", true)]
+    [InlineData("le_veilleur", false)]
+    public void Watcher_pseudos_are_reserved(string raw, bool reserved) =>
+        Assert.Equal(reserved, Pseudo.Create(raw).Value.IsReservedForWatchers);
+
     [Fact]
     public void Surrounding_spaces_are_trimmed() =>
         Assert.Equal("yuki", Pseudo.Create("  yuki ").Value.Value);

@@ -58,6 +58,12 @@ public sealed record Pseudo
             : PseudoErrors.Characters;
     }
 
+    /// <summary>
+    /// Pseudos starting with "veilleur" belong to Watchers, so that no player can pass
+    /// for one (Watchers are always labelled as such, GAME_DESIGN §3).
+    /// </summary>
+    public bool IsReservedForWatchers => Key.StartsWith("veilleur", StringComparison.Ordinal);
+
     /// <summary>Rehydrates a pseudo that was validated before being stored.</summary>
     public static Pseudo FromTrusted(string value) => new(value, ToKey(value));
 
@@ -89,6 +95,12 @@ public static class PseudoErrors
 {
     public static readonly DomainError Length =
         new("pseudo.length", $"A pseudo has {Pseudo.MinLength} to {Pseudo.MaxLength} characters.");
+
+    public static readonly DomainError Reserved =
+        new("pseudo.reserved", "This pseudo is reserved.");
+
+    public static readonly DomainError Taken =
+        new("pseudo.taken", "This pseudo is already used.");
 
     public static readonly DomainError Characters =
         new("pseudo.characters", "A pseudo uses letters, digits, '_' and '.', with at least one letter.");
