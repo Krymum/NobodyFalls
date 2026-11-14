@@ -524,6 +524,59 @@
   border-left-style: dashed;
 }
 
+/* Dashboard: figures as tiles (no frames, a thin rule), one bar chart. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px 24px;
+  margin: 8px 0 24px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--nf-color-outline);
+}
+
+.tileValue {
+  font-family: var(--nf-font-display);
+  font-weight: var(--nf-font-title-weight);
+  font-size: clamp(28px, 1.2vw + 22px, 38px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart {
+  margin: 8px 0 28px;
+  max-width: 760px;
+}
+
+.chartSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 8px 0;
+}
+
+.chartAxis {
+  stroke: var(--nf-color-outline);
+  stroke-width: 1;
+}
+
+.chartBar {
+  fill: var(--nf-color-text-secondary);
+}
+
+.chartBarActive {
+  fill: var(--nf-color-bone);
+}
+
+.chartMark {
+  fill: var(--nf-color-attention);
+}
+
 /* Tablets and phones: the sidebar becomes a drawer under a top bar. */
 @media (max-width: 1023px) {
   .shell {

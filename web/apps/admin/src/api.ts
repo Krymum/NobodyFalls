@@ -252,6 +252,35 @@ export interface AdminIdea {
   createdAt: string;
 }
 
+export interface Dashboard {
+  alive: number;
+  players: number;
+  visitedToday: number;
+  streak: number;
+  deathsAllTime: number;
+  nights: { day: string; nightNumber: number; falls: number; aliveAtStart: number; storm: boolean }[];
+  retention: { afterDays: number; cohort: number; returned: number }[];
+  invitations: { day: string; joined: number }[];
+  openReports: number;
+  openTickets: number;
+  sharedDevices: { deviceId: string; accounts: number; pseudos: string[] }[];
+  signUpBursts: { ip: string; accounts: number; since: string }[];
+}
+
+export interface AccountLinks {
+  addresses: { ip: string; days: number; lastAt: string }[];
+  devices: { deviceId: string; agent: string | null; days: number; lastAt: string }[];
+  accounts: {
+    id: string;
+    pseudo: string;
+    status: string;
+    sharesDevice: boolean;
+    sharesIp: boolean;
+    lastAt: string;
+    bannedUntil: string | null;
+  }[];
+}
+
 export const IDEA_STATUSES: readonly AdminIdea['status'][] = [
   'new',
   'under_review',
@@ -288,6 +317,11 @@ export const adminApi = {
     ),
   verifyAudit: () => get<AuditVerification>('/audit/verify'),
 
+  dashboard: () => get<Dashboard>('/dashboard'),
+  links: (id: string) => get<AccountLinks>(`/players/${id}/links`),
+  exportUrl: (id: string) => `${base}/players/${id}/export`,
+  deletePlayer: (id: string, reason: string) =>
+    request<undefined>('DELETE', `${base}/players/${id}`, { reason }),
   players: (q: string, filter: string) => get<PlayerRow[]>(`/players${query({ q, filter })}`),
   player: (id: string) => get<PlayerSheet>(`/players/${id}`),
   sanction: (playerId: string, input: SanctionInput) =>
