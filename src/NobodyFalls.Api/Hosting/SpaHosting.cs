@@ -21,6 +21,8 @@ internal static class SpaHosting
             return Results.Redirect($"/{language}/");
         }).ExcludeFromDescription();
 
+        MapAdminApp(app);
+
         var index = app.Environment.WebRootFileProvider.GetFileInfo("index.html");
         foreach (var language in new[] { "fr", "en" })
         {
@@ -35,6 +37,33 @@ internal static class SpaHosting
                 return Results.File(index.CreateReadStream(), "text/html; charset=utf-8");
             }).ExcludeFromDescription();
         }
+    }
+
+    /// <summary>
+    /// The admin is a separate front end (ADR 0016) under <c>/admin/</c>: never indexed,
+    /// never framed, scripts from this origin only.
+    /// </summary>
+    private static void MapAdminApp(WebApplication app)
+    {
+        var index = app.Environment.WebRootFileProvider.GetFileInfo("admin/index.html");
+        app.MapGet("/admin", () => Results.Redirect("/admin/")).ExcludeFromDescription();
+        app.MapGet("/admin/{**path}", (HttpContext context, string? path) =>
+        {
+            if (!index.Exists || (path is not null && path.StartsWith("assets/", StringComparison.Ordinal)))
+            {
+                return Results.NotFound();
+            }
+
+            var headers = context.Response.Headers;
+            headers[HeaderNames.CacheControl] = "no-cache";
+            headers["X-Robots-Tag"] = "noindex, nofollow";
+            headers["X-Frame-Options"] = "DENY";
+            headers["Referrer-Policy"] = "same-origin";
+            headers["Content-Security-Policy"] =
+                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+                "font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+            return Results.File(index.CreateReadStream(), "text/html; charset=utf-8");
+        }).ExcludeFromDescription();
     }
 
     public static void UseSpaStaticFiles(this WebApplication app)
@@ -56,7 +85,7 @@ internal static class SpaHosting
 
                 // Hashed build assets never change; the service worker must always be fresh.
                 var path = PrecompressedFiles.OriginalPath(served);
-                if (path.StartsWith("/assets/", StringComparison.Ordinal))
+                if (path.StartsWith("/assets/", StringComparison.Ordinal) || path.StartsWith("/admin/assets/", StringComparison.Ordinal))
                 {
                     headers[HeaderNames.CacheControl] = "public, max-age=31536000, immutable";
                 }

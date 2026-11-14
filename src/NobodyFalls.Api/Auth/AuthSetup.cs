@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using NobodyFalls.Api.Admin;
+using NobodyFalls.Application.Staff;
 using NobodyFalls.Infrastructure;
 
 namespace NobodyFalls.Api.Auth;
@@ -39,6 +41,17 @@ internal static class AuthSetup
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
                 options.SlidingExpiration = true;
                 ApiFriendly(options);
+                options.Events.OnValidatePrincipal = SessionVersions.RejectStaleAsync;
+            })
+            .AddCookie(AdminPrincipal.Scheme, options =>
+            {
+                // ADR 0018: issued after a TOTP code; 30 minutes idle, 8 hours at most, same-site only.
+                Configure(options.Cookie, secure, "nf-admin");
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.ExpireTimeSpan = AdminPrincipal.IdleTimeout;
+                options.SlidingExpiration = true;
+                ApiFriendly(options);
+                options.Events.OnValidatePrincipal = AdminPrincipal.ValidateAsync;
             })
             .AddCookie(PlayerPrincipal.ExternalScheme, options =>
             {
@@ -120,6 +133,9 @@ internal static class AuthSetup
         };
     }
 
-    public static Task SignInPlayerAsync(this HttpContext context, NobodyFalls.Domain.Common.PlayerId player) =>
-        context.SignInAsync(PlayerPrincipal.Scheme, PlayerPrincipal.ForPlayer(player));
+    public static async Task SignInPlayerAsync(this HttpContext context, NobodyFalls.Domain.Common.PlayerId player)
+    {
+        var version = await context.RequestServices.GetRequiredService<ISessionVersions>().GetAsync(player, context.RequestAborted);
+        await context.SignInAsync(PlayerPrincipal.Scheme, PlayerPrincipal.ForPlayer(player, version));
+    }
 }

@@ -23,6 +23,9 @@ public interface IDevStore
 
     /// <summary>Players in play today, most in need first.</summary>
     Task<IReadOnlyList<PlayerId>> InPlayByNeedAsync(GameDay day, CancellationToken cancellationToken);
+
+    /// <summary>Gives team roles directly, audited as a dev-tools action (no two-factor step).</summary>
+    Task GrantStaffAsync(PlayerId player, IReadOnlyList<Domain.Staff.StaffRole> roles, CancellationToken cancellationToken);
 }
 
 public sealed record BotRun(int Bots, int HandsGiven);

@@ -8,6 +8,7 @@ using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
 using NobodyFalls.Application.Push;
 using NobodyFalls.Application.Realtime;
+using NobodyFalls.Application.Staff;
 
 namespace NobodyFalls.Application;
 
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<SimulateBots>();
         services.AddScoped<FriendActions>();
         services.AddScoped<DispatchNotifications>();
+        services.AddScoped<AdminAuthentication>();
         services.TryAddSingleton<IRealtimePublisher, NullRealtimePublisher>();
         return services;
     }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using NobodyFalls.Api.Admin;
 using NobodyFalls.Api.Auth;
 using NobodyFalls.Api.Endpoints;
 using NobodyFalls.Api.Hosting;
@@ -88,6 +89,8 @@ api.MapMeEndpoints();
 api.MapFriendEndpoints();
 api.MapPushEndpoints();
 
+app.MapAdminEndpoints();
+
 app.MapHub<GameHub>(GameHub.Path);
 
 if (devTools.Enabled)
@@ -98,6 +101,13 @@ if (devTools.Enabled)
 app.MapSpa();
 
 await app.PrepareDatabaseAsync(devTools);
+
+// Operator commands (e.g. `staff grant <pseudo>`) run once and exit instead of serving.
+if (await StaffCommand.TryRunAsync(app, args))
+{
+    return;
+}
+
 await app.RunAsync();
 
 /// <summary>Entry point, public for integration tests (WebApplicationFactory).</summary>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
+using NobodyFalls.Application.Audit;
 using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
@@ -11,7 +12,9 @@ using NobodyFalls.Application.Players;
 using NobodyFalls.Application.Push;
 using NobodyFalls.Application.Queries;
 using NobodyFalls.Application.Realtime;
+using NobodyFalls.Application.Staff;
 using NobodyFalls.Infrastructure.Accounts;
+using NobodyFalls.Infrastructure.Audit;
 using NobodyFalls.Infrastructure.Clock;
 using NobodyFalls.Infrastructure.Dev;
 using NobodyFalls.Infrastructure.Friends;
@@ -22,6 +25,7 @@ using NobodyFalls.Infrastructure.Players;
 using NobodyFalls.Infrastructure.Push;
 using NobodyFalls.Infrastructure.Queries;
 using NobodyFalls.Infrastructure.Settings;
+using NobodyFalls.Infrastructure.Staff;
 using Npgsql;
 
 namespace NobodyFalls.Infrastructure;
@@ -70,6 +74,15 @@ public static class DependencyInjection
         services.AddHttpClient<IPushSender, WebPushSender>(http => http.Timeout = TimeSpan.FromSeconds(10));
         services.AddSingleton<IDevStore, PostgresDevStore>();
         services.AddHttpClient<IHumanVerifier, TurnstileVerifier>(http => http.Timeout = TimeSpan.FromSeconds(5));
+
+        // Phase 2: team, two-factor sign-in and audit (ADR 0017–0019).
+        services.AddSingleton<IAuditLog, PostgresAuditLog>();
+        services.AddSingleton<StaffAccessCache>();
+        services.AddSingleton<SessionVersionCache>();
+        services.AddSingleton<ISessionVersions>(sp => sp.GetRequiredService<SessionVersionCache>());
+        services.AddSingleton<IStaffStore, PostgresStaffStore>();
+        services.AddSingleton<ITotpStore, PostgresTotpStore>();
+        services.AddSingleton<ISecretProtector, DataProtectionSecretProtector>();
 
         if (options.SimulatedClock)
         {

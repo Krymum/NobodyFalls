@@ -28,6 +28,9 @@ internal sealed class PlayerRow
     public int? TileX { get; set; }
     public int? TileY { get; set; }
     public string MapNameVisibility { get; set; } = "friends";
+
+    /// <summary>Written into session cookies; bumping it ends every session of the player (ADR 0020).</summary>
+    public int SessionVersion { get; set; }
 }
 
 internal sealed class SeasonRow
@@ -255,4 +258,51 @@ internal sealed class VapidKeysRow
     public string PublicKey { get; set; } = "";
     public string PrivateKey { get; set; } = "";
     public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class StaffMemberRow
+{
+    public Guid PlayerId { get; set; }
+    public List<string> Roles { get; init; } = [];
+    public Guid? GrantedBy { get; set; }
+    public DateTimeOffset GrantedAt { get; set; }
+}
+
+internal sealed class TotpCredentialRow
+{
+    public Guid PlayerId { get; set; }
+    public byte[] Secret { get; set; } = [];
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? ConfirmedAt { get; set; }
+    public long? LastStep { get; set; }
+    public int FailedAttempts { get; set; }
+    public DateTimeOffset? LockedUntil { get; set; }
+}
+
+internal sealed class TotpRecoveryCodeRow
+{
+    public long Id { get; set; }
+    public Guid PlayerId { get; set; }
+    public byte[] Salt { get; set; } = [];
+    public byte[] Hash { get; set; } = [];
+    public DateTimeOffset? UsedAt { get; set; }
+}
+
+/// <summary>Append-only (trigger) and hash-chained (ADR 0019).</summary>
+internal sealed class AuditLogRow
+{
+    public long Id { get; set; }
+    public DateTimeOffset At { get; set; }
+    public Guid? ActorId { get; set; }
+    public List<string> ActorRoles { get; init; } = [];
+    public string Action { get; set; } = "";
+    public string TargetType { get; set; } = "";
+    public string? TargetId { get; set; }
+    public string? Before { get; set; }
+    public string? After { get; set; }
+    public string? Reason { get; set; }
+    public string? Ip { get; set; }
+    public string? RequestId { get; set; }
+    public byte[]? PrevHash { get; set; }
+    public byte[] Hash { get; set; } = [];
 }

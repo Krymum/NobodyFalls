@@ -14,6 +14,9 @@ internal sealed class RateLimitOptions
     public int FriendsPerPlayerPerMinute { get; set; } = 30;
 
     public int RegistrationsPerIpPerHour { get; set; } = 10;
+
+    /// <summary>Admin sign-in, enrolment and re-authentication attempts (on top of the TOTP lock).</summary>
+    public int AdminSignInPerPlayerPerMinute { get; set; } = 10;
 }
 
 /// <summary>
@@ -25,6 +28,7 @@ internal static class RateLimits
     public const string Hands = "hands";
     public const string Friends = "friends";
     public const string Registration = "registration";
+    public const string AdminSignIn = "admin-sign-in";
 
     public static IServiceCollection AddNobodyFallsRateLimits(this IServiceCollection services, RateLimitOptions limits)
     {
@@ -37,6 +41,8 @@ internal static class RateLimits
                 RateLimitPartition.GetFixedWindowLimiter(PlayerOrIp(context), _ => Window(limits.HandsPerPlayerPerMinute, TimeSpan.FromMinutes(1))));
             options.AddPolicy(Friends, context =>
                 RateLimitPartition.GetFixedWindowLimiter(PlayerOrIp(context), _ => Window(limits.FriendsPerPlayerPerMinute, TimeSpan.FromMinutes(1))));
+            options.AddPolicy(AdminSignIn, context =>
+                RateLimitPartition.GetFixedWindowLimiter(PlayerOrIp(context), _ => Window(limits.AdminSignInPerPlayerPerMinute, TimeSpan.FromMinutes(1))));
             options.AddPolicy(Registration, context =>
                 RateLimitPartition.GetFixedWindowLimiter(IpOf(context), _ => Window(limits.RegistrationsPerIpPerHour, TimeSpan.FromHours(1))));
 

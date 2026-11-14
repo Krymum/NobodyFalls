@@ -1,18 +1,27 @@
 using System.Globalization;
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Audit;
 using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Queries;
 using NobodyFalls.Domain.Common;
 using NobodyFalls.Domain.Friends;
 using NobodyFalls.Domain.Rules;
 using NobodyFalls.Domain.Skins;
+using NobodyFalls.Domain.Staff;
+using NobodyFalls.Infrastructure.Audit;
 using NobodyFalls.Infrastructure.Persistence;
+using NobodyFalls.Infrastructure.Staff;
 using Npgsql;
 
 namespace NobodyFalls.Infrastructure.Dev;
 
 /// <summary>Fake players for development. Bots log in with the <c>bot</c> provider, so they are easy to find and remove.</summary>
-internal sealed class PostgresDevStore(NpgsqlDataSource dataSource, IGameSettingsProvider settings, ISkinCatalogProvider catalogs) : IDevStore
+internal sealed class PostgresDevStore(
+    NpgsqlDataSource dataSource,
+    IGameSettingsProvider settings,
+    ISkinCatalogProvider catalogs,
+    TimeProvider time,
+    StaffAccessCache staffCache) : IDevStore
 {
     public const string BotProvider = "bot";
 
@@ -201,5 +210,29 @@ internal sealed class PostgresDevStore(NpgsqlDataSource dataSource, IGameSetting
         }
 
         return new Appearance(catalog.SkinTones[random.Next(catalog.SkinTones.Count)], slots);
+    }
+
+    public async Task GrantStaffAsync(PlayerId player, IReadOnlyList<StaffRole> roles, CancellationToken cancellationToken)
+    {
+        string[] names = [.. roles.Select(r => r.Name())];
+        var now = time.GetUtcNow();
+        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
+        await using var tx = await connection.BeginTransactionAsync(cancellationToken);
+        await tx.ExecuteAsync(
+            """
+            insert into staff_members (player_id, roles, granted_at) values (@id, @roles, @now)
+            on conflict (player_id) do update set roles = excluded.roles
+            """,
+            cancellationToken,
+            ("id", player.Value),
+            ("roles", names),
+            ("now", Sql.Utc(now)));
+        await AuditWriter.AppendAsync(
+            tx,
+            new AuditRecord(AuditActor.System, AuditActions.StaffAdded, AuditTargets.Player, player.ToString(), After: new { roles = names }, Reason: "dev tools"),
+            now,
+            cancellationToken);
+        await tx.CommitAsync(cancellationToken);
+        staffCache.Forget(player);
     }
 }
