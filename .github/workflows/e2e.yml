@@ -1,0 +1,73 @@
+name: e2e
+
+# The whole stack as `docker compose up` runs it (dev mode), then Lighthouse
+# mobile and the Playwright loop in five browsers.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    name: Lighthouse and Playwright on docker compose
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Start the stack
+        run: |
+          cp .env.example .env
+          docker compose up --detach --build --wait --wait-timeout 300
+
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: web/package.json
+          cache: true
+          cache_dependency_path: web/pnpm-lock.yaml
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps
+
+      # GAME_DESIGN §13: Lighthouse mobile ≥ 90 in performance and accessibility.
+      - name: Lighthouse
+        working-directory: web
+        run: pnpm dlx @lhci/cli@0.15.1 autorun
+
+      - name: Playwright
+        working-directory: web
+        run: pnpm e2e
+
+      - name: Application logs
+        if: failure()
+        run: docker compose logs app --tail 500
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: reports
+          path: |
+            web/playwright-report/
+            web/test-results/
+            web/lighthouse-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down --volumes
