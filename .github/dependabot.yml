@@ -1,6 +1,10 @@
 # Weekly updates, grouped so that a week brings a few pull requests, not dozens.
 # The cooldown keeps the project's rule: a version is adopted once it is at least
 # two weeks old (time for a bad release to be spotted and pulled).
+#
+# Platform majors are a decision, not an update: the project follows the LTS
+# lines (.NET 10, Node 24, PostgreSQL 17) and moves on deliberately, with an ADR.
+# Dependabot never proposes those jumps; other majors still arrive one by one.
 version: 2
 updates:
   - package-ecosystem: nuget
@@ -13,6 +17,18 @@ updates:
     groups:
       dotnet-minor:
         update-types: [minor, patch]
+    ignore:
+      # Versioned with the .NET runtime.
+      - dependency-name: "Microsoft.AspNetCore.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.EntityFrameworkCore*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.Extensions.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Npgsql*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "dotnet-ef"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
 
@@ -27,6 +43,10 @@ updates:
     groups:
       web-minor:
         update-types: [minor, patch]
+    ignore:
+      # Follows the Node version the project runs on (Node 24 LTS).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
 
@@ -50,6 +70,10 @@ updates:
       day: monday
     cooldown:
       default-days: 14
+    ignore:
+      # Runtime and database majors (.NET, Node, PostgreSQL, Redis) are moved by hand.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
 
@@ -60,5 +84,9 @@ updates:
       day: monday
     cooldown:
       default-days: 14
+    ignore:
+      # Runtime and database majors (.NET, Node, PostgreSQL, Redis) are moved by hand.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore(deps)
