@@ -23,6 +23,50 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("text")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("text")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("pk_data_protection_keys");
+
+                    b.ToTable("data_protection_keys", (string)null);
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.AppearanceRow", b =>
+                {
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("document");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("PlayerId")
+                        .HasName("pk_appearances");
+
+                    b.ToTable("appearances", (string)null);
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.BlockRow", b =>
                 {
                     b.Property<Guid>("BlockerId")
@@ -69,6 +113,86 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("dev_clock", null, t =>
                         {
                             t.HasCheckConstraint("ck_dev_clock_single_row", "id = 1");
+                        });
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.ExternalLoginRow", b =>
+                {
+                    b.Property<string>("Provider")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("provider_key");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.HasKey("Provider", "ProviderKey")
+                        .HasName("pk_external_logins");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_external_logins_player_id");
+
+                    b.ToTable("external_logins", (string)null);
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.FriendRequestRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset?>("AnsweredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("answered_at");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("FromId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("from_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("ToId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("to_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_friend_requests");
+
+                    b.HasIndex("ToId")
+                        .HasDatabaseName("ix_friend_requests_to_id")
+                        .HasFilter("status = 'pending'");
+
+                    b.HasIndex("FromId", "ToId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_friend_requests_pending")
+                        .HasFilter("status = 'pending'");
+
+                    b.ToTable("friend_requests", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_friend_requests_not_self", "from_id <> to_id");
+
+                            t.HasCheckConstraint("ck_friend_requests_status", "status in ('pending', 'accepted', 'declined', 'cancelled')");
                         });
                 });
 
@@ -885,6 +1009,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("storms", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.AppearanceRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithOne()
+                        .HasForeignKey("NobodyFalls.Infrastructure.Persistence.AppearanceRow", "PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_appearances_players_player_id");
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.BlockRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
@@ -900,6 +1034,33 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_blocks_players_blocker_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.ExternalLoginRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_external_logins_players_player_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.FriendRequestRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("FromId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_friend_requests_players_from_id");
+
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("ToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_friend_requests_players_to_id");
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.FriendshipRow", b =>

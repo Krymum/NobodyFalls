@@ -200,3 +200,28 @@ internal sealed class DevClockRow
     public long OffsetMs { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 }
+
+internal sealed class ExternalLoginRow
+{
+    public string Provider { get; set; } = "";
+    public string ProviderKey { get; set; } = "";
+    public Guid PlayerId { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class AppearanceRow
+{
+    public Guid PlayerId { get; set; }
+    public string Document { get; set; } = "{}";
+    public DateTimeOffset UpdatedAt { get; set; }
+}
+
+internal sealed class FriendRequestRow
+{
+    public long Id { get; set; }
+    public Guid FromId { get; set; }
+    public Guid ToId { get; set; }
+    public string Status { get; set; } = "pending";
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? AnsweredAt { get; set; }
+}
