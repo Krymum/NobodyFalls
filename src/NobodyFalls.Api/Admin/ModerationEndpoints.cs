@@ -1,5 +1,7 @@
 using NobodyFalls.Api.Http;
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Audit;
+using NobodyFalls.Application.Insights;
 using NobodyFalls.Application.Moderation;
 using NobodyFalls.Application.Staff;
 using NobodyFalls.Domain.Common;
@@ -24,6 +26,8 @@ public sealed record TicketStatusRequest(string? Status);
 public sealed record IdeaPatchRequest(string? Status, string? StaffAnswer, bool? Hidden, string? HiddenReason);
 
 public sealed record MergeRequest(long? IntoId);
+
+public sealed record DeleteAccountRequest(string? Reason);
 
 /// <summary>
 /// Moderation (GAME_DESIGN §9): players and sanctions, reports, requests, ideas. Every change
@@ -65,6 +69,34 @@ internal static class ModerationEndpoints
             var result = await sanctions.IssueAsync(new PlayerId(id), draft.Value, null, http.Actor(), clock.UtcNow, ct);
             return result.IsSuccess ? Results.Ok(new { id = result.Value }) : Problems.From(result.Error!);
         }).Requires(Permission.SanctionsWarn);
+
+        admin.MapGet("/dashboard", async (IDashboardQueries dashboard, IClock clock, CancellationToken ct) =>
+            Results.Ok(await dashboard.GetAsync(clock.UtcNow, ct))).Requires(Permission.DashboardView);
+
+        // Linked accounts show plain IP addresses (decision Q5): each look is audited.
+        admin.MapGet("/players/{id:guid}/links", async (Guid id, HttpContext http, IAccountLinks links, IAuditLog audit, CancellationToken ct) =>
+        {
+            var result = await links.LinksAsync(new PlayerId(id), ct);
+            await audit.AppendAsync(new AuditRecord(http.Actor(), AuditActions.PlayerLinksViewed, AuditTargets.Player, id.ToString()), ct);
+            return Results.Ok(result);
+        }).Requires(Permission.PlayersViewLinks);
+
+        admin.MapGet("/players/{id:guid}/export", async (Guid id, HttpContext http, IPersonalData data, IAuditLog audit, IClock clock, CancellationToken ct) =>
+        {
+            using var document = await data.ExportAsync(new PlayerId(id), clock.UtcNow, ct);
+            if (document is null)
+            {
+                return Problems.From(PersonalDataErrors.NotFound);
+            }
+
+            await audit.AppendAsync(new AuditRecord(http.Actor(), AuditActions.PlayerExported, AuditTargets.Player, id.ToString()), ct);
+            var bytes = System.Text.Encoding.UTF8.GetBytes(document.RootElement.GetRawText());
+            return Results.File(bytes, "application/json", $"nobodyfalls-{id}.json");
+        }).Requires(Permission.GdprExport);
+
+        admin.MapDelete("/players/{id:guid}", async (Guid id, [Microsoft.AspNetCore.Mvc.FromBody] DeleteAccountRequest body, HttpContext http, IPersonalData data, IClock clock, CancellationToken ct) =>
+            Problems.Of(await data.DeleteAsync(new PlayerId(id), body.Reason ?? "", http.Actor(), clock.UtcNow, ct)))
+            .Requires(Permission.GdprDelete, sensitive: true);
 
         admin.MapPost("/sanctions/{id:long}/revoke", async (long id, RevokeRequest body, HttpContext http, ISanctionStore sanctions, IClock clock, CancellationToken ct) =>
             Problems.Of(await sanctions.RevokeAsync(id, body.Reason, http.Actor(), clock.UtcNow, ct))).Requires(Permission.SanctionsRevoke);

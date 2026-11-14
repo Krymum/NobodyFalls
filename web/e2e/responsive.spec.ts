@@ -250,6 +250,11 @@ test('admin', async ({ page }) => {
   await page.getByRole('button', { name: 'Confirmer' }).click();
   await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
 
+  // The dashboard: tiles flow into as many columns as fit.
+  await expect(page.getByRole('heading', { name: 'Tableau de bord' })).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await shoot(page, 'admin-dashboard');
+
   // The team: a sidebar on desktops, a drawer behind "Menu" on tablets and phones.
   const menu = page.getByRole('button', { name: 'Menu' });
   if (viewport.width >= 1024) {

@@ -415,3 +415,28 @@ internal sealed class SanctionRow
     public Guid? RevokedBy { get; set; }
     public string? RevokeReason { get; set; }
 }
+
+/// <summary>
+/// Where and from which device a player connects (decision Q5: plain IPs, kept 90 days):
+/// one row per player, day, IP and device, to find linked accounts.
+/// </summary>
+internal sealed class LoginEventRow
+{
+    public long Id { get; set; }
+    public Guid PlayerId { get; set; }
+    public DateOnly Day { get; set; }
+    public DateTimeOffset At { get; set; }
+    public string Ip { get; set; } = "";
+    public string DeviceId { get; set; } = "";
+    public string? UserAgentFamily { get; set; }
+
+    /// <summary>"sign_in" (a new session) or "visit" (first request of the day).</summary>
+    public string Kind { get; set; } = "visit";
+}
+
+/// <summary>One row per player and game day with any activity: retention D1/D7/D30.</summary>
+internal sealed class PlayerVisitRow
+{
+    public Guid PlayerId { get; set; }
+    public DateOnly Day { get; set; }
+}

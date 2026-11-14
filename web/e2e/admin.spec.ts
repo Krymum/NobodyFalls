@@ -54,7 +54,7 @@ test('an admin sets up two-factor sign-in, adds a moderator and finds every acti
   await expect(page.getByRole('heading', { name: 'Tes codes de secours' })).toBeVisible();
   await expect(page.getByTestId('recovery-codes').getByRole('listitem')).toHaveCount(10);
   await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
-  await expect(page.getByRole('heading', { name: `Bonjour ${boss}.` })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Tableau de bord' })).toBeVisible();
 
   // Team: add a moderator.
   await openSection(page, 'Équipe');

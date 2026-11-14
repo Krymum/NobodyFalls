@@ -134,7 +134,8 @@
       "sanction": "Sanctions",
       "report": "Reports",
       "ticket": "Requests",
-      "idea": "Ideas"
+      "idea": "Ideas",
+      "player": "Players"
     },
     "actions": {
       "staff": {
@@ -171,6 +172,11 @@
       "idea": {
         "updated": "Idea updated",
         "merged": "Ideas merged"
+      },
+      "player": {
+        "links_viewed": "Linked accounts viewed",
+        "exported": "Data exported",
+        "deleted": "Account deleted"
       }
     }
   },
@@ -238,6 +244,11 @@
       "answer": "2000 characters at most.",
       "merge_self": "An idea does not merge into itself.",
       "merge_target": "Merge into a visible idea that is not merged itself."
+    },
+    "gdpr": {
+      "not_found": "This player does not exist.",
+      "staff": "Take this team member's role away first.",
+      "reason": "Give the request (3 to 500 characters)."
     }
   },
   "common": {
@@ -349,6 +360,27 @@
       "sanctions": "Sanctions",
       "reportsAbout": "Reports about them",
       "reportsMade": "Reports they made"
+    },
+    "links": {
+      "title": "Linked accounts",
+      "intro": "Other accounts seen on the same device or address in the last 90 days. Each look is recorded in the audit.",
+      "show": "Show linked accounts",
+      "accounts": "Accounts",
+      "none": "No other account.",
+      "sameDevice": "same device",
+      "sameAddress": "same address",
+      "addresses": "IP addresses",
+      "devices": "Devices",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days"
+    },
+    "gdpr": {
+      "title": "Personal data",
+      "export": "Export their data (JSON)",
+      "reason": "Request behind the deletion",
+      "delete": "Delete the account",
+      "confirm": "Delete {{pseudo}}'s account for good? This cannot be undone.",
+      "deleted": "Account deleted."
     }
   },
   "tickets": {
@@ -413,5 +445,41 @@
       "shipped": "Shipped",
       "declined": "Declined"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "alive": "Players alive",
+    "ofPlayers_one": "of {{count}} player",
+    "ofPlayers_other": "of {{count}} players",
+    "visitedToday": "Came today",
+    "streak": "World streak",
+    "deaths": "Deaths, all time",
+    "invited": "Came by invitation",
+    "last30": "Last 30 days",
+    "retention": "Back on day {{days}}",
+    "cohort_one": "{{returned}} of {{count}} newcomer",
+    "cohort_other": "{{returned}} of {{count}} newcomers",
+    "todo": "To handle",
+    "openReports_one": "{{count}} report",
+    "openReports_other": "{{count}} reports",
+    "openTickets_one": "{{count}} request",
+    "openTickets_other": "{{count}} requests",
+    "falls": "Falls per night",
+    "fallsOn_one": "Night {{night}} ({{day}}): {{count}} fall of {{alive}} alive",
+    "fallsOn_other": "Night {{night}} ({{day}}): {{count}} falls of {{alive}} alive",
+    "fallsMax_one": "At most {{count}} fall a night over the period. Hover a bar for details.",
+    "fallsMax_other": "At most {{count}} falls a night over the period. Hover a bar for details.",
+    "noNights": "No night resolved yet.",
+    "table": "See the data",
+    "night": "Night",
+    "fallsColumn": "Falls",
+    "aliveColumn": "Alive at the start",
+    "storm": "storm",
+    "suspicious": "Suspicious accounts",
+    "nothingSuspicious": "Nothing suspicious.",
+    "sharedDevice_one": "{{count}} account on one device:",
+    "sharedDevice_other": "{{count}} accounts on one device:",
+    "burst_one": "{{count}} sign-up from one address:",
+    "burst_other": "{{count}} sign-ups from one address:"
   }
 }

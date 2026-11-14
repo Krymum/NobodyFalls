@@ -87,6 +87,9 @@ describe('admin translations (FR and EN, GAME_DESIGN §9)', () => {
       'idea.answer',
       'idea.merge_self',
       'idea.merge_target',
+      'gdpr.not_found',
+      'gdpr.staff',
+      'gdpr.reason',
       'request.failed',
       'request.rate_limited',
       'request.missing_header',
@@ -121,6 +124,9 @@ describe('admin translations (FR and EN, GAME_DESIGN §9)', () => {
       'ticket.assigned',
       'idea.updated',
       'idea.merged',
+      'player.links_viewed',
+      'player.exported',
+      'player.deleted',
     ];
     const all = new Set(keys(fr));
     for (const action of actions) {

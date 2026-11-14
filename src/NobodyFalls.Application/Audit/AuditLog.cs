@@ -49,6 +49,9 @@ public static class AuditActions
     public const string TicketAssigned = "ticket.assigned";
     public const string IdeaUpdated = "idea.updated";
     public const string IdeaMerged = "idea.merged";
+    public const string PlayerLinksViewed = "player.links_viewed";
+    public const string PlayerExported = "player.exported";
+    public const string PlayerDeleted = "player.deleted";
 }
 
 /// <summary>Stable target types.</summary>

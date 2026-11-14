@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'wouter';
-import { adminApi, type AdminSession, type PlayerRow, type PlayerSheet, type Sanction } from '../api.ts';
+import {
+  adminApi,
+  type AccountLinks,
+  type AdminSession,
+  type PlayerRow,
+  type PlayerSheet,
+  type Sanction,
+} from '../api.ts';
 import { formatDateTime } from '../i18n/index.ts';
 import { useAdmin } from '../store.ts';
 import styles from '../styles/admin.module.css';
@@ -272,6 +279,17 @@ export function PlayerScreen({ id, session }: { id: string; session: AdminSessio
         </form>
       )}
 
+      {session.permissions.includes('players.view_links') && <Links id={sheet.id} />}
+
+      {(session.permissions.includes('gdpr.export') || session.permissions.includes('gdpr.delete')) && (
+        <PersonalData
+          id={sheet.id}
+          pseudo={sheet.pseudo}
+          session={session}
+          isStaff={sheet.staffRoles.length > 0}
+        />
+      )}
+
       {(
         [
           ['players.sheet.reportsAbout', sheet.reportsAbout],
@@ -300,5 +318,134 @@ export function PlayerScreen({ id, session }: { id: string; session: AdminSessio
         </div>
       ))}
     </section>
+  );
+}
+
+/** Accounts seen on the same device or address (plain IPs, kept 90 days); each look is audited. */
+function Links({ id }: { id: string }) {
+  const { t, i18n } = useTranslation();
+  const [links, setLinks] = useState<AccountLinks | null>(null);
+  const show = useSubmit(async () => {
+    setLinks(await adminApi.links(id));
+  });
+  return (
+    <div>
+      <h2 className={styles.sectionTitle}>{t('players.links.title')}</h2>
+      {!links ? (
+        <>
+          <p className={styles.muted}>{t('players.links.intro')}</p>
+          <button
+            type="button"
+            className={styles.secondary}
+            disabled={show.busy}
+            onClick={() => {
+              show.onSubmit();
+            }}
+          >
+            {t('players.links.show')}
+          </button>
+          <ErrorText error={show.error} />
+        </>
+      ) : (
+        <>
+          <h3 className={styles.label}>{t('players.links.accounts')}</h3>
+          {links.accounts.length === 0 ? (
+            <p className={styles.muted}>{t('players.links.none')}</p>
+          ) : (
+            <ul className={styles.plainList}>
+              {links.accounts.map((a) => (
+                <li key={a.id}>
+                  <Link href={`/players/${a.id}`}>{a.pseudo}</Link>{' '}
+                  <span className={styles.attention}>
+                    {[
+                      a.sharesDevice ? t('players.links.sameDevice') : null,
+                      a.sharesIp ? t('players.links.sameAddress') : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>{' '}
+                  <span className={styles.muted}>{formatDateTime(a.lastAt, i18n.language)}</span>
+                  {isFuture(a.bannedUntil) && <span className={styles.danger}> · {t('players.banned')}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          <h3 className={styles.label}>{t('players.links.addresses')}</h3>
+          <ul className={styles.plainList}>
+            {links.addresses.map((a) => (
+              <li key={a.ip}>
+                <span className={styles.mono}>{a.ip}</span> · {t('players.links.days', { count: a.days })} ·{' '}
+                {formatDateTime(a.lastAt, i18n.language)}
+              </li>
+            ))}
+          </ul>
+          <h3 className={styles.label}>{t('players.links.devices')}</h3>
+          <ul className={styles.plainList}>
+            {links.devices.map((d) => (
+              <li key={d.deviceId}>
+                <span className={styles.mono}>{d.deviceId.slice(0, 10)}</span> · {d.agent ?? t('common.none')}{' '}
+                · {t('players.links.days', { count: d.days })}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
+
+/** GDPR: a copy of the player's data, and erasure (admins, with a fresh code). */
+function PersonalData({
+  id,
+  pseudo,
+  session,
+  isStaff,
+}: {
+  id: string;
+  pseudo: string;
+  session: AdminSession;
+  isStaff: boolean;
+}) {
+  const { t } = useTranslation();
+  const sensitive = useAdmin((s) => s.sensitive);
+  const [reason, setReason] = useState('');
+  const [deleted, setDeleted] = useState(false);
+  const erase = useSubmit(async () => {
+    if (window.confirm(t('players.gdpr.confirm', { pseudo }))) {
+      await sensitive(() => adminApi.deletePlayer(id, reason));
+      setDeleted(true);
+    }
+  });
+  return (
+    <div>
+      <h2 className={styles.sectionTitle}>{t('players.gdpr.title')}</h2>
+      {session.permissions.includes('gdpr.export') && (
+        <a className={styles.secondary} href={adminApi.exportUrl(id)} download>
+          {t('players.gdpr.export')}
+        </a>
+      )}
+      {session.permissions.includes('gdpr.delete') && !isStaff && (
+        <form className={styles.inlineForm} onSubmit={erase.onSubmit}>
+          <label className={`${styles.field} ${styles.grow}`}>
+            <span className={styles.label}>{t('players.gdpr.reason')}</span>
+            <input
+              className={styles.input}
+              required
+              minLength={3}
+              maxLength={500}
+              value={reason}
+              onChange={(e) => {
+                setReason(e.target.value);
+              }}
+            />
+          </label>
+          <button type="submit" className={styles.smallDanger} disabled={erase.busy || deleted}>
+            {t('players.gdpr.delete')}
+          </button>
+          <Notice>{deleted ? t('players.gdpr.deleted') : null}</Notice>
+          <ErrorText error={erase.error} />
+        </form>
+      )}
+    </div>
   );
 }

@@ -694,6 +694,72 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("life_debts", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.LoginEventRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("at");
+
+                    b.Property<DateOnly>("Day")
+                        .HasColumnType("date")
+                        .HasColumnName("day");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("device_id");
+
+                    b.Property<string>("Ip")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("ip");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
+                        .HasColumnName("kind");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("UserAgentFamily")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("user_agent_family");
+
+                    b.HasKey("Id")
+                        .HasName("pk_login_events");
+
+                    b.HasIndex("At")
+                        .HasDatabaseName("ix_login_events_at");
+
+                    b.HasIndex("DeviceId")
+                        .HasDatabaseName("ix_login_events_device_id");
+
+                    b.HasIndex("Ip")
+                        .HasDatabaseName("ix_login_events_ip");
+
+                    b.HasIndex("PlayerId", "Day", "Ip", "DeviceId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_login_events_player_id_day_ip_device_id");
+
+                    b.ToTable("login_events", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_login_events_kind", "kind in ('sign_in', 'visit')");
+                        });
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.NotificationOutboxRow", b =>
                 {
                     b.Property<long>("Id")
@@ -1094,6 +1160,25 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_player_stats_updated_day");
 
                     b.ToTable("player_stats", (string)null);
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PlayerVisitRow", b =>
+                {
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<DateOnly>("Day")
+                        .HasColumnType("date")
+                        .HasColumnName("day");
+
+                    b.HasKey("PlayerId", "Day")
+                        .HasName("pk_player_visits");
+
+                    b.HasIndex("Day")
+                        .HasDatabaseName("ix_player_visits_day");
+
+                    b.ToTable("player_visits", (string)null);
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PushSubscriptionRow", b =>
@@ -1933,6 +2018,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_life_debts_players_saver_id");
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.LoginEventRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_login_events_players_player_id");
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.NotificationOutboxRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
@@ -2021,6 +2116,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_player_stats_players_player_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PlayerVisitRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_player_visits_players_player_id");
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PushSubscriptionRow", b =>

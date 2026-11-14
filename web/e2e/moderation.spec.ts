@@ -25,7 +25,10 @@ async function staff(browser: Browser, pseudo: string, roles: string[]): Promise
   await page.getByLabel('Code à 6 chiffres').fill(code);
   await page.getByRole('button', { name: 'Confirmer' }).click();
   await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
-  await expect(page.getByRole('heading', { name: `Bonjour ${pseudo}.` })).toBeVisible();
+  // Admins and moderators land on the dashboard, support on the greeting.
+  await expect(
+    page.getByRole('heading', { name: new RegExp(`^(Tableau de bord|Bonjour ${pseudo}\\.)$`) }),
+  ).toBeVisible();
   return page;
 }
 
@@ -99,4 +102,43 @@ test('a moderator handles a report from the queue to a ban, and the audit shows 
   await expect(byModerator.filter({ hasText: 'Signalement clos' })).toContainText('actioned');
   await admin.getByRole('button', { name: "Vérifier l'intégrité" }).click();
   await expect(admin.getByRole('status')).toContainText('Chaîne intacte');
+});
+
+test('an admin reads the dashboard, looks up linked accounts, exports then deletes an account', async ({
+  page,
+  browser,
+}, info) => {
+  const project = info.project.name;
+  const main = uniqueName('main', project);
+  const alt = uniqueName('alt', project);
+  await signUpByApi(page.request, main);
+  // A second account from the same address (every test player comes from this machine).
+  const altContext = await browser.newContext({ locale: 'fr-FR' });
+  await signUpByApi(altContext.request, alt);
+
+  const chef = uniqueName('chef', project);
+  const admin = await staff(browser, chef, ['admin']);
+  await expect(admin.getByText('Joueurs en vie')).toBeVisible();
+  await expect(admin.getByRole('heading', { name: 'Comptes suspects' })).toBeVisible();
+
+  await openSection(admin, 'Joueurs');
+  await admin.getByLabel('Pseudo ou identifiant').fill(main);
+  await admin.getByRole('link', { name: main, exact: true }).click();
+  await admin.getByRole('button', { name: 'Afficher les comptes liés' }).click();
+  await expect(admin.getByRole('listitem').filter({ hasText: alt })).toContainText('même adresse');
+
+  const download = admin.waitForEvent('download');
+  await admin.getByRole('link', { name: 'Exporter ses données (JSON)' }).click();
+  expect((await download).suggestedFilename()).toMatch(/^nobodyfalls-[0-9a-f-]{36}\.json$/);
+
+  await admin.getByLabel("Demande à l'origine de la suppression").fill('Demande du joueur par contact');
+  admin.once('dialog', (dialog) => void dialog.accept());
+  await admin.getByRole('button', { name: 'Supprimer le compte' }).click();
+  await expect(admin.getByRole('status').filter({ hasText: 'Compte supprimé.' })).toBeVisible();
+
+  await openSection(admin, "Journal d'audit");
+  const mine = admin.getByRole('table').getByRole('row').filter({ hasText: chef });
+  await expect(mine.filter({ hasText: 'Comptes liés consultés' })).toHaveCount(1);
+  await expect(mine.filter({ hasText: 'Données exportées' })).toHaveCount(1);
+  await expect(mine.filter({ hasText: 'Compte supprimé' })).toHaveCount(1);
 });

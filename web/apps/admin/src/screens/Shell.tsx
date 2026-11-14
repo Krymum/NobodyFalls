@@ -6,6 +6,7 @@ import { changeLocale, LOCALES } from '../i18n/index.ts';
 import { useAdmin } from '../store.ts';
 import styles from '../styles/admin.module.css';
 import { Audit } from './Audit.tsx';
+import { Dashboard } from './Dashboard.tsx';
 import { Home } from './Home.tsx';
 import { Ideas } from './Ideas.tsx';
 import { Players, PlayerScreen } from './Players.tsx';
@@ -135,9 +136,7 @@ export function Shell({ session }: { session: AdminSession }) {
             {allowed('staff.manage') ? <Team me={session.playerId} /> : <Home session={session} />}
           </Route>
           <Route path="/audit">{allowed('audit.view') ? <Audit /> : <Home session={session} />}</Route>
-          <Route>
-            <Home session={session} />
-          </Route>
+          <Route>{allowed('dashboard.view') ? <Dashboard /> : <Home session={session} />}</Route>
         </Switch>
       </main>
     </div>

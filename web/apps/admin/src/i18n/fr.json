@@ -134,7 +134,8 @@
       "sanction": "Sanctions",
       "report": "Signalements",
       "ticket": "Demandes",
-      "idea": "Idées"
+      "idea": "Idées",
+      "player": "Joueurs"
     },
     "actions": {
       "staff": {
@@ -171,6 +172,11 @@
       "idea": {
         "updated": "Idée modifiée",
         "merged": "Idées fusionnées"
+      },
+      "player": {
+        "links_viewed": "Comptes liés consultés",
+        "exported": "Données exportées",
+        "deleted": "Compte supprimé"
       }
     }
   },
@@ -238,6 +244,11 @@
       "answer": "2000 caractères au plus.",
       "merge_self": "Une idée ne fusionne pas avec elle-même.",
       "merge_target": "Fusionne dans une idée visible, qui n'est pas elle-même fusionnée."
+    },
+    "gdpr": {
+      "not_found": "Ce joueur n'existe pas.",
+      "staff": "Retire d'abord son rôle à ce membre de l'équipe.",
+      "reason": "Indique la demande (3 à 500 caractères)."
     }
   },
   "common": {
@@ -349,6 +360,27 @@
       "sanctions": "Sanctions",
       "reportsAbout": "Signalements le concernant",
       "reportsMade": "Signalements qu'il a faits"
+    },
+    "links": {
+      "title": "Comptes liés",
+      "intro": "Les autres comptes vus sur le même appareil ou la même adresse ces 90 derniers jours. Chaque consultation est enregistrée dans l'audit.",
+      "show": "Afficher les comptes liés",
+      "accounts": "Comptes",
+      "none": "Aucun autre compte.",
+      "sameDevice": "même appareil",
+      "sameAddress": "même adresse",
+      "addresses": "Adresses IP",
+      "devices": "Appareils",
+      "days_one": "{{count}} jour",
+      "days_other": "{{count}} jours"
+    },
+    "gdpr": {
+      "title": "Données personnelles",
+      "export": "Exporter ses données (JSON)",
+      "reason": "Demande à l'origine de la suppression",
+      "delete": "Supprimer le compte",
+      "confirm": "Supprimer définitivement le compte de {{pseudo}} ? Cette action est irréversible.",
+      "deleted": "Compte supprimé."
     }
   },
   "tickets": {
@@ -413,5 +445,41 @@
       "shipped": "Livrée",
       "declined": "Refusée"
     }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "alive": "Joueurs en vie",
+    "ofPlayers_one": "sur {{count}} joueur",
+    "ofPlayers_other": "sur {{count}} joueurs",
+    "visitedToday": "Venus aujourd'hui",
+    "streak": "Série mondiale",
+    "deaths": "Morts depuis toujours",
+    "invited": "Venus par invitation",
+    "last30": "30 derniers jours",
+    "retention": "Revenus à J{{days}}",
+    "cohort_one": "{{returned}} sur {{count}} nouveau joueur",
+    "cohort_other": "{{returned}} sur {{count}} nouveaux joueurs",
+    "todo": "À traiter",
+    "openReports_one": "{{count}} signalement",
+    "openReports_other": "{{count}} signalements",
+    "openTickets_one": "{{count}} demande",
+    "openTickets_other": "{{count}} demandes",
+    "falls": "Chutes par nuit",
+    "fallsOn_one": "Nuit {{night}} ({{day}}) : {{count}} chute sur {{alive}} en vie",
+    "fallsOn_other": "Nuit {{night}} ({{day}}) : {{count}} chutes sur {{alive}} en vie",
+    "fallsMax_one": "Au plus {{count}} chute par nuit sur la période. Survole une barre pour le détail.",
+    "fallsMax_other": "Au plus {{count}} chutes par nuit sur la période. Survole une barre pour le détail.",
+    "noNights": "Aucune nuit résolue pour l'instant.",
+    "table": "Voir les données",
+    "night": "Nuit",
+    "fallsColumn": "Chutes",
+    "aliveColumn": "En vie au début",
+    "storm": "tempête",
+    "suspicious": "Comptes suspects",
+    "nothingSuspicious": "Rien de suspect.",
+    "sharedDevice_one": "{{count}} compte sur un appareil :",
+    "sharedDevice_other": "{{count}} comptes sur un appareil :",
+    "burst_one": "{{count}} inscription depuis une adresse :",
+    "burst_other": "{{count}} inscriptions depuis une adresse :"
   }
 }
