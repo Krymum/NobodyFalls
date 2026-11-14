@@ -3,6 +3,8 @@
   <PropertyGroup>
     <RootNamespace>NobodyFalls.Infrastructure</RootNamespace>
     <Description>PostgreSQL persistence, midnight SQL, clocks and background workers.</Description>
+    <!-- Notification texts: French is the neutral language, English a satellite. -->
+    <NeutralLanguage>fr</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Lib.Net.Http.WebPush" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
   </ItemGroup>
 

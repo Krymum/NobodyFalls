@@ -56,6 +56,8 @@ internal sealed class GameDayRow
     public int? Falls { get; set; }
     public int? StreakAfter { get; set; }
     public long? DeathsAllTimeAfter { get; set; }
+    public DateTimeOffset? StormAnnouncedAt { get; set; }
+    public DateTimeOffset? FriendReminderAt { get; set; }
 }
 
 internal sealed class StormRow
@@ -183,6 +185,7 @@ internal sealed class NotificationOutboxRow
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? SentAt { get; set; }
     public int Attempts { get; set; }
+    public DateTimeOffset? LockedUntil { get; set; }
 }
 
 internal sealed class GameSettingsRow
@@ -224,4 +227,32 @@ internal sealed class FriendRequestRow
     public string Status { get; set; } = "pending";
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? AnsweredAt { get; set; }
+}
+
+internal sealed class PushSubscriptionRow
+{
+    public string Endpoint { get; set; } = "";
+    public Guid PlayerId { get; set; }
+    public string P256dh { get; set; } = "";
+    public string Auth { get; set; } = "";
+    public string? UserAgent { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+internal sealed class NotificationPreferencesRow
+{
+    public Guid PlayerId { get; set; }
+    public bool FriendBelow { get; set; } = true;
+    public bool FriendFell { get; set; } = true;
+    public bool SavedMe { get; set; } = true;
+    public bool Fell { get; set; } = true;
+    public bool Storm { get; set; } = true;
+}
+
+internal sealed class VapidKeysRow
+{
+    public int Id { get; set; }
+    public string PublicKey { get; set; } = "";
+    public string PrivateKey { get; set; } = "";
+    public DateTimeOffset CreatedAt { get; set; }
 }

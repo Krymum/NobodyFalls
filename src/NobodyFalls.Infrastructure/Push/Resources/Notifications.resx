@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Fell.Title" xml:space="preserve"><value>Tu as glissé dans le vide.</value></data>
+  <data name="Fell.Body" xml:space="preserve"><value>Personne n'a pu te tenir cette nuit. Reviens : ta place t'attend.</value></data>
+  <data name="FriendsFell.Title" xml:space="preserve"><value>Une nuit difficile</value></data>
+  <data name="FriendsFell.None" xml:space="preserve"><value>Des amis ont glissé dans le vide cette nuit.</value></data>
+  <data name="FriendsFell.One" xml:space="preserve"><value>{0} a glissé dans le vide cette nuit.</value></data>
+  <data name="FriendsFell.Many" xml:space="preserve"><value>{0} et {1} autres amis ont glissé dans le vide cette nuit.</value></data>
+  <data name="SavedBy.Title" xml:space="preserve"><value>Quelqu'un t'a tenu</value></data>
+  <data name="SavedBy.None" xml:space="preserve"><value>Cette nuit, une main t'a gardé au-dessus du vide.</value></data>
+  <data name="SavedBy.One" xml:space="preserve"><value>{0} t'a tenu au bord du vide. Sans cette main, tu tombais.</value></data>
+  <data name="SavedBy.Many" xml:space="preserve"><value>{0} et {1} autres t'ont tenu cette nuit. Sans eux, tu tombais.</value></data>
+  <data name="SkinsUnlocked.Title" xml:space="preserve"><value>Un vêtement t'attend</value></data>
+  <data name="SkinsUnlocked.Body" xml:space="preserve"><value>Ta solidarité t'a valu un nouveau vêtement.</value></data>
+  <data name="Storm.Title" xml:space="preserve"><value>Nuit de tempête</value></data>
+  <data name="Storm.Body" xml:space="preserve"><value>Ce soir, il faut une main de plus pour tenir. Regarde qui en a besoin.</value></data>
+  <data name="FriendsBelow.Title" xml:space="preserve"><value>Minuit approche</value></data>
+  <data name="FriendsBelow.None" xml:space="preserve"><value>Des amis sont encore sous le seuil.</value></data>
+  <data name="FriendsBelow.One" xml:space="preserve"><value>{0} ne tient plus qu'à un fil.</value></data>
+  <data name="FriendsBelow.Many" xml:space="preserve"><value>{0} et {1} autres amis sont encore sous le seuil.</value></data>
+</root>

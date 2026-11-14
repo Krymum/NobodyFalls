@@ -252,6 +252,10 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("falls");
 
+                    b.Property<DateTimeOffset?>("FriendReminderAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("friend_reminder_at");
+
                     b.Property<int>("NightNumber")
                         .HasColumnType("integer")
                         .HasColumnName("night_number");
@@ -275,6 +279,10 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.Property<bool>("Storm")
                         .HasColumnType("boolean")
                         .HasColumnName("storm");
+
+                    b.Property<DateTimeOffset?>("StormAnnouncedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("storm_announced_at");
 
                     b.Property<int?>("StreakAfter")
                         .HasColumnType("integer")
@@ -506,6 +514,10 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(64)")
                         .HasColumnName("kind");
 
+                    b.Property<DateTimeOffset?>("LockedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("locked_until");
+
                     b.Property<string>("Payload")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -522,18 +534,50 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_notification_outbox");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("ix_notification_outbox_pending")
-                        .HasFilter("sent_at is null");
-
                     b.HasIndex("DedupeKey")
                         .IsUnique()
                         .HasDatabaseName("ix_notification_outbox_dedupe_key");
+
+                    b.HasIndex("Id")
+                        .HasDatabaseName("ix_notification_outbox_pending")
+                        .HasFilter("sent_at is null");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("ix_notification_outbox_player_id");
 
                     b.ToTable("notification_outbox", (string)null);
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.NotificationPreferencesRow", b =>
+                {
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<bool>("Fell")
+                        .HasColumnType("boolean")
+                        .HasColumnName("fell");
+
+                    b.Property<bool>("FriendBelow")
+                        .HasColumnType("boolean")
+                        .HasColumnName("friend_below");
+
+                    b.Property<bool>("FriendFell")
+                        .HasColumnType("boolean")
+                        .HasColumnName("friend_fell");
+
+                    b.Property<bool>("SavedMe")
+                        .HasColumnType("boolean")
+                        .HasColumnName("saved_me");
+
+                    b.Property<bool>("Storm")
+                        .HasColumnType("boolean")
+                        .HasColumnName("storm");
+
+                    b.HasKey("PlayerId")
+                        .HasName("pk_notification_preferences");
+
+                    b.ToTable("notification_preferences", (string)null);
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PlayerDayRow", b =>
@@ -817,6 +861,47 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("player_stats", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PushSubscriptionRow", b =>
+                {
+                    b.Property<string>("Endpoint")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("endpoint");
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("auth");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("p256dh");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("user_agent");
+
+                    b.HasKey("Endpoint")
+                        .HasName("pk_push_subscriptions");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_push_subscriptions_player_id");
+
+                    b.ToTable("push_subscriptions", (string)null);
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SeasonRow", b =>
                 {
                     b.Property<int>("Id")
@@ -1009,6 +1094,35 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("storms", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.VapidKeysRow", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("PrivateKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("private_key");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_key");
+
+                    b.HasKey("Id")
+                        .HasName("pk_vapid_keys");
+
+                    b.ToTable("vapid_keys", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_vapid_keys_single_row", "id = 1");
+                        });
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.AppearanceRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
@@ -1158,6 +1272,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_notification_outbox_players_player_id");
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.NotificationPreferencesRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithOne()
+                        .HasForeignKey("NobodyFalls.Infrastructure.Persistence.NotificationPreferencesRow", "PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_notification_preferences_players_player_id");
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PlayerDayRow", b =>
                 {
                     b.HasOne("NobodyFalls.Infrastructure.Persistence.GameDayRow", null)
@@ -1226,6 +1350,16 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_player_stats_players_player_id");
+                });
+
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.PushSubscriptionRow", b =>
+                {
+                    b.HasOne("NobodyFalls.Infrastructure.Persistence.PlayerRow", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_push_subscriptions_players_player_id");
                 });
 
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.SeasonScoreRow", b =>

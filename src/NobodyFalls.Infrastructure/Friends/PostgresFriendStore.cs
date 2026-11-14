@@ -1,6 +1,7 @@
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Queries;
+using NobodyFalls.Application.Realtime;
 using NobodyFalls.Domain.Common;
 using NobodyFalls.Domain.Friends;
 using NobodyFalls.Infrastructure.Persistence;
@@ -8,11 +9,11 @@ using Npgsql;
 
 namespace NobodyFalls.Infrastructure.Friends;
 
-internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSettingsProvider settings) : IFriendStore
+internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSettingsProvider settings) : IFriendStore, IFriendGraph
 {
     private const string CountFriends = "select count(*)::int from friendships where player_low = @id or player_high = @id";
 
-    public async Task<Result<FriendRequestOutcome>> RequestAsync(PlayerId from, string targetPseudo, DateTimeOffset now, CancellationToken cancellationToken)
+    public async Task<Result<FriendRequestResult>> RequestAsync(PlayerId from, string targetPseudo, DateTimeOffset now, CancellationToken cancellationToken)
     {
         var pseudo = Pseudo.Create(targetPseudo);
         if (pseudo.IsFailure)
@@ -79,7 +80,7 @@ internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSett
         {
             await AcceptInTransactionAsync(tx, requestId, pair, now, cancellationToken);
             await tx.CommitAsync(cancellationToken);
-            return Result.Success(FriendRequestOutcome.BecameFriends);
+            return Result.Success(new FriendRequestResult(FriendRequestOutcome.BecameFriends, to));
         }
 
         await tx.ExecuteAsync(
@@ -89,10 +90,10 @@ internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSett
             ("to", to.Value),
             ("now", Sql.Utc(now)));
         await tx.CommitAsync(cancellationToken);
-        return Result.Success(FriendRequestOutcome.Sent);
+        return Result.Success(new FriendRequestResult(FriendRequestOutcome.Sent, to));
     }
 
-    public async Task<Result> AcceptAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken)
+    public async Task<Result<PlayerId>> AcceptAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken)
     {
         var rules = (await settings.GetCurrentAsync(cancellationToken)).Rules;
         await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
@@ -114,12 +115,13 @@ internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSett
             rules);
         if (check.IsFailure)
         {
-            return check;
+            return check.Error!;
         }
 
-        await AcceptInTransactionAsync(tx, requestId, PlayerPair.Of(player, new PlayerId(requesterId)), now, cancellationToken);
+        var requesterPlayer = new PlayerId(requesterId);
+        await AcceptInTransactionAsync(tx, requestId, PlayerPair.Of(player, requesterPlayer), now, cancellationToken);
         await tx.CommitAsync(cancellationToken);
-        return Result.Success();
+        return Result.Success(requesterPlayer);
     }
 
     public Task<Result> DeclineAsync(PlayerId player, long requestId, DateTimeOffset now, CancellationToken cancellationToken) =>
@@ -325,4 +327,34 @@ internal sealed class PostgresFriendStore(NpgsqlDataSource dataSource, IGameSett
             cancellationToken,
             ("low", pair.Low.Value),
             ("high", pair.High.Value));
+
+    public async Task<IReadOnlyDictionary<PlayerId, IReadOnlyList<PlayerId>>> FriendsOfAsync(IReadOnlyCollection<PlayerId> players, CancellationToken cancellationToken)
+    {
+        await using var command = dataSource.CreateCommand(
+            """
+            select player_low, player_high from friendships
+            where player_low = any(@ids) or player_high = any(@ids)
+            """);
+        command.Parameters.AddWithValue("ids", players.Select(p => p.Value).ToArray());
+        await using var r = await command.ExecuteReaderAsync(cancellationToken);
+
+        var wanted = players.ToHashSet();
+        var friends = wanted.ToDictionary(p => p, _ => new List<PlayerId>());
+        while (await r.ReadAsync(cancellationToken))
+        {
+            var low = new PlayerId(r.GetGuid(0));
+            var high = new PlayerId(r.GetGuid(1));
+            if (wanted.Contains(low))
+            {
+                friends[low].Add(high);
+            }
+
+            if (wanted.Contains(high))
+            {
+                friends[high].Add(low);
+            }
+        }
+
+        return friends.ToDictionary(f => f.Key, f => (IReadOnlyList<PlayerId>)f.Value);
+    }
 }

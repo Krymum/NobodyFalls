@@ -36,6 +36,9 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<ExternalLoginRow> ExternalLogins => Set<ExternalLoginRow>();
     public DbSet<AppearanceRow> Appearances => Set<AppearanceRow>();
     public DbSet<FriendRequestRow> FriendRequests => Set<FriendRequestRow>();
+    public DbSet<PushSubscriptionRow> PushSubscriptions => Set<PushSubscriptionRow>();
+    public DbSet<NotificationPreferencesRow> NotificationPreferences => Set<NotificationPreferencesRow>();
+    public DbSet<VapidKeysRow> VapidKeys => Set<VapidKeysRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +52,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigureSkins(modelBuilder);
         ConfigureOperations(modelBuilder);
         ConfigureAccounts(modelBuilder);
+        ConfigurePush(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -260,7 +264,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.Property(n => n.Payload).HasColumnType("jsonb");
             e.Property(n => n.Attempts).HasDefaultValue(0);
             e.HasIndex(n => n.DedupeKey).IsUnique();
-            e.HasIndex(n => n.CreatedAt).HasFilter("sent_at is null").HasDatabaseName("ix_notification_outbox_pending");
+            e.HasIndex(n => n.Id).HasFilter("sent_at is null").HasDatabaseName("ix_notification_outbox_pending");
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(n => n.PlayerId).OnDelete(DeleteBehavior.Cascade);
         });
 
@@ -316,6 +320,35 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.HasIndex(r => r.ToId).HasFilter("status = 'pending'");
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.FromId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.ToId).OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigurePush(ModelBuilder b)
+    {
+        b.Entity<PushSubscriptionRow>(e =>
+        {
+            e.ToTable("push_subscriptions");
+            e.HasKey(p => p.Endpoint);
+            e.Property(p => p.Endpoint).HasMaxLength(1000);
+            e.Property(p => p.P256dh).HasMaxLength(200);
+            e.Property(p => p.Auth).HasMaxLength(100);
+            e.Property(p => p.UserAgent).HasMaxLength(300);
+            e.HasIndex(p => p.PlayerId);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(p => p.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<NotificationPreferencesRow>(e =>
+        {
+            e.ToTable("notification_preferences");
+            e.HasKey(p => p.PlayerId);
+            e.HasOne<PlayerRow>().WithOne().HasForeignKey<NotificationPreferencesRow>(p => p.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<VapidKeysRow>(e =>
+        {
+            e.ToTable("vapid_keys", t => t.HasCheckConstraint("ck_vapid_keys_single_row", "id = 1"));
+            e.HasKey(k => k.Id);
+            e.Property(k => k.Id).ValueGeneratedNever();
         });
     }
 }
