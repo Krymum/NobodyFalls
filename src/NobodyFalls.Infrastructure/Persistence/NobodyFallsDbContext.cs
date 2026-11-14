@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static NobodyFalls.Infrastructure.Persistence.DbValues;
@@ -8,8 +9,11 @@ namespace NobodyFalls.Infrastructure.Persistence;
 /// The schema, owned by EF Core migrations. Hot paths (giving hands, midnight) use
 /// hand-written SQL on the same tables; EF serves the migrations and simple CRUD.
 /// </summary>
-internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext> options) : DbContext(options)
+internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext> options) : DbContext(options), IDataProtectionKeyContext
 {
+    /// <summary>Cookie encryption keys, shared by every instance and kept across restarts.</summary>
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
+
     public DbSet<PlayerRow> Players => Set<PlayerRow>();
     public DbSet<SeasonRow> Seasons => Set<SeasonRow>();
     public DbSet<GameDayRow> GameDays => Set<GameDayRow>();
@@ -29,6 +33,9 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<NotificationOutboxRow> NotificationOutbox => Set<NotificationOutboxRow>();
     public DbSet<GameSettingsRow> GameSettings => Set<GameSettingsRow>();
     public DbSet<DevClockRow> DevClock => Set<DevClockRow>();
+    public DbSet<ExternalLoginRow> ExternalLogins => Set<ExternalLoginRow>();
+    public DbSet<AppearanceRow> Appearances => Set<AppearanceRow>();
+    public DbSet<FriendRequestRow> FriendRequests => Set<FriendRequestRow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +48,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         ConfigureProgress(modelBuilder);
         ConfigureSkins(modelBuilder);
         ConfigureOperations(modelBuilder);
+        ConfigureAccounts(modelBuilder);
     }
 
     private static void ConfigurePlayers(EntityTypeBuilder<PlayerRow> e)
@@ -271,6 +279,43 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.ToTable("dev_clock", t => t.HasCheckConstraint("ck_dev_clock_single_row", "id = 1"));
             e.HasKey(c => c.Id);
             e.Property(c => c.Id).ValueGeneratedNever();
+        });
+    }
+
+    private static void ConfigureAccounts(ModelBuilder b)
+    {
+        b.Entity<ExternalLoginRow>(e =>
+        {
+            e.ToTable("external_logins");
+            e.HasKey(l => new { l.Provider, l.ProviderKey });
+            e.Property(l => l.Provider).HasMaxLength(32);
+            e.Property(l => l.ProviderKey).HasMaxLength(256);
+            e.HasIndex(l => l.PlayerId);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(l => l.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<AppearanceRow>(e =>
+        {
+            e.ToTable("appearances");
+            e.HasKey(a => a.PlayerId);
+            e.Property(a => a.Document).HasColumnType("jsonb");
+            e.HasOne<PlayerRow>().WithOne().HasForeignKey<AppearanceRow>(a => a.PlayerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<FriendRequestRow>(e =>
+        {
+            e.ToTable("friend_requests", t =>
+            {
+                t.HasCheckConstraint("ck_friend_requests_status", "status in ('pending', 'accepted', 'declined', 'cancelled')");
+                t.HasCheckConstraint("ck_friend_requests_not_self", "from_id <> to_id");
+            });
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Id).UseIdentityAlwaysColumn();
+            e.Property(r => r.Status).HasMaxLength(16);
+            e.HasIndex(r => new { r.FromId, r.ToId }).IsUnique().HasFilter("status = 'pending'").HasDatabaseName("ux_friend_requests_pending");
+            e.HasIndex(r => r.ToId).HasFilter("status = 'pending'");
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.FromId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<PlayerRow>().WithMany().HasForeignKey(r => r.ToId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

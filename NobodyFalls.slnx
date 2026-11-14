@@ -1,12 +1,15 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/NobodyFalls.Api/NobodyFalls.Api.csproj" />
     <Project Path="src/NobodyFalls.Application/NobodyFalls.Application.csproj" />
     <Project Path="src/NobodyFalls.Domain/NobodyFalls.Domain.csproj" />
     <Project Path="src/NobodyFalls.Infrastructure/NobodyFalls.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/NobodyFalls.Api.Tests/NobodyFalls.Api.Tests.csproj" />
     <Project Path="tests/NobodyFalls.Domain.Tests/NobodyFalls.Domain.Tests.csproj" />
     <Project Path="tests/NobodyFalls.Infrastructure.Tests/NobodyFalls.Infrastructure.Tests.csproj" />
+    <Project Path="tests/NobodyFalls.Testing.Postgres/NobodyFalls.Testing.Postgres.csproj" />
     <Project Path="tests/NobodyFalls.Testing/NobodyFalls.Testing.csproj" />
   </Folder>
 </Solution>

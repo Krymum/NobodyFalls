@@ -1,14 +1,23 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Accounts;
+using NobodyFalls.Application.Dev;
+using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
+using NobodyFalls.Application.Queries;
+using NobodyFalls.Infrastructure.Accounts;
 using NobodyFalls.Infrastructure.Clock;
+using NobodyFalls.Infrastructure.Dev;
+using NobodyFalls.Infrastructure.Friends;
 using NobodyFalls.Infrastructure.Hands;
 using NobodyFalls.Infrastructure.Night;
 using NobodyFalls.Infrastructure.Persistence;
 using NobodyFalls.Infrastructure.Players;
+using NobodyFalls.Infrastructure.Queries;
 using NobodyFalls.Infrastructure.Settings;
 using Npgsql;
 
@@ -40,6 +49,13 @@ public static class DependencyInjection
         services.AddSingleton<IHandLedger, PostgresHandLedger>();
         services.AddSingleton<IPlayerLifecycleStore, PostgresPlayerLifecycleStore>();
         services.AddScoped(sp => new DatabaseMigrator(sp.GetRequiredService<NobodyFallsDbContext>()));
+        services.AddSingleton<ISkinCatalogProvider, SkinCatalogProvider>();
+        services.AddSingleton<IGameQueries, PostgresGameQueries>();
+        services.AddSingleton<IAccountStore, PostgresAccountStore>();
+        services.AddSingleton<IPlayerSettingsStore, PostgresPlayerSettingsStore>();
+        services.AddSingleton<IFriendStore, PostgresFriendStore>();
+        services.AddSingleton<IDevStore, PostgresDevStore>();
+        services.AddHttpClient<IHumanVerifier, TurnstileVerifier>(http => http.Timeout = TimeSpan.FromSeconds(5));
 
         if (options.SimulatedClock)
         {
@@ -60,6 +76,10 @@ public static class DependencyInjection
 
         return services;
     }
+
+    /// <summary>Stores Data Protection keys (session cookies) in PostgreSQL.</summary>
+    public static IDataProtectionBuilder PersistKeysToNobodyFallsDatabase(this IDataProtectionBuilder builder) =>
+        builder.PersistKeysToDbContext<NobodyFallsDbContext>();
 
     internal static DbContextOptionsBuilder UseNobodyFalls(this DbContextOptionsBuilder builder, NpgsqlDataSource dataSource) =>
         builder

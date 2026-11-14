@@ -1,5 +1,6 @@
-# Local stack. The application service is added in step (c).
-# Usage: cp .env.example .env && docker compose up -d
+# Local stack in development mode: dev login, simulated clock, fake players.
+# Usage: cp .env.example .env && docker compose up --build
+# Then open http://localhost:8080 (API: /api/v1, dev tools: /dev).
 name: nobodyfalls
 
 services:
@@ -31,6 +32,29 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-nobodyfalls};Username=${POSTGRES_USER:-nobodyfalls};Password=${POSTGRES_PASSWORD}"
+      Database__MigrateOnStartup: "true"
+      DevTools__Enabled: "${DEV_TOOLS:-true}"
+      Auth__SecureCookies: "false"
+      Auth__Google__ClientId: "${GOOGLE_CLIENT_ID:-}"
+      Auth__Google__ClientSecret: "${GOOGLE_CLIENT_SECRET:-}"
+      Auth__Discord__ClientId: "${DISCORD_CLIENT_ID:-}"
+      Auth__Discord__ClientSecret: "${DISCORD_CLIENT_SECRET:-}"
+      Turnstile__SiteKey: "${TURNSTILE_SITE_KEY:-1x00000000000000000000AA}"
+      Turnstile__SecretKey: "${TURNSTILE_SECRET_KEY:-1x0000000000000000000000000000000AA}"
+    ports:
+      - "${APP_PORT:-8080}:8080"
 
 volumes:
   postgres-data:
