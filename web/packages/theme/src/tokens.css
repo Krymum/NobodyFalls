@@ -24,4 +24,19 @@
   --nf-space-radius: 2px;
   --nf-space-button-height: 52px;
   --nf-space-secondary-height: 44px;
+  --nf-layout-rail-width: 88px;
+  --nf-layout-panel-min: 360px;
+  --nf-layout-panel-max: 420px;
+  --nf-layout-panel-viewport: 30vw;
+  --nf-layout-column-tablet: 640px;
+  --nf-layout-column-max: 760px;
+  --nf-layout-panel-tablet: 560px;
+  --nf-layout-panel: clamp(360px, 30vw, 420px);
+  --nf-fluid-title: clamp(38px, 3vw + 35px, 64px);
+  --nf-fluid-heading: clamp(36px, 1.6vw + 34px, 56px);
+  --nf-fluid-number: clamp(44px, 1.6vw + 42px, 64px);
+  --nf-fluid-text: clamp(15px, 0.2vw + 14.2px, 17px);
+  --nf-fluid-label: clamp(13px, 0.1vw + 12.6px, 14px);
+  --nf-fluid-gutter: clamp(24px, 2vw + 16px, 40px);
+  --nf-fluid-section: clamp(28px, 2vw + 20px, 44px);
 }

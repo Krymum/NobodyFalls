@@ -20,6 +20,17 @@ export function toCssVariables(): string {
   for (const [name, value] of Object.entries(theme.space)) {
     lines.push(`  --nf-space-${kebab(name)}: ${value};`);
   }
+  for (const [name, value] of Object.entries(theme.layout)) {
+    lines.push(
+      `  --nf-layout-${kebab(name)}: ${name === 'panelViewport' ? `${value * 100}vw` : `${value}px`};`,
+    );
+  }
+  lines.push(
+    `  --nf-layout-panel: clamp(${theme.layout.panelMin}px, ${theme.layout.panelViewport * 100}vw, ${theme.layout.panelMax}px);`,
+  );
+  for (const [name, value] of Object.entries(theme.fluid)) {
+    lines.push(`  --nf-fluid-${kebab(name)}: ${value};`);
+  }
 
   return [
     '/* Generated from src/tokens.ts by `pnpm --filter @nobodyfalls/theme gen`. Do not edit. */',
