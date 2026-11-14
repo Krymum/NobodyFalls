@@ -74,8 +74,8 @@ Google and Discord (OAuth, enabled when configured) and a development login.
 A short-lived external cookie carries the identity until the account exists, then
 the session cookie (`__Host-` prefixed, HttpOnly, SameSite). Mutating requests
 need the `X-NF-Request` header, which a cross-site form cannot send
-([ADR 0007](adr/0007-authentication-and-session.md)). Cloudflare Turnstile guards
-registration.
+([ADR 0007](adr/0007-authentication-and-session.md)). Cloudflare Turnstile, invisible,
+guards registration and every hand given.
 
 ## Real time
 
