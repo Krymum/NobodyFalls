@@ -1,0 +1,239 @@
+/* Shared interface pieces: floating on the scene, no cards, no frames (ART_DIRECTION, "Interface"). */
+
+.shell {
+  position: relative;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--nf-color-page);
+}
+
+.page {
+  padding: 72px var(--nf-space-gutter) 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  padding: 18px var(--nf-space-gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--nf-font-display);
+  font-size: 14px;
+  color: var(--nf-color-header);
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: var(--nf-font-header-tracking);
+}
+
+.night {
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+  text-decoration: none;
+}
+
+.tabs {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 3;
+  max-width: 480px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgb(5 7 10 / 0), var(--nf-color-page) 40%);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  justify-content: center;
+  font-family: var(--nf-font-display);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nf-color-label);
+  text-decoration: none;
+}
+
+.tab[aria-current='page'] {
+  color: var(--nf-color-bone);
+}
+
+.label {
+  font-family: var(--nf-font-display);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--nf-color-header);
+  text-transform: uppercase;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--nf-font-display);
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 0.95;
+  color: var(--nf-color-bone);
+}
+
+.subheading {
+  margin: 0;
+  font-family: var(--nf-font-display);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--nf-color-label);
+}
+
+.text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--nf-color-text-secondary);
+}
+
+.primary {
+  height: var(--nf-space-button-height);
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--nf-space-radius);
+  background: var(--nf-color-action);
+  color: var(--nf-color-on-action);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  border: 1px solid var(--nf-color-outline);
+  background: none;
+  color: var(--nf-color-text-secondary);
+  cursor: default;
+}
+
+.secondary {
+  min-height: var(--nf-space-secondary-height);
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--nf-color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--nf-font-display);
+  font-size: 12px;
+  letter-spacing: var(--nf-font-label-tracking);
+  color: var(--nf-color-label);
+}
+
+.attention {
+  color: var(--nf-color-attention);
+}
+
+.danger {
+  color: var(--nf-color-danger);
+}
+
+.notice {
+  margin: 0;
+  font-size: 14px;
+  color: var(--nf-color-bone);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  border-bottom: 1px solid rgb(127 139 152 / 0.12);
+}
+
+.rowBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  font-family: var(--nf-font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: var(--nf-color-bone);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--nf-color-outline);
+  border-radius: var(--nf-space-radius);
+  background: rgb(14 20 29 / 0.6);
+  color: var(--nf-color-bone);
+  font: inherit;
+  font-size: 16px;
+}
+
+.field {
+  display: flex;
+  gap: 10px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

@@ -1,0 +1,144 @@
+.figures {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 20px;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.number {
+  margin: 0;
+  font-family: var(--nf-font-display);
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--nf-color-bone);
+}
+
+.identity {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  font-size: 15px;
+  color: var(--nf-color-text-secondary);
+}
+
+.toggle input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--nf-color-action);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--nf-color-outline);
+  border-radius: var(--nf-space-radius);
+  background: none;
+  color: var(--nf-color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.choice[aria-pressed='true'] {
+  border-color: var(--nf-color-bone);
+  color: var(--nf-color-bone);
+}
+
+.swatch {
+  width: 36px;
+  height: 36px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.swatch[aria-pressed='true'] {
+  border-color: var(--nf-color-bone);
+}
+
+.preview {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nf-color-outline);
+}
+
+.dot[aria-current='step'] {
+  background: var(--nf-color-bone);
+}
+
+.onboarding {
+  min-height: 100dvh;
+  padding: 96px var(--nf-space-gutter) calc(32px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: flex-end;
+}
+
+.devPanel {
+  position: fixed;
+  right: 12px;
+  top: 52px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--nf-color-outline);
+  background: rgb(5 7 10 / 0.92);
+  font-size: 12px;
+}
+
+.devToggle {
+  position: fixed;
+  right: 12px;
+  top: 48px;
+  z-index: 10;
+  border: 1px dashed var(--nf-color-outline);
+  background: var(--nf-color-page);
+  color: var(--nf-color-label);
+  font: 600 11px var(--nf-font-display);
+  letter-spacing: 0.2em;
+  padding: 4px 8px;
+  cursor: pointer;
+}

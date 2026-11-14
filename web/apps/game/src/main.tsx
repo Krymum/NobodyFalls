@@ -4,14 +4,19 @@ import '@nobodyfalls/theme/tokens.css';
 import './styles/global.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { SceneDemo } from './dev/SceneDemo.tsx';
+import { App } from './App.tsx';
+import { registerServiceWorker } from './core/pwa.ts';
+import { detectLocale, initI18n, isLocale } from './i18n/index.ts';
+
+const fromUrl = window.location.pathname.split('/')[1];
+await initI18n(isLocale(fromUrl) ? fromUrl : detectLocale());
+registerServiceWorker();
 
 const root = document.getElementById('root');
 if (root) {
-  // Step (e) ships the renderers and their demo; the game screens arrive in step (f).
   createRoot(root).render(
     <StrictMode>
-      <SceneDemo />
+      <App />
     </StrictMode>,
   );
 }

@@ -1,0 +1,70 @@
+.stage {
+  position: relative;
+  height: 100dvh;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--nf-color-page);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.name {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--nf-font-display);
+  font-size: 12px;
+  letter-spacing: var(--nf-font-label-tracking);
+  color: var(--nf-color-label);
+  white-space: nowrap;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.me {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--nf-color-bone);
+}
+
+/* Text on a fade to black, above the tab bar. */
+.panel {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  padding: 64px var(--nf-space-gutter) calc(76px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--nf-space-gap);
+  background: linear-gradient(
+    to bottom,
+    rgb(5 7 10 / 0) 0,
+    rgb(5 7 10 / 0.88) 70px,
+    var(--nf-color-page) 120px
+  );
+}
+
+.title {
+  margin: 0;
+  font-family: var(--nf-font-display);
+  font-weight: 600;
+  font-size: clamp(38px, 12vw, 50px);
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  color: var(--nf-color-bone);
+}
