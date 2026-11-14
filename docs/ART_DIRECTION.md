@@ -101,11 +101,38 @@ corde, icône, texte). Contraste AA pour tout texte.
 - Les dégradés sont autorisés uniquement pour la lumière, la brume et la
   lisibilité du texte, jamais en décoration.
 
+## Responsive : mobile, tablette, desktop
+Mobile-first ne veut pas dire mobile-only. Sur grand écran, on ne
+centre jamais une colonne de téléphone au milieu d'un écran noir.
+- Points de rupture : < 640 px (mobile), 640–1023 px (tablette),
+  ≥ 1024 px (desktop). Layout basé sur la largeur réelle, pas sur le
+  user-agent.
+- La scène (canvas) occupe toujours toute la fenêtre, quelle que soit
+  sa taille. Une caméra cadre la scène selon le ratio : en paysage on
+  voit plus de vide et de foule sur les côtés, les personnages proches
+  restent à une hauteur confortable (dimensionnés sur la hauteur de la
+  fenêtre, bornés en taille min/max), jamais étirés ni pixelisés.
+- Desktop : l'UI quitte le bas de l'écran. Navigation en rail vertical
+  à gauche (icône + libellé), panneau d'information à droite ou à
+  gauche (360–420 px), posé sur un fondu latéral, sans cadre. La scène
+  reste au centre, visible.
+- Écrans de liste (Bord du vide, Amis, Classement, Profil) : contenu
+  dans une colonne de 640–760 px max, la scène reste visible en fond
+  (atténuée) ou dans une colonne latérale ; Bord du vide en desktop =
+  liste + aperçu de la scène du joueur sélectionné côte à côte.
+- Typographie fluide (`clamp()`), titres plus grands en desktop ; zones
+  cliquables ≥ 44 px partout ; survol (hover) et focus visibles en
+  desktop.
+- Clavier : navigation complète, raccourcis discrets en desktop
+  (ex. flèches dans la carte, Échap pour fermer un panneau).
+- L'admin est desktop-first mais doit rester utilisable sur mobile.
+- Tests Playwright sur 3 viewports : 390×844, 820×1180, 1440×900.
+
 ## Animations
 - Balancement continu et lent de chaque personnage (pendule), amplitude
   liée au statut.
 - Sauvetage : la corde se déroule (~0,8 s), se tend, la posture change.
-- Chute : le personnage glisse dans la brume. Retour d'un tombé : l'inverse.
+- Chute : le personnage glisse dans la brume. Remontée : l'inverse.
 - Poussière qui dérive dans la lumière, brume qui avance lentement.
 - `prefers-reduced-motion` : image fixe, changements d'état sans animation.
 
