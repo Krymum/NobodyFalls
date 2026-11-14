@@ -11,7 +11,7 @@ using Npgsql;
 
 namespace NobodyFalls.Infrastructure.Tests.Staff;
 
-/// <summary>The team, two-factor sign-in and the append-only, hash-chained audit log (ADR 0017–0019).</summary>
+/// <summary>The team, two-factor sign-in and the append-only, hash-chained audit log (ADR 0018–0020).</summary>
 public sealed class StaffAndAuditTests(PostgresFixture postgres)
 {
     private static readonly CancellationToken Ct = CancellationToken.None;

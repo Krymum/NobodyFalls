@@ -175,7 +175,7 @@ internal sealed class DataProtectionSecretProtector(IDataProtectionProvider prov
 /// <summary>
 /// Session versions are checked on every authenticated request; a short cache spares
 /// the database. A bump made by this instance is seen at once; by another, within the
-/// cache lifetime (ADR 0020).
+/// cache lifetime (ADR 0021).
 /// </summary>
 internal sealed class SessionVersionCache(NpgsqlDataSource dataSource, TimeProvider time) : ISessionVersions
 {

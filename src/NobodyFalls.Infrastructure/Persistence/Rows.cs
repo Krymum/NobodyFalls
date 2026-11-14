@@ -29,7 +29,7 @@ internal sealed class PlayerRow
     public int? TileY { get; set; }
     public string MapNameVisibility { get; set; } = "friends";
 
-    /// <summary>Written into session cookies; bumping it ends every session of the player (ADR 0020).</summary>
+    /// <summary>Written into session cookies; bumping it ends every session of the player (ADR 0021).</summary>
     public int SessionVersion { get; set; }
 }
 
@@ -288,7 +288,7 @@ internal sealed class TotpRecoveryCodeRow
     public DateTimeOffset? UsedAt { get; set; }
 }
 
-/// <summary>Append-only (trigger) and hash-chained (ADR 0019).</summary>
+/// <summary>Append-only (trigger) and hash-chained (ADR 0020).</summary>
 internal sealed class AuditLogRow
 {
     public long Id { get; set; }

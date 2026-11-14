@@ -5,7 +5,7 @@ using NobodyFalls.Application.Staff;
 namespace NobodyFalls.Api.Auth;
 
 /// <summary>
-/// Ends sessions remotely (ADR 0020): a cookie whose session version is older than the
+/// Ends sessions remotely (ADR 0021): a cookie whose session version is older than the
 /// player's current one is refused and removed. A ban or an authenticator reset bumps
 /// the version, which signs the player out on every device.
 /// </summary>

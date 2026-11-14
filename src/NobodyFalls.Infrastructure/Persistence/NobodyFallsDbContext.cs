@@ -386,7 +386,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
             e.HasOne<PlayerRow>().WithMany().HasForeignKey(c => c.PlayerId).OnDelete(DeleteBehavior.Cascade);
         });
 
-        // No foreign key on purpose: the log outlives what it describes (ADR 0019).
+        // No foreign key on purpose: the log outlives what it describes (ADR 0020).
         b.Entity<AuditLogRow>(e =>
         {
             e.ToTable("audit_log");

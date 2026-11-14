@@ -8,7 +8,7 @@ using NobodyFalls.Domain.Common;
 namespace NobodyFalls.Api.Admin;
 
 /// <summary>
-/// The admin session (ADR 0018): a second cookie, issued only after a TOTP code, on top of
+/// The admin session (ADR 0019): a second cookie, issued only after a TOTP code, on top of
 /// the player session. It records when the member signed in and when they last confirmed
 /// a code; sensitive actions require a confirmation less than five minutes old.
 /// </summary>

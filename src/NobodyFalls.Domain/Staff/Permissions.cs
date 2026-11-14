@@ -10,7 +10,7 @@ public enum StaffRole
 
 /// <summary>
 /// What a team member may do. Every admin endpoint requires exactly one permission;
-/// <see cref="PermissionMatrix"/> says which roles grant it (ADR 0017).
+/// <see cref="PermissionMatrix"/> says which roles grant it (ADR 0018).
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1711", Justification = "The game design's own word; unrelated to code access security.")]
 public enum Permission

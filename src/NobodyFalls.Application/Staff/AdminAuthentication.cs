@@ -24,7 +24,7 @@ public enum AdminSignInMethod
 public sealed record TotpEnrollment(string Secret, string ProvisioningUri);
 
 /// <summary>
-/// Two-factor sign-in to the admin (ADR 0018): enrolment of an authenticator, sign-in
+/// Two-factor sign-in to the admin (ADR 0019): enrolment of an authenticator, sign-in
 /// with a code or a recovery code, and re-authentication before sensitive actions.
 /// Five wrong codes lock the authenticator for 15 minutes. Times are real time.
 /// </summary>

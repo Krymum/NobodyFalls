@@ -15,7 +15,7 @@ public static class StaffErrors
     public static readonly DomainError NotHuman = new("staff.not_human", "Only human players can join the team.");
 }
 
-/// <summary>Rules for giving and taking team roles (ADR 0017).</summary>
+/// <summary>Rules for giving and taking team roles (ADR 0018).</summary>
 public static class StaffRoles
 {
     /// <summary>The name stored in the database and sent to clients.</summary>

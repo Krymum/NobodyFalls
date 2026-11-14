@@ -9,7 +9,7 @@ namespace NobodyFalls.Infrastructure.Audit;
 
 /// <summary>
 /// Appends to the audit log inside the caller's transaction, so that an action and its
-/// entry commit or roll back together (ADR 0019). Appends are serialized by an advisory
+/// entry commit or roll back together (ADR 0020). Appends are serialized by an advisory
 /// lock so that each entry chains to the one before it.
 /// </summary>
 internal static class AuditWriter

@@ -15,7 +15,7 @@ public sealed record StaffAddRequest(string? Pseudo, IReadOnlyList<string>? Role
 
 public sealed record StaffRolesRequest(IReadOnlyList<string>? Roles);
 
-/// <summary>The admin API, <c>/api/v1/admin</c> (ADR 0016). Every route declares its access.</summary>
+/// <summary>The admin API, <c>/api/v1/admin</c> (ADR 0017). Every route declares its access.</summary>
 internal static class AdminEndpoints
 {
     public const string Prefix = "/api/v1/admin";

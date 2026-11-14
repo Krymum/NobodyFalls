@@ -40,7 +40,7 @@ internal static class SpaHosting
     }
 
     /// <summary>
-    /// The admin is a separate front end (ADR 0016) under <c>/admin/</c>: never indexed,
+    /// The admin is a separate front end (ADR 0017) under <c>/admin/</c>: never indexed,
     /// never framed, scripts from this origin only.
     /// </summary>
     private static void MapAdminApp(WebApplication app)

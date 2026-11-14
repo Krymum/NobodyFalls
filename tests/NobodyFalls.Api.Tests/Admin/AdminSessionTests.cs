@@ -7,7 +7,7 @@ using NobodyFalls.Testing.Postgres;
 
 namespace NobodyFalls.Api.Tests.Admin;
 
-/// <summary>Two-factor admin sessions, re-authentication, team management and the audit trail (ADR 0017–0020).</summary>
+/// <summary>Two-factor admin sessions, re-authentication, team management and the audit trail (ADR 0018–0021).</summary>
 public sealed class AdminSessionTests(PostgresFixture postgres)
 {
     private const string Admin = StaffSupport.Admin;

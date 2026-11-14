@@ -7,7 +7,7 @@ namespace NobodyFalls.Domain.Security;
 /// <summary>
 /// Time-based one-time passwords (RFC 6238, HMAC-SHA1, 6 digits, 30-second steps), the
 /// format every authenticator app reads. Small enough to own, and tested against the
-/// RFC's vectors (ADR 0018). Codes follow real time, never the simulated game clock.
+/// RFC's vectors (ADR 0019). Codes follow real time, never the simulated game clock.
 /// </summary>
 public static class Totp
 {

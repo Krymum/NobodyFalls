@@ -12,7 +12,7 @@ public sealed record AuditActor(PlayerId? Id, IReadOnlyList<StaffRole> Roles, st
 }
 
 /// <summary>
-/// One line of the audit log (ADR 0019): who, what (a stable action code), on what,
+/// One line of the audit log (ADR 0020): who, what (a stable action code), on what,
 /// the state before and after, and why. <see cref="Before"/> and <see cref="After"/>
 /// are serialized as JSON; keep them to the fields that changed.
 /// </summary>

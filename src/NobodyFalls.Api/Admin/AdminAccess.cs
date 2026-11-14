@@ -51,7 +51,7 @@ internal static class AdminAccess
 }
 
 /// <summary>
-/// Guards every admin endpoint (ADR 0017, 0018), in this order: a player session (401),
+/// Guards every admin endpoint (ADR 0018, 0019), in this order: a player session (401),
 /// a team role read from the database now (403), an admin session opened with a TOTP code
 /// (403 <c>admin.totp_required</c>), the endpoint's permission (403), and for sensitive
 /// actions a code confirmed less than five minutes ago (401 <c>admin.reauth_required</c>).

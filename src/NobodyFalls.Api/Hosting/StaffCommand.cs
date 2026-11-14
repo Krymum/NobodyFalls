@@ -4,7 +4,7 @@ namespace NobodyFalls.Api.Hosting;
 
 /// <summary>
 /// <c>dotnet NobodyFalls.Api.dll staff grant &lt;pseudo&gt;</c> makes the first admin
-/// (ADR 0017). It works only while the team has no admin: from then on, roles are given
+/// (ADR 0018). It works only while the team has no admin: from then on, roles are given
 /// from the admin, with two-factor sign-in and an audit trail.
 /// </summary>
 internal static class StaffCommand

@@ -10,7 +10,7 @@ public sealed record StaffAccess(PlayerId PlayerId, string Pseudo, IReadOnlyList
 
 public sealed record StaffMember(PlayerId PlayerId, string Pseudo, IReadOnlyList<StaffRole> Roles, bool TotpEnrolled, DateTimeOffset GrantedAt);
 
-/// <summary>The team (ADR 0017). Every change is audited in its own transaction.</summary>
+/// <summary>The team (ADR 0018). Every change is audited in its own transaction.</summary>
 public interface IStaffStore
 {
     /// <summary>The member's access, or null for a player without a role. Read on every admin request.</summary>
@@ -71,7 +71,7 @@ public interface ISecretProtector
 
 /// <summary>
 /// Each player has a session version written into their cookies. Bumping it ends every
-/// session of that player at once (ban, authenticator reset) (ADR 0020).
+/// session of that player at once (ban, authenticator reset) (ADR 0021).
 /// </summary>
 public interface ISessionVersions
 {

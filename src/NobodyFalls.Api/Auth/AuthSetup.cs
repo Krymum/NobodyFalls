@@ -45,7 +45,7 @@ internal static class AuthSetup
             })
             .AddCookie(AdminPrincipal.Scheme, options =>
             {
-                // ADR 0018: issued after a TOTP code; 30 minutes idle, 8 hours at most, same-site only.
+                // ADR 0019: issued after a TOTP code; 30 minutes idle, 8 hours at most, same-site only.
                 Configure(options.Cookie, secure, "nf-admin");
                 options.Cookie.SameSite = SameSiteMode.Strict;
                 options.ExpireTimeSpan = AdminPrincipal.IdleTimeout;

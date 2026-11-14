@@ -75,7 +75,7 @@ public static class DependencyInjection
         services.AddSingleton<IDevStore, PostgresDevStore>();
         services.AddHttpClient<IHumanVerifier, TurnstileVerifier>(http => http.Timeout = TimeSpan.FromSeconds(5));
 
-        // Phase 2: team, two-factor sign-in and audit (ADR 0017–0019).
+        // Phase 2: team, two-factor sign-in and audit (ADR 0018–0020).
         services.AddSingleton<IAuditLog, PostgresAuditLog>();
         services.AddSingleton<StaffAccessCache>();
         services.AddSingleton<SessionVersionCache>();

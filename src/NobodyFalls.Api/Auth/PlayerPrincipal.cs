@@ -18,7 +18,7 @@ internal static class PlayerPrincipal
 
     public const string PlayerClaim = "nf:player";
 
-    /// <summary>The player's session version when the cookie was issued (ADR 0020).</summary>
+    /// <summary>The player's session version when the cookie was issued (ADR 0021).</summary>
     public const string SessionVersionClaim = "nf:sv";
     public const string Policy = "player";
 

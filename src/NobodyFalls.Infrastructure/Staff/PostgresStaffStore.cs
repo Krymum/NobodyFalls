@@ -230,7 +230,7 @@ internal sealed class PostgresStaffStore(NpgsqlDataSource dataSource, TimeProvid
 
 /// <summary>
 /// Team access is read on every admin request; a short cache spares the database, and
-/// changes made by this instance forget the entry at once (ADR 0017).
+/// changes made by this instance forget the entry at once (ADR 0018).
 /// </summary>
 internal sealed class StaffAccessCache(TimeProvider time)
 {

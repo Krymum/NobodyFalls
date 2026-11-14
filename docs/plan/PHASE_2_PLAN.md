@@ -29,23 +29,24 @@ src/
                              + Feedback/ (idées, tickets, signalements côté joueur)
                              + Audit/ (IAuditTrail), Flags/ (IFeatureFlags), Announcements/
   NobodyFalls.Infrastructure + stores Postgres, audit chaîné, segments SQL, purge des données
-  NobodyFalls.Admin.Api      NOUVEAU : endpoints /api/v1/admin/*, filtres de permission,
-                             session admin (bibliothèque référencée par Api)
-  NobodyFalls.Api            monte Admin.Api, sert /admin (2e index.html), endpoints joueur
+  NobodyFalls.Api            + Admin/ : endpoints /api/v1/admin/*, filtre d'accès, session
+                             admin ; sert /admin (2e index.html) ; endpoints joueur
 web/
-  packages/theme             inchangé (tokens partagés)
-  packages/ui                NOUVEAU : primitives communes (Button, Field, i18n helpers)
-                             extraites du jeu sans changer son bundle
+  packages/theme             tokens partagés (dont layout, ADR 0016)
+  packages/layout            layout responsive partagé jeu + admin (ADR 0016)
   apps/game                  + écran « Idées et contact » en chunk différé
   apps/admin                 NOUVEAU : app Vite séparée, servie sous /admin/
 ```
 
 **[D] Un seul déployable.** L'admin vit dans le même processus et sur la même
-origine : les cookies restent simples, sans CORS. Le code est séparé dans un
-projet `NobodyFalls.Admin.Api`, ce que GAME_DESIGN §14 prévoit (« Admin.Api si
-pertinent ») (ADR 0016).
+origine : les cookies restent simples, sans CORS (ADR 0017).
+*Écart à la réalisation :* le code admin est un dossier `Admin/` de `NobodyFalls.Api`
+plutôt qu'un projet `NobodyFalls.Admin.Api` (« si pertinent », §14) : un projet à
+part n'aurait pas eu accès à la plomberie interne de l'API sans un projet partagé
+de plus. La frontière est tenue par le filtre d'accès (fermé par défaut) et par un
+test qui exige que chaque route `/api/v1/admin` figure dans la table d'autorisation.
 
-**[D] Le bundle admin est séparé** (ADR 0016) :
+**[D] Le bundle admin est séparé** (ADR 0017) :
 - `apps/admin` est une deuxième application Vite, construite dans
   `wwwroot/admin/`, avec son propre `index.html`. L'API sert
   `/admin/{**path}` → `admin/index.html` (`no-cache`, `X-Robots-Tag: noindex`,
@@ -124,13 +125,13 @@ Règles générales :
 - **Un membre de l'équipe ne peut être sanctionné** qu'après le retrait de son
   rôle, par un Admin.
 - **Les rôles sont relus en base à chaque requête** (cache de 15 s), pour qu'un
-  retrait prenne effet immédiatement (ADR 0017).
+  retrait prenne effet immédiatement (ADR 0018).
 
 ---
 
 ## 5. Authentification admin, 2FA, ré-authentification, audit
 
-### Session admin (ADR 0018)
+### Session admin (ADR 0019)
 
 1. On se connecte comme d'habitude (Google, Discord, dev), avec le cookie
    joueur `nf`.
@@ -158,7 +159,7 @@ Règles générales :
    - `players.session_version` est inscrit dans les cookies `nf` et `nf.admin`
      et vérifié à chaque requête (cache de 15 s) ;
    - un ban, un retrait de rôle ou une réinitialisation du TOTP déconnecte
-     **immédiatement**, sur tous les appareils (ADR 0020).
+     **immédiatement**, sur tous les appareils (ADR 0021).
 7. **Premier Admin** :
    - une commande `dotnet NobodyFalls.Api.dll staff grant <pseudo> admin` ne
      fonctionne que s'il n'existe encore aucun Admin ;
@@ -167,7 +168,7 @@ Règles générales :
 8. **Anti-CSRF** : l'en-tête `X-NF-Request` existant, plus `SameSite=Strict`
    sur `nf.admin`.
 
-### Audit (ADR 0019)
+### Audit (ADR 0020)
 
 - **Une action, une ligne, dans la même transaction.**
   - Chaque cas d'usage admin passe par `IAuditTrail.RecordAsync(tx, …)`.
@@ -293,7 +294,7 @@ accessible depuis le Profil et compte trois onglets.
   jour de la saison en cours.
 - Les règles de fin de saison restent en phase 3, comme prévu en phase 1.
 
-**Feature flags (ADR 0021)**
+**Feature flags (ADR 0022)**
 - Chaque clé est déclarée dans le code (`FeatureFlag.IdeasOpen`,
   `ReportsOpen`, `ContactOpen`, `AnnouncementsPush`…) avec sa valeur par
   défaut. En base, on ne stocke que les surcharges.
@@ -303,7 +304,7 @@ accessible depuis le Profil et compte trois onglets.
   (`feature.disabled`). Pas de déploiement progressif par pourcentage en
   phase 2.
 
-**Annonces (ADR 0022)**
+**Annonces (ADR 0023)**
 - **Contenu** : titre et texte en FR **et** EN, tous deux obligatoires.
 - **Canaux** : in-app (bandeau sur « Ce soir », jusqu'à ce qu'il soit fermé ou
   qu'il expire) et/ou push.
@@ -485,13 +486,14 @@ endpoint oublié. Pour chacun, le test vérifie la réponse :
 | (b) `feat(feedback)` | Idées + votes + fusion (domaine), tickets, signalements, `/me/notices`, écran « Idées et contact » (chunk différé), push `ticket.replied`, `report.handled`, préférences | Tests domaine/API, Playwright joueur, budget du jeu inchangé |
 | (c) `feat(admin)` | Tableau de bord, joueurs (fiche, liens, sanctions, export, suppression), effets des sanctions sur le jeu (minuit domaine + SQL, différentiel), signalements, tickets, idées | **Playwright : un modérateur traite un signalement de bout en bout et chaque action apparaît dans l'audit** ; tests différentiels du ban |
 | (d) `feat(live-config)` | Règles, tempêtes, saisons, feature flags, annonces (segments, aperçu, in-app, push) | **Playwright : un admin programme une tempête et la voit s'appliquer à minuit (horloge simulée)** ; tests des segments |
-| (e) `docs` | ADR 0016–0022, architecture, mode dev (admin), README, mise à jour de GAME_DESIGN selon les réponses | CI verte, budgets |
+| (e) `docs` | ADR 0017–0023, architecture, mode dev (admin), README, mise à jour de GAME_DESIGN selon les réponses | CI verte, budgets |
 
-**ADR prévus** :
-- 0016 : application admin et frontière d'API ;
-- 0017 : rôles et matrice de permissions ;
-- 0018 : 2FA TOTP, session admin et ré-authentification ;
-- 0019 : journal d'audit en ajout seul et chaîné ;
-- 0020 : sanctions et révocation des sessions ;
-- 0021 : feature flags ;
-- 0022 : annonces et segments.
+**ADR prévus** (0016 a été pris par le correctif responsive, PR #13, fait avant
+l'étape (a) ; l'admin réutilise son système de layout) :
+- 0017 : application admin et frontière d'API ;
+- 0018 : rôles et matrice de permissions ;
+- 0019 : 2FA TOTP, session admin et ré-authentification ;
+- 0020 : journal d'audit en ajout seul et chaîné ;
+- 0021 : sanctions et révocation des sessions ;
+- 0022 : feature flags ;
+- 0023 : annonces et segments.

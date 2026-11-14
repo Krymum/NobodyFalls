@@ -136,7 +136,7 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                 table: "totp_recovery_codes",
                 column: "player_id");
 
-            // ADR 0019: the digest of an entry covers the previous entry's hash and every
+            // ADR 0020: the digest of an entry covers the previous entry's hash and every
             // field, encoded as a JSON array (unambiguous, independent of the time zone).
             migrationBuilder.Sql(
                 """

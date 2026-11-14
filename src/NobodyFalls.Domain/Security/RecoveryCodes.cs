@@ -7,7 +7,7 @@ namespace NobodyFalls.Domain.Security;
 public sealed record StoredRecoveryCode(byte[] Salt, byte[] Hash);
 
 /// <summary>
-/// One-time codes for a team member who lost their authenticator (ADR 0018): ten codes
+/// One-time codes for a team member who lost their authenticator (ADR 0019): ten codes
 /// of 10 base32 characters (50 bits each), shown once, stored salted and hashed.
 /// </summary>
 public static class RecoveryCodes
