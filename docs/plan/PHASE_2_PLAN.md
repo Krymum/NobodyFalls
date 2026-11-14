@@ -511,4 +511,13 @@ l'étape (a) ; l'admin réutilise son système de layout) :
   un seul chunk (`apps/game/vite.config.ts`) : sans cela, les modules partagés avec
   l'écran différé étaient découpés en chunks supplémentaires (+1,3 Ko). Résultat :
   −0,25 Ko par rapport à la base.
+- **Étape (c)** découpée en deux PR :
+  - **(c1) modération**, qui couvre le critère « un modérateur traite un signalement
+    de bout en bout » : sanctions et leurs effets, avis au joueur, signalements,
+    demandes, idées, écrans admin correspondants, et les notifications push et avis
+    reportés de l'étape (b) ;
+  - **(c2)** : tableau de bord, comptes liés (IP et appareils), export et
+    suppression RGPD.
+- **Retour après un ban** : le joueur reprend au prochain début de journée, au seuil
+  normal. Un ban levé en cours de journée ne le remet pas en jeu le jour même.
 
