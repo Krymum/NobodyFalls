@@ -1,4 +1,5 @@
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Realtime;
 using NobodyFalls.Domain.Common;
 
 namespace NobodyFalls.Application.Hands;
@@ -26,8 +27,20 @@ public interface IHandLedger
 }
 
 /// <summary>Give one of today's hands to another player.</summary>
-public sealed class GiveHand(IHandLedger ledger, IClock clock)
+public sealed class GiveHand(IHandLedger ledger, IRealtimePublisher realtime, IClock clock)
 {
-    public Task<Result<GivenHand>> ExecuteAsync(PlayerId giver, PlayerId receiver, CancellationToken cancellationToken) =>
-        ledger.GiveAsync(giver, receiver, clock.UtcNow, cancellationToken);
+    public async Task<Result<GivenHand>> ExecuteAsync(PlayerId giver, PlayerId receiver, CancellationToken cancellationToken)
+    {
+        var result = await ledger.GiveAsync(giver, receiver, clock.UtcNow, cancellationToken);
+        if (result.IsSuccess)
+        {
+            var hand = result.Value;
+            realtime.Publish(new Audience.Player(giver), new MyHandsChanged(hand.HandsLeft));
+            realtime.Publish(new Audience.Player(receiver), new HandReceived(giver, hand.GivenAt, hand.ReceiverReceived, hand.ReceiverRequired));
+            realtime.Publish(new Audience.FriendsOf(receiver), new PlayerStanding(receiver, hand.ReceiverReceived, hand.ReceiverRequired));
+            realtime.Publish(Audience.EdgeViewers, new EdgeChanged(receiver, hand.ReceiverReceived, hand.ReceiverRequired));
+        }
+
+        return result;
+    }
 }

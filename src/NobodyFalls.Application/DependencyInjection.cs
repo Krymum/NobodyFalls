@@ -1,9 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Dev;
+using NobodyFalls.Application.Friends;
 using NobodyFalls.Application.Hands;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Players;
+using NobodyFalls.Application.Push;
+using NobodyFalls.Application.Realtime;
 
 namespace NobodyFalls.Application;
 
@@ -18,6 +22,9 @@ public static class DependencyInjection
         services.AddScoped<UpdateSettings>();
         services.AddScoped<ChangeAppearance>();
         services.AddScoped<SimulateBots>();
+        services.AddScoped<FriendActions>();
+        services.AddScoped<DispatchNotifications>();
+        services.TryAddSingleton<IRealtimePublisher, NullRealtimePublisher>();
         return services;
     }
 }
