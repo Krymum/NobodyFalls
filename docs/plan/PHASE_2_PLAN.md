@@ -497,3 +497,18 @@ l'étape (a) ; l'admin réutilise son système de layout) :
 - 0021 : sanctions et révocation des sessions ;
 - 0022 : feature flags ;
 - 0023 : annonces et segments.
+
+---
+
+## 12. Écarts constatés à la livraison
+
+- **Étape (a)** : le code admin est un dossier `Admin/` de l'API plutôt qu'un projet
+  séparé (ADR 0017) ; les ADR sont décalées d'un numéro (0016 = responsive).
+- **Étape (b)** : `/me/notices` et les push `ticket.replied` et `report.handled` passent
+  à l'étape (c), où naissent les actions de l'équipe qui les déclenchent (réponses,
+  décisions, sanctions). L'écran « Idées et contact » charge ses textes avec lui ; pour
+  que le jeu ne grossisse pas, le build regroupe tout le code chargé au démarrage dans
+  un seul chunk (`apps/game/vite.config.ts`) : sans cela, les modules partagés avec
+  l'écran différé étaient découpés en chunks supplémentaires (+1,3 Ko). Résultat :
+  −0,25 Ko par rapport à la base.
+

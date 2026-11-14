@@ -1,0 +1,118 @@
+{
+  "feedback": {
+    "title": "Ideas and contact",
+    "back": "Back to profile",
+    "tabs": {
+      "label": "Sections",
+      "ideas": "Ideas",
+      "contact": "Contact",
+      "report": "Report"
+    },
+    "ideas": {
+      "intro": "Suggest what the game is missing, and back other players' ideas. The team answers here.",
+      "sortVotes": "Most backed",
+      "sortNew": "Newest",
+      "allStatuses": "All statuses",
+      "statusFilter": "Status",
+      "empty": "No ideas yet. The first one could be yours.",
+      "more": "Show more",
+      "votes_one": "{{count}} backer",
+      "votes_other": "{{count}} backers",
+      "vote": "Back it",
+      "voted": "Backed",
+      "mine": "Your idea",
+      "hidden": "Hidden by the team",
+      "by": "by {{name}}",
+      "teamAnswer": "The NobodyFalls team's answer",
+      "newTitle": "Suggest an idea",
+      "fieldTitle": "Title",
+      "fieldBody": "Description",
+      "fieldCategory": "Category",
+      "submit": "Suggest",
+      "sent": "Thank you. Your idea is online.",
+      "status": {
+        "new": "New",
+        "under_review": "Under review",
+        "planned": "Planned",
+        "shipped": "Shipped",
+        "declined": "Declined"
+      },
+      "category": {
+        "gameplay": "Game rules",
+        "social": "Friends and help",
+        "interface": "Interface",
+        "other": "Other"
+      }
+    },
+    "contact": {
+      "intro": "A question, a problem, a sanction to contest? Write to the team: the answer comes here.",
+      "mine": "My requests",
+      "empty": "No requests.",
+      "newTitle": "New request",
+      "fieldCategory": "What it is about",
+      "fieldSubject": "Subject",
+      "fieldMessage": "Message",
+      "submit": "Send",
+      "sent": "Request sent. The team will answer here.",
+      "answerWaiting": "The team answered",
+      "reply": "Reply",
+      "replyLabel": "Your reply",
+      "close": "Close the conversation",
+      "you": "You",
+      "team": "The NobodyFalls team",
+      "closedHint": "This request is closed. Open a new one if needed.",
+      "category": {
+        "support": "Help",
+        "appeal": "Contest a sanction",
+        "account_deletion": "Delete my account"
+      },
+      "status": {
+        "open": "Waiting for the team",
+        "waiting_player": "Answer received",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      }
+    },
+    "report": {
+      "intro": "An offensive name, harassment, cheating? Tell the team. The player will never know who reported them.",
+      "fieldPseudo": "Player's name",
+      "fieldCategory": "Reason",
+      "fieldDetails": "What happened (optional)",
+      "submit": "Report",
+      "sent": "Thank you. The team will look into it.",
+      "category": {
+        "pseudo": "Offensive name",
+        "harassment": "Harassment",
+        "cheating": "Cheating or abuse of the game",
+        "other": "Other"
+      }
+    }
+  },
+  "errors": {
+    "idea": {
+      "title": "A title has 5 to 80 characters.",
+      "body": "A description has 10 to 1000 characters.",
+      "category": "Pick a category.",
+      "limit_reached": "Three ideas a day at most. Come back tomorrow.",
+      "not_found": "This idea no longer exists.",
+      "own": "You cannot back your own idea.",
+      "closed": "This idea no longer takes backers."
+    },
+    "ticket": {
+      "subject": "A subject has 3 to 120 characters.",
+      "message": "A message has 1 to 2000 characters.",
+      "category": "Pick what it is about.",
+      "limit_reached": "Five requests a day at most.",
+      "not_found": "This request does not exist.",
+      "closed": "This request is closed."
+    },
+    "report": {
+      "category": "Pick a reason.",
+      "details": "1000 characters at most.",
+      "self": "You cannot report yourself.",
+      "target_not_found": "No player has this name.",
+      "already_open": "You already reported this player: the team is on it.",
+      "limit_reached": "Ten reports a day at most."
+    }
+  }
+}

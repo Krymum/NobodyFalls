@@ -147,7 +147,9 @@
     },
     "blocked": "Joueurs bloqués",
     "unblock": "Débloquer",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "feedbackTitle": "Idées et contact",
+    "feedback": "Proposer une idée, écrire à l'équipe, signaler un joueur"
   },
   "world": {
     "title": "Le monde",

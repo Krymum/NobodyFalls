@@ -31,7 +31,8 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+/** One JSON call to the API; also used by lazily loaded screens for their own endpoints. */
+export async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   if (method !== 'GET') {
     // Required on every state-changing call (ADR 0007).

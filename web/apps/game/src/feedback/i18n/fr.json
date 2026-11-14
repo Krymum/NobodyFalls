@@ -1,0 +1,118 @@
+{
+  "feedback": {
+    "title": "Idées et contact",
+    "back": "Retour au profil",
+    "tabs": {
+      "label": "Rubriques",
+      "ideas": "Idées",
+      "contact": "Contact",
+      "report": "Signaler"
+    },
+    "ideas": {
+      "intro": "Propose ce qui manque au jeu, et soutiens les idées des autres. L'équipe répond ici.",
+      "sortVotes": "Les plus soutenues",
+      "sortNew": "Les plus récentes",
+      "allStatuses": "Tous les statuts",
+      "statusFilter": "Statut",
+      "empty": "Aucune idée pour l'instant. La première pourrait être la tienne.",
+      "more": "Voir plus",
+      "votes_one": "{{count}} soutien",
+      "votes_other": "{{count}} soutiens",
+      "vote": "Soutenir",
+      "voted": "Soutenue",
+      "mine": "Ta proposition",
+      "hidden": "Masquée par l'équipe",
+      "by": "par {{name}}",
+      "teamAnswer": "Réponse de l'équipe NobodyFalls",
+      "newTitle": "Proposer une idée",
+      "fieldTitle": "Titre",
+      "fieldBody": "Description",
+      "fieldCategory": "Catégorie",
+      "submit": "Proposer",
+      "sent": "Merci. Ton idée est en ligne.",
+      "status": {
+        "new": "Nouvelle",
+        "under_review": "À l'étude",
+        "planned": "Prévue",
+        "shipped": "Livrée",
+        "declined": "Refusée"
+      },
+      "category": {
+        "gameplay": "Règles du jeu",
+        "social": "Amis et entraide",
+        "interface": "Interface",
+        "other": "Autre"
+      }
+    },
+    "contact": {
+      "intro": "Une question, un souci, une sanction à contester ? Écris à l'équipe : la réponse arrive ici.",
+      "mine": "Mes demandes",
+      "empty": "Aucune demande.",
+      "newTitle": "Nouvelle demande",
+      "fieldCategory": "Sujet de la demande",
+      "fieldSubject": "Objet",
+      "fieldMessage": "Message",
+      "submit": "Envoyer",
+      "sent": "Demande envoyée. L'équipe te répondra ici.",
+      "answerWaiting": "Réponse de l'équipe",
+      "reply": "Répondre",
+      "replyLabel": "Ta réponse",
+      "close": "Fermer la conversation",
+      "you": "Toi",
+      "team": "L'équipe NobodyFalls",
+      "closedHint": "Cette demande est fermée. Ouvre-en une nouvelle si besoin.",
+      "category": {
+        "support": "Aide",
+        "appeal": "Contester une sanction",
+        "account_deletion": "Supprimer mon compte"
+      },
+      "status": {
+        "open": "En attente de l'équipe",
+        "waiting_player": "Réponse reçue",
+        "resolved": "Résolue",
+        "closed": "Fermée"
+      }
+    },
+    "report": {
+      "intro": "Un pseudo inapproprié, du harcèlement, de la triche ? Dis-le à l'équipe. Le joueur ne saura jamais qui l'a signalé.",
+      "fieldPseudo": "Pseudo du joueur",
+      "fieldCategory": "Motif",
+      "fieldDetails": "Ce qui s'est passé (facultatif)",
+      "submit": "Signaler",
+      "sent": "Merci. L'équipe va regarder.",
+      "category": {
+        "pseudo": "Pseudo inapproprié",
+        "harassment": "Harcèlement",
+        "cheating": "Triche ou abus du jeu",
+        "other": "Autre"
+      }
+    }
+  },
+  "errors": {
+    "idea": {
+      "title": "Le titre fait 5 à 80 caractères.",
+      "body": "La description fait 10 à 1000 caractères.",
+      "category": "Choisis une catégorie.",
+      "limit_reached": "Trois idées par jour au plus. Reviens demain.",
+      "not_found": "Cette idée n'existe plus.",
+      "own": "Tu ne peux pas soutenir ta propre idée.",
+      "closed": "Cette idée ne prend plus de soutiens."
+    },
+    "ticket": {
+      "subject": "L'objet fait 3 à 120 caractères.",
+      "message": "Le message fait 1 à 2000 caractères.",
+      "category": "Choisis un sujet.",
+      "limit_reached": "Cinq demandes par jour au plus.",
+      "not_found": "Cette demande n'existe pas.",
+      "closed": "Cette demande est fermée."
+    },
+    "report": {
+      "category": "Choisis un motif.",
+      "details": "1000 caractères au plus.",
+      "self": "Tu ne peux pas te signaler toi-même.",
+      "target_not_found": "Aucun joueur ne porte ce pseudo.",
+      "already_open": "Tu as déjà signalé ce joueur : l'équipe s'en occupe.",
+      "limit_reached": "Dix signalements par jour au plus."
+    }
+  }
+}
