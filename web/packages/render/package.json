@@ -1,0 +1,15 @@
+{
+  "name": "@nobodyfalls/render",
+  "private": true,
+  "type": "module",
+  "description": "Canvas 2D renderers: characters (rig + layered parts), ropes, scene. Data in, pixels out; no game logic.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@nobodyfalls/theme": "workspace:*"
+  }
+}

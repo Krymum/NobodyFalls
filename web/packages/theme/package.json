@@ -1,0 +1,14 @@
+{
+  "name": "@nobodyfalls/theme",
+  "private": true,
+  "type": "module",
+  "description": "Design tokens of NobodyFalls (ART_DIRECTION.md): one source for canvas renderers and CSS.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "gen": "node src/generate-css.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

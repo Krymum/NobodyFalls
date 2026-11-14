@@ -1,0 +1,27 @@
+/* Generated from src/tokens.ts by `pnpm --filter @nobodyfalls/theme gen`. Do not edit. */
+:root {
+  --nf-color-background-top: #0E141D;
+  --nf-color-background-middle: #090D13;
+  --nf-color-background-bottom: #030405;
+  --nf-color-page: #05070A;
+  --nf-color-bone: #E4E1DA;
+  --nf-color-text-secondary: #A3ACB6;
+  --nf-color-label: #7F8B98;
+  --nf-color-header: #8E99A6;
+  --nf-color-action: #D9D3C7;
+  --nf-color-on-action: #0B0E13;
+  --nf-color-outline: #4A535E;
+  --nf-color-attention: #D8A85A;
+  --nf-color-danger: #D0645F;
+  --nf-font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --nf-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --nf-font-title-weight: 600;
+  --nf-font-label-weight: 500;
+  --nf-font-label-tracking: 0.18em;
+  --nf-font-header-tracking: 0.32em;
+  --nf-space-gutter: 24px;
+  --nf-space-gap: 10px;
+  --nf-space-radius: 2px;
+  --nf-space-button-height: 52px;
+  --nf-space-secondary-height: 44px;
+}
