@@ -79,9 +79,12 @@ function Messages({ error, done }: { error: string | null; done: string | null }
  */
 export function FeedbackScreen() {
   const { t } = useTranslation();
+  // A banned player only comes here to contest the ban (GAME_DESIGN §9).
+  const banned = useGame((s) => s.notices?.ban != null);
+  const tabs: readonly Tab[] = banned ? ['contact'] : TABS;
   const [tab, setTab] = useState<Tab>(() => {
     const asked = new URLSearchParams(window.location.search).get('tab');
-    return TABS.find((name) => name === asked) ?? 'ideas';
+    return banned ? 'contact' : (TABS.find((name) => name === asked) ?? 'ideas');
   });
 
   const select = (next: Tab): void => {
@@ -93,10 +96,10 @@ export function FeedbackScreen() {
 
   // Tabs pattern: arrows move between tabs (WAI-ARIA).
   const onKey = (event: KeyboardEvent): void => {
-    const index = TABS.indexOf(tab);
+    const index = tabs.indexOf(tab);
     const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
     if (step !== 0) {
-      const next = TABS[(index + step + TABS.length) % TABS.length] ?? 'ideas';
+      const next = tabs[(index + step + tabs.length) % tabs.length] ?? 'ideas';
       select(next);
       document.getElementById(`feedback-tab-${next}`)?.focus();
       event.preventDefault();
@@ -106,13 +109,13 @@ export function FeedbackScreen() {
   return (
     <main className={ui.page}>
       <div className={ui.section}>
-        <Link href="/profile" className={`${ui.secondary} ${styles.back}`}>
+        <Link href={banned ? '/' : '/profile'} className={`${ui.secondary} ${styles.back}`}>
           ← {t('feedback.back')}
         </Link>
         <h1 className={ui.heading}>{t('feedback.title')}</h1>
       </div>
       <div className={styles.tabs} role="tablist" aria-label={t('feedback.tabs.label')} onKeyDown={onKey}>
-        {TABS.map((name) => (
+        {tabs.map((name) => (
           <button
             key={name}
             id={`feedback-tab-${name}`}
@@ -371,9 +374,11 @@ function ProposeIdea({ onSent }: { onSent: () => void }) {
 
 function Contact() {
   const { t, i18n } = useTranslation();
+  const banned = useGame((s) => s.notices?.ban != null);
+  const categories: readonly TicketCategory[] = banned ? ['appeal'] : TICKET_CATEGORIES;
   const [tickets, setTickets] = useState<TicketSummary[] | null>(null);
   const [open, setOpen] = useState<number | null>(null);
-  const [category, setCategory] = useState<TicketCategory>('support');
+  const [category, setCategory] = useState<TicketCategory>(banned ? 'appeal' : 'support');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const { busy, error, done, run } = useAction();
@@ -408,7 +413,7 @@ function Contact() {
                 setCategory(e.target.value as TicketCategory);
               }}
             >
-              {TICKET_CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <option key={c} value={c}>
                   {t(`feedback.contact.category.${c}`)}
                 </option>

@@ -77,7 +77,8 @@ public enum Relation
     RequestReceived,
 }
 
-public sealed record PublicProfileView(PlayerRef Player, LifeStatus Status, int GuardianScore, Relation Relation, int NightsHeldTogether);
+/// <param name="GuardianScore">Null when hidden by a score exclusion.</param>
+public sealed record PublicProfileView(PlayerRef Player, LifeStatus Status, int? GuardianScore, Relation Relation, int NightsHeldTogether);
 
 public sealed record FriendView(PlayerRef Player, LifeStatus Status, DayStanding? Today, DateTimeOffset Since);
 

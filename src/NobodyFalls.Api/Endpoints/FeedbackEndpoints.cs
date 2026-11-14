@@ -2,8 +2,10 @@ using System.Security.Claims;
 using NobodyFalls.Api.Auth;
 using NobodyFalls.Api.Hosting;
 using NobodyFalls.Api.Http;
+using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Feedback;
+using NobodyFalls.Application.Moderation;
 using NobodyFalls.Application.Push;
 using NobodyFalls.Domain.Feedback;
 
@@ -70,8 +72,15 @@ internal static class FeedbackEndpoints
             await tickets.MineAsync(user.RequiredPlayerId(), id, ct) is { } ticket ? Results.Ok(ticket) : Problems.From(TicketErrors.NotFound));
 
         feedback.MapPost("/tickets", async (
-            TicketRequest body, ClaimsPrincipal user, INotificationDirectory directory, FeedbackActions actions, CancellationToken ct) =>
+            TicketRequest body, ClaimsPrincipal user, HttpContext context, INotificationDirectory directory, FeedbackActions actions,
+            IPlayerNotices notices, IClock clock, CancellationToken ct) =>
         {
+            // A banned player can still write, to contest the ban.
+            if (body.Category != "appeal" && await BannedPlayersFilter.IsBannedAsync(context, notices, clock))
+            {
+                return Problems.From(BannedPlayersFilter.Banned);
+            }
+
             var player = user.RequiredPlayerId();
             var result = await actions.OpenTicketAsync(player, body.Category, body.Subject, body.Message, await directory.LocaleOfAsync(player, ct), ct);
             return result.IsSuccess ? Results.Created($"/api/v1/tickets/{result.Value}", new { id = result.Value }) : Problems.From(result.Error!);

@@ -9,6 +9,7 @@ import type {
   FriendRequests,
   GameEvent,
   MyProfile,
+  Notices,
   Session,
   Suggestion,
   Tonight,
@@ -24,6 +25,8 @@ export interface Throw {
 
 interface GameState {
   session: Session | null;
+  /** Warnings, ban or pseudo reset to show before the game (null until loaded). */
+  notices: Notices | null;
   renderKeys: RenderKeys;
   tonight: Tonight | null;
   world: World | null;
@@ -39,6 +42,7 @@ interface GameState {
 
 const initial: GameState = {
   session: null,
+  notices: null,
   renderKeys: new Map(),
   tonight: null,
   world: null,
@@ -66,12 +70,22 @@ let realtime: RealtimeConnection | null = null;
 export const game = {
   async loadSession(): Promise<Session> {
     const session = await api.session();
-    set({ session });
     if (session.state === 'player') {
+      const notices = await api.notices();
+      set({ session, notices });
       void game.loadCatalog();
-      void game.startRealtime();
+      // A banned player is out of the game: no live updates.
+      if (!notices.ban) {
+        void game.startRealtime();
+      }
+    } else {
+      set({ session });
     }
     return session;
+  },
+
+  async loadNotices(): Promise<void> {
+    set({ notices: await api.notices() });
   },
 
   async loadCatalog(): Promise<void> {

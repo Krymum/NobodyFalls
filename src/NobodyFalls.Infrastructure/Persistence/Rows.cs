@@ -31,6 +31,15 @@ internal sealed class PlayerRow
 
     /// <summary>Written into session cookies; bumping it ends every session of the player (ADR 0021).</summary>
     public int SessionVersion { get; set; }
+
+    /// <summary>Until when the player is banned (the latest active ban; far future when permanent).</summary>
+    public DateTimeOffset? BannedUntil { get; set; }
+
+    /// <summary>Until when the player's hands earn no points (score exclusion).</summary>
+    public DateTimeOffset? ScoreExcludedUntil { get; set; }
+
+    /// <summary>The team reset the pseudo: the player chooses a new one on their next visit.</summary>
+    public bool PseudoResetPending { get; set; }
 }
 
 internal sealed class SeasonRow
@@ -382,4 +391,27 @@ internal sealed class ReportRow
     public long? SanctionId { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? ResolvedAt { get; set; }
+}
+
+/// <summary>A sanction (GAME_DESIGN §9); its effects are copied onto the player row.</summary>
+internal sealed class SanctionRow
+{
+    public long Id { get; set; }
+    public Guid PlayerId { get; set; }
+    public string Kind { get; set; } = "";
+
+    /// <summary>Why, for the team (never shown to the player).</summary>
+    public string Reason { get; set; } = "";
+
+    /// <summary>What the player is told.</summary>
+    public string? PublicMessage { get; set; }
+
+    public DateTimeOffset StartsAt { get; set; }
+    public DateTimeOffset? EndsAt { get; set; }
+    public Guid? IssuedBy { get; set; }
+    public long? ReportId { get; set; }
+    public DateTimeOffset? AcknowledgedAt { get; set; }
+    public DateTimeOffset? RevokedAt { get; set; }
+    public Guid? RevokedBy { get; set; }
+    public string? RevokeReason { get; set; }
 }

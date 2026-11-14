@@ -333,4 +333,35 @@ public sealed class NightResolverTests
         Assert.Equal(0, outcome.Hands.Single().Points);
         Assert.Equal(NightResult.Survived, outcome.Players.Single().Result);
     }
+
+    [Fact]
+    public void A_player_under_a_score_exclusion_still_holds_but_earns_nothing()
+    {
+        var day = new DayBuilder();
+        var cheater = day.Player("cheater", required: 0);
+        var held = day.Player("held", required: 1);
+        day.Hand(cheater, held);
+
+        var outcome = NightResolver.Resolve(day.Build() with { ScoreExcluded = new HashSet<PlayerId> { cheater } });
+
+        Assert.Equal(NightResult.Survived, ResultOf(outcome, held).Result);
+        Assert.Equal(0, Score(outcome, 1).Points);
+        Assert.Empty(outcome.Awards);
+    }
+
+    [Fact]
+    public void Hands_given_to_a_player_banned_during_the_day_count_for_nothing()
+    {
+        // A banned player is no longer in play: they are absent from the day's players.
+        var day = new DayBuilder();
+        var giver = day.Player("giver", required: 0);
+        var banned = Ids.Of("banned");
+        day.Hand(giver, banned);
+
+        var outcome = day.Resolve();
+
+        Assert.DoesNotContain(outcome.Players, p => p.PlayerId == banned);
+        Assert.Equal(new HandScore(1, 0, false, false), Score(outcome, 1));
+        Assert.Equal(0, outcome.Falls);
+    }
 }

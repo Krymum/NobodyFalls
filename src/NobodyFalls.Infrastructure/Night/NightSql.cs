@@ -41,8 +41,10 @@ internal static class NightSql
     public const string ScoreHands = """
         with ranked as (
             select h.id, h.giver_id, h.receiver_id, h.giver_kind, h.giver_was_friend, h.given_at,
+                   (g.score_excluded_until is not null and g.score_excluded_until > @now) as score_excluded,
                    row_number() over (partition by h.receiver_id order by h.given_at, h.id) as rank
             from hands h
+            join players g on g.id = h.giver_id
             where h.day = @day
         ), flagged as (
             select r.id, r.giver_was_friend,
@@ -50,14 +52,16 @@ internal static class NightSql
                         select 1 from hands i
                         where i.day = @day and i.giver_id = r.receiver_id and i.receiver_id = r.giver_id
                           and i.giver_kind = 'human')) as reciprocal,
-                   r.giver_kind, r.rank, r.given_at, pd.outcome, pd.required
+                   r.giver_kind, r.score_excluded, r.rank, r.given_at, pd.outcome, pd.required
             from ranked r
             left join player_days pd on pd.day = @day and pd.player_id = r.receiver_id
         ), decided as (
+            -- A receiver banned during the day has no day row (outcome null): nothing is earned.
             select id, giver_was_friend, reciprocal,
-                   (giver_kind = 'human' and not reciprocal and outcome = 'survived'
-                        and given_at >= @last_rampart_from and rank = required) as last_rampart,
-                   (giver_kind = 'human' and not reciprocal and outcome in ('survived', 'immune')) as earns
+                   coalesce(giver_kind = 'human' and not reciprocal and outcome = 'survived'
+                        and given_at >= @last_rampart_from and rank = required, false) as last_rampart,
+                   coalesce(giver_kind = 'human' and not reciprocal and not score_excluded
+                        and outcome in ('survived', 'immune'), false) as earns
             from flagged
         )
         update hands h
@@ -242,7 +246,9 @@ internal static class NightSql
         """;
 
     public const string CountAlive = """
-        select count(*)::int from players where kind = 'human' and status = 'active' and deleted_at is null;
+        select count(*)::int from players
+        where kind = 'human' and status = 'active' and deleted_at is null
+          and (banned_until is null or banned_until <= @now);
         """;
 
     public const string InsertGameDay = """
@@ -254,7 +260,10 @@ internal static class NightSql
         returning storm;
         """;
 
-    /// <summary>Everyone alive is in play; thresholds mirror <c>ThresholdPolicy.Required</c>.</summary>
+    /// <summary>
+    /// Everyone alive is in play, except banned players (GAME_DESIGN §9); thresholds mirror
+    /// <c>ThresholdPolicy.Required</c>.
+    /// </summary>
     public const string InsertPlayerDays = """
         insert into player_days (day, player_id, required, immune, received, joined_at, score_gained)
         select @day, p.id,
@@ -265,6 +274,7 @@ internal static class NightSql
                0, @now, 0
         from players p
         where p.kind = 'human' and p.status = 'active' and p.deleted_at is null
+          and (p.banned_until is null or p.banned_until <= @now)
         on conflict do nothing;
         """;
 }

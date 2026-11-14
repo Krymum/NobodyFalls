@@ -217,7 +217,9 @@ internal sealed class PostgresGameQueries(NpgsqlDataSource dataSource, IGameSett
     {
         await using var command = Command(
             $"""
-            select {PlayerRefs.Columns}, p.status, p.guardian_score,
+            select {PlayerRefs.Columns}, p.status,
+                   -- A score exclusion hides the score from others (GAME_DESIGN §9).
+                   case when p.score_excluded_until > now() then null else p.guardian_score end,
                    exists (select 1 from friendships f where f.player_low = least(p.id, @me) and f.player_high = greatest(p.id, @me)),
                    exists (select 1 from friend_requests fr where fr.from_id = @me and fr.to_id = p.id and fr.status = 'pending'),
                    exists (select 1 from friend_requests fr where fr.from_id = p.id and fr.to_id = @me and fr.status = 'pending'),
@@ -237,7 +239,7 @@ internal sealed class PostgresGameQueries(NpgsqlDataSource dataSource, IGameSett
             : r.GetBoolean(7) ? Relation.RequestSent
             : r.GetBoolean(8) ? Relation.RequestReceived
             : Relation.None;
-        return new PublicProfileView(PlayerRefs.Read(r, 0), PlayerRefs.Status(r.GetString(4)), r.GetInt32(5), relation, r.GetInt32(9));
+        return new PublicProfileView(PlayerRefs.Read(r, 0), PlayerRefs.Status(r.GetString(4)), r.IsDBNull(5) ? null : r.GetInt32(5), relation, r.GetInt32(9));
     }
 
     public async Task<InvitePreview?> InviteAsync(string code, CancellationToken cancellationToken)

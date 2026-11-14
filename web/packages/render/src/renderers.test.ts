@@ -184,12 +184,15 @@ describe('scene', () => {
     };
     const scene = new SceneRenderer(characters, ropes, factory);
     scene.prepare(390, 844, 2);
-    expect(created).toHaveLength(22); // 18 far figures + 4 in the middle plane
+    // 18 far figures + 4 in the middle plane, then the far plane drawn once into a layer.
+    expect(created).toHaveLength(23);
+    expect(created).toContainEqual({ width: 780, height: 1688 });
 
     const { ctx, calls } = recordingContext();
     scene.drawBackground(ctx, 2.5);
     scene.drawAtmosphere(ctx, 2.5);
-    expect(calls.filter((c) => c.name === 'drawImage')).toHaveLength(22);
-    expect(created).toHaveLength(22); // nothing re-rendered per frame
+    // Per frame: the far layer in one image, then the 4 middle figures.
+    expect(calls.filter((c) => c.name === 'drawImage')).toHaveLength(5);
+    expect(created).toHaveLength(23); // nothing re-rendered per frame
   });
 });

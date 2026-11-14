@@ -16,6 +16,10 @@ export interface LoopOptions {
   readonly reducedMotion: boolean;
   /** Called when the canvas size or pixel ratio changes (pre-rendering lives here). */
   readonly onResize?: (width: number, height: number, pixelRatio: number) => void;
+  /** A lower cap on the pixel ratio (a dimmed backdrop needs no sharpness). */
+  readonly maxPixelRatio?: number;
+  /** Draw at most one frame every so many milliseconds (a calm backdrop needs few). */
+  readonly minFrameMs?: number;
 }
 
 /**
@@ -39,15 +43,19 @@ export function startRenderLoop(
   let handle = 0;
   let start: number | null = null;
 
+  let last = -Infinity;
   const render = (now: number): void => {
     start ??= now;
+    last = now;
     const t = options.reducedMotion ? 0 : (now - start) / 1000;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     draw({ ctx, t, width, height, pixelRatio });
   };
 
   const tick = (now: number): void => {
-    render(now);
+    if (now - last >= (options.minFrameMs ?? 0)) {
+      render(now);
+    }
     if (!options.reducedMotion && !document.hidden) {
       handle = requestAnimationFrame(tick);
     }
@@ -55,7 +63,11 @@ export function startRenderLoop(
 
   const resize = (): void => {
     const rect = canvas.getBoundingClientRect();
-    pixelRatio = Math.min(window.devicePixelRatio || 1, motion.maxDevicePixelRatio);
+    pixelRatio = Math.min(
+      window.devicePixelRatio || 1,
+      motion.maxDevicePixelRatio,
+      options.maxPixelRatio ?? Infinity,
+    );
     width = rect.width;
     height = rect.height;
     canvas.width = Math.round(width * pixelRatio);

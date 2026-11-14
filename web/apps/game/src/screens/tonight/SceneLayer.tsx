@@ -96,6 +96,8 @@ export function SceneLayer({ mode }: { mode: SceneMode }) {
   return (
     <div ref={stage} className={styles.stage} data-mode={mode}>
       <SceneCanvas
+        key={mode}
+        dimmed={mode === 'dimmed'}
         neighbourhood={showPeople}
         view={view}
         label={describeScene(t, tonight, neighbourhood?.candidate ?? null)}
@@ -173,11 +175,14 @@ function Labels({
 }
 
 function SceneCanvas({
+  dimmed,
   neighbourhood,
   view,
   label,
   lastThrowKey,
 }: {
+  /** Behind lists and the onboarding: faded, so drawn at 1× and about 15 frames a second. */
+  dimmed: boolean;
   neighbourhood: Neighbourhood | null;
   view: ReturnType<typeof sceneInsets>;
   label: string;
@@ -211,6 +216,7 @@ function SceneCanvas({
         onResize: (w, h, ratio) => {
           created.resize(w, h, ratio);
         },
+        ...(dimmed ? { maxPixelRatio: 1, minFrameMs: 66 } : {}),
       },
     );
     return () => {
@@ -219,7 +225,7 @@ function SceneCanvas({
       scene.current = null;
       redraw.current = null;
     };
-  }, []);
+  }, [dimmed]);
 
   const { left, right, top, bottom } = view.insets;
   useEffect(() => {

@@ -39,6 +39,16 @@ public static class AuditActions
     public const string SignInLocked = "admin.sign_in_locked";
     public const string AuditViewed = "audit.viewed";
     public const string AuditVerified = "audit.verified";
+    public const string SanctionIssued = "sanction.issued";
+    public const string SanctionRevoked = "sanction.revoked";
+    public const string ReportAssigned = "report.assigned";
+    public const string ReportResolved = "report.resolved";
+    public const string TicketReplied = "ticket.replied";
+    public const string TicketNoted = "ticket.noted";
+    public const string TicketStatusChanged = "ticket.status_changed";
+    public const string TicketAssigned = "ticket.assigned";
+    public const string IdeaUpdated = "idea.updated";
+    public const string IdeaMerged = "idea.merged";
 }
 
 /// <summary>Stable target types.</summary>
@@ -46,6 +56,10 @@ public static class AuditTargets
 {
     public const string Player = "player";
     public const string Audit = "audit";
+    public const string Sanction = "sanction";
+    public const string Report = "report";
+    public const string Ticket = "ticket";
+    public const string Idea = "idea";
 }
 
 public sealed record AuditQuery(

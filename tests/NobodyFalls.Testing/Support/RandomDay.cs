@@ -46,13 +46,21 @@ public static class RandomDay
             }
         }
 
+        // Phase 2 sanctions, drawn from a second generator so that phase 1 days stay the same:
+        // players banned during the day leave play (hands they received count for nothing),
+        // and givers under a score exclusion earn no points.
+        var sanctions = new Random(seed * 7919 + 1);
+        var banned = players.Where(_ => sanctions.NextDouble() < 0.08).Select(p => p.PlayerId).ToHashSet();
+        var excluded = humans.Where(_ => sanctions.NextDouble() < 0.12).ToHashSet();
+
         return new DaySnapshot(
             day,
             GameRules.Default,
-            players.OrderBy(_ => rng.Next()).ToList(),
+            players.Where(p => !banned.Contains(p.PlayerId)).OrderBy(_ => rng.Next()).ToList(),
             hands.OrderBy(_ => rng.Next()).ToList(),
             rng.Next(0, 60),
-            rng.Next(0, 5000));
+            rng.Next(0, 5000),
+            excluded);
     }
 
     /// <summary>A third of the hands land in the last hour, with deliberate ties, to exercise the "last stand" rule.</summary>

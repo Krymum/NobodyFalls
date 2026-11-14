@@ -21,12 +21,26 @@ internal enum AdminGate
 }
 
 /// <summary>The access an admin endpoint declares; read by <see cref="AdminAccessFilter"/> and the tests.</summary>
-internal sealed record AdminAccessMetadata(AdminGate Gate, Permission? Permission = null, bool Sensitive = false);
+/// <param name="AnyOf">Allowed with any of these permissions (requests: support or appeals); the handler narrows further.</param>
+internal sealed record AdminAccessMetadata(AdminGate Gate, Permission? Permission = null, bool Sensitive = false, IReadOnlyList<Permission>? AnyOf = null)
+{
+    public bool Allows(IReadOnlyCollection<StaffRole> roles) =>
+        Permission is { } permission
+            ? PermissionMatrix.Allows(roles, permission)
+            : AnyOf is { Count: > 0 } any && any.Any(p => PermissionMatrix.Allows(roles, p));
+
+    /// <summary>How the authorization tests print an endpoint's access.</summary>
+    public string Describe() =>
+        $"{Gate} {(Permission is { } p ? p.ToString() : AnyOf is { } any ? string.Join('|', any) : "")} {Sensitive}";
+}
 
 internal static class AdminAccess
 {
     public static RouteHandlerBuilder Requires(this RouteHandlerBuilder builder, Permission permission, bool sensitive = false) =>
         builder.WithMetadata(new AdminAccessMetadata(AdminGate.Permission, permission, sensitive));
+
+    public static RouteHandlerBuilder RequiresAny(this RouteHandlerBuilder builder, params Permission[] permissions) =>
+        builder.WithMetadata(new AdminAccessMetadata(AdminGate.Permission, AnyOf: permissions));
 
     public static RouteHandlerBuilder MemberOnly(this RouteHandlerBuilder builder) =>
         builder.WithMetadata(new AdminAccessMetadata(AdminGate.Member));
@@ -57,8 +71,10 @@ internal static class AdminAccess
 /// actions a code confirmed less than five minutes ago (401 <c>admin.reauth_required</c>).
 /// An endpoint that declares nothing is refused: the gate fails closed.
 /// </summary>
-internal sealed class AdminAccessFilter(IStaffStore staff, TimeProvider time) : IEndpointFilter
+internal sealed class AdminAccessFilter(IStaffStore staff) : IEndpointFilter
 {
+    private const string PrincipalKey = "nf.admin.principal";
+
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var http = context.HttpContext;
@@ -87,17 +103,29 @@ internal sealed class AdminAccessFilter(IStaffStore staff, TimeProvider time) : 
             return Problems.From(AdminErrors.TotpRequired);
         }
 
-        if (metadata.Gate == AdminGate.Permission
-            && (metadata.Permission is not { } permission || !PermissionMatrix.Allows(member.Roles, permission)))
+        http.Items[PrincipalKey] = admin.Principal;
+
+        if (metadata.Gate == AdminGate.Permission && !metadata.Allows([.. member.Roles]))
         {
             return Problems.From(AdminErrors.Forbidden);
         }
 
-        if (metadata.Sensitive && (admin.Principal.ReauthAt() is not { } reauthAt || time.GetUtcNow() - reauthAt > AdminPrincipal.ReauthWindow))
+        if (metadata.Sensitive && !HasFreshCode(http))
         {
             return Problems.From(AdminErrors.ReauthRequired);
         }
 
         return await next(context);
+    }
+
+    /// <summary>
+    /// Whether the member confirmed a code less than five minutes ago. Also used by handlers
+    /// whose sensitivity depends on the request (a permanent ban).
+    /// </summary>
+    public static bool HasFreshCode(HttpContext http)
+    {
+        var principal = http.Items[PrincipalKey] as System.Security.Claims.ClaimsPrincipal;
+        var time = http.RequestServices.GetRequiredService<TimeProvider>();
+        return principal?.ReauthAt() is { } reauthAt && time.GetUtcNow() - reauthAt <= AdminPrincipal.ReauthWindow;
     }
 }

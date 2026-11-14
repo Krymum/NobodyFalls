@@ -67,7 +67,8 @@ public static class NightResolver
                 && hand.GivenAt >= lastRampartFrom
                 && RankOf(hand, handsByReceiver[hand.Receiver]) == receiver.Required;
 
-            var points = isHuman && receiverMadeIt && !reciprocal
+            // A giver under a score exclusion still holds, but earns nothing.
+            var points = isHuman && receiverMadeIt && !reciprocal && !snapshot.IsScoreExcluded(hand.Giver)
                 ? (hand.GiverWasFriend ? rules.PointsFriend : rules.PointsStranger)
                   + (lastRampart ? rules.LastRampartBonus : 0)
                 : 0;

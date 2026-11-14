@@ -11,7 +11,11 @@
     "team": "Équipe",
     "audit": "Journal d'audit",
     "signOut": "Se déconnecter de l'admin",
-    "language": "Langue"
+    "language": "Langue",
+    "reports": "Signalements",
+    "players": "Joueurs",
+    "tickets": "Demandes",
+    "ideas": "Idées"
   },
   "roles": {
     "admin": "Admin",
@@ -126,7 +130,11 @@
     "families": {
       "admin": "Connexions",
       "staff": "Équipe",
-      "audit": "Audit"
+      "audit": "Audit",
+      "sanction": "Sanctions",
+      "report": "Signalements",
+      "ticket": "Demandes",
+      "idea": "Idées"
     },
     "actions": {
       "staff": {
@@ -145,6 +153,24 @@
       "audit": {
         "viewed": "Journal consulté",
         "verified": "Intégrité vérifiée"
+      },
+      "sanction": {
+        "issued": "Sanction appliquée",
+        "revoked": "Sanction levée"
+      },
+      "report": {
+        "assigned": "Signalement pris en charge",
+        "resolved": "Signalement clos"
+      },
+      "ticket": {
+        "replied": "Réponse envoyée",
+        "noted": "Note interne",
+        "status_changed": "Statut de demande changé",
+        "assigned": "Demande attribuée"
+      },
+      "idea": {
+        "updated": "Idée modifiée",
+        "merged": "Idées fusionnées"
       }
     }
   },
@@ -179,6 +205,213 @@
     },
     "network": {
       "offline": "Pas de réseau. Réessaie une fois connecté."
+    },
+    "sanction": {
+      "kind": "Choisis une sanction.",
+      "reason": "Le motif fait 3 à 500 caractères.",
+      "public_message": "Un avertissement ou un ban demande un message au joueur.",
+      "period": "La fin doit être dans le futur, à un an au plus.",
+      "no_period": "Un avertissement ou une réinitialisation n'a pas de fin.",
+      "self": "Personne ne se sanctionne soi-même.",
+      "staff": "Retire d'abord son rôle à ce membre de l'équipe.",
+      "not_found": "Cette sanction n'existe pas.",
+      "already_revoked": "Cette sanction est déjà levée.",
+      "player_not_found": "Ce joueur n'existe pas."
+    },
+    "report": {
+      "not_found": "Ce signalement n'existe pas.",
+      "already_resolved": "Ce signalement est déjà clos.",
+      "outcome": "Choisis une issue.",
+      "note": "2000 caractères au plus.",
+      "sanction_needs_actioned": "Une sanction veut dire « traité »."
+    },
+    "ticket": {
+      "not_found": "Cette demande n'existe pas ou ne te revient pas.",
+      "message": "Le message fait 1 à 2000 caractères.",
+      "closed": "Cette demande est fermée.",
+      "status": "Statut inconnu.",
+      "own_sanction": "Un autre membre de l'équipe traite les contestations de tes propres sanctions."
+    },
+    "idea": {
+      "not_found": "Cette idée n'existe pas.",
+      "status": "Statut inconnu.",
+      "answer": "2000 caractères au plus.",
+      "merge_self": "Une idée ne fusionne pas avec elle-même.",
+      "merge_target": "Fusionne dans une idée visible, qui n'est pas elle-même fusionnée."
+    }
+  },
+  "common": {
+    "back": "Retour",
+    "save": "Enregistrer",
+    "none": "—",
+    "open": "Ouvrir",
+    "more": "Plus ancien",
+    "you": "toi",
+    "player": "Joueur",
+    "noResults": "Rien à afficher."
+  },
+  "sanction": {
+    "title": "Sanctionner",
+    "kind": "Sanction",
+    "reason": "Motif (pour l'équipe)",
+    "publicMessage": "Message au joueur",
+    "endsAt": "Fin",
+    "endsAtHint": "Vide : sans fin. Un ban sans fin est réservé aux admins.",
+    "submit": "Appliquer la sanction",
+    "issued": "Sanction appliquée.",
+    "revoke": "Lever",
+    "revokeReason": "Pourquoi la lever ?",
+    "revoked": "Sanction levée.",
+    "active": "En cours",
+    "until": "jusqu'au {{date}}",
+    "forever": "sans fin",
+    "by": "par {{name}}",
+    "kinds": {
+      "warning": "Avertissement",
+      "pseudo_reset": "Pseudo réinitialisé",
+      "score_exclusion": "Exclusion du score",
+      "ban": "Ban"
+    }
+  },
+  "reports": {
+    "title": "Signalements",
+    "filter": "Statut",
+    "statuses": {
+      "open": "À traiter",
+      "in_review": "En cours",
+      "actioned": "Traité",
+      "dismissed": "Classé"
+    },
+    "categories": {
+      "pseudo": "Pseudo inapproprié",
+      "harassment": "Harcèlement",
+      "cheating": "Triche",
+      "other": "Autre"
+    },
+    "columns": {
+      "target": "Cible",
+      "category": "Motif",
+      "reporter": "Signalé par",
+      "assignee": "Pris par",
+      "status": "Statut",
+      "at": "Reçu"
+    },
+    "detailTitle": "Signalement n° {{id}}",
+    "details": "Ce que dit l'auteur",
+    "snapshot": "La cible au moment du signalement",
+    "others_one": "{{count}} autre signalement sur cette cible",
+    "others_other": "{{count}} autres signalements sur cette cible",
+    "assign": "Je m'en occupe",
+    "assigned": "Pris en charge.",
+    "resolveTitle": "Décision",
+    "outcome": "Issue",
+    "outcomes": {
+      "actioned": "Traité",
+      "dismissed": "Classé sans suite"
+    },
+    "note": "Note (pour l'équipe)",
+    "withSanction": "Sanctionner la cible",
+    "resolve": "Clore le signalement",
+    "resolved": "Signalement clos. L'auteur est prévenu qu'il a été traité.",
+    "openPlayer": "Fiche du joueur"
+  },
+  "players": {
+    "title": "Joueurs",
+    "search": "Pseudo ou identifiant",
+    "filters": {
+      "all": "Tous",
+      "reported": "Signalés",
+      "banned": "Bannis"
+    },
+    "columns": {
+      "pseudo": "Pseudo",
+      "status": "État",
+      "reports": "Signalements ouverts",
+      "since": "Inscrit",
+      "seen": "Vu"
+    },
+    "statuses": {
+      "active": "En jeu",
+      "fallen": "Tombé",
+      "waitlisted": "En attente"
+    },
+    "banned": "Banni",
+    "excluded": "Exclu du score",
+    "sheet": {
+      "facts": "En bref",
+      "score": "Score Gardien",
+      "falls": "Chutes",
+      "friends": "Amis",
+      "given": "Mains données (7 j)",
+      "received": "Mains reçues (7 j)",
+      "staff": "Membre de l'équipe",
+      "pseudoPending": "Doit choisir un nouveau pseudo",
+      "sanctions": "Sanctions",
+      "reportsAbout": "Signalements le concernant",
+      "reportsMade": "Signalements qu'il a faits"
+    }
+  },
+  "tickets": {
+    "title": "Demandes",
+    "filters": {
+      "active": "En cours",
+      "open": "À répondre",
+      "waiting_player": "En attente du joueur",
+      "resolved": "Résolues",
+      "closed": "Fermées"
+    },
+    "categories": {
+      "support": "Aide",
+      "appeal": "Contestation",
+      "account_deletion": "Suppression du compte"
+    },
+    "statuses": {
+      "open": "À répondre",
+      "waiting_player": "En attente du joueur",
+      "resolved": "Résolue",
+      "closed": "Fermée"
+    },
+    "columns": {
+      "subject": "Objet",
+      "player": "Joueur",
+      "category": "Type",
+      "status": "Statut",
+      "updated": "Mis à jour"
+    },
+    "reply": "Réponse au joueur",
+    "internal": "Note interne (jamais montrée au joueur)",
+    "send": "Envoyer",
+    "sent": "Envoyé.",
+    "internalTag": "Note interne",
+    "team": "L'équipe",
+    "status": "Statut",
+    "setStatus": "Changer le statut",
+    "sanction": "Sanction contestée : n° {{id}}"
+  },
+  "ideas": {
+    "title": "Idées",
+    "filter": "Statut",
+    "all": "Toutes",
+    "showHidden": "Afficher les masquées",
+    "votes_one": "{{count}} soutien",
+    "votes_other": "{{count}} soutiens",
+    "by": "par {{name}}",
+    "status": "Statut public",
+    "answer": "Réponse publique de l'équipe",
+    "hide": "Masquer",
+    "unhide": "Rendre visible",
+    "hiddenReason": "Motif du masquage",
+    "hidden": "Masquée",
+    "merged": "Fusionnée dans n° {{id}}",
+    "mergeInto": "Fusionner dans l'idée n°",
+    "merge": "Fusionner",
+    "saved": "Idée enregistrée.",
+    "statuses": {
+      "new": "Nouvelle",
+      "under_review": "À l'étude",
+      "planned": "Prévue",
+      "shipped": "Livrée",
+      "declined": "Refusée"
     }
   }
 }

@@ -125,6 +125,147 @@ function query(params: Record<string, string | number | undefined>): string {
   return text ? `?${text}` : '';
 }
 
+// ---- Moderation (GAME_DESIGN §9) ----
+
+export type SanctionKind = 'warning' | 'pseudo_reset' | 'score_exclusion' | 'ban';
+export const SANCTION_KINDS: readonly SanctionKind[] = ['warning', 'pseudo_reset', 'score_exclusion', 'ban'];
+
+export interface SanctionInput {
+  kind: SanctionKind;
+  reason: string;
+  publicMessage: string | null;
+  endsAt: string | null;
+}
+
+export interface Sanction {
+  id: number;
+  kind: SanctionKind;
+  reason: string;
+  publicMessage: string | null;
+  startsAt: string;
+  endsAt: string | null;
+  issuedBy: string | null;
+  reportId: number | null;
+  acknowledgedAt: string | null;
+  revokedAt: string | null;
+  revokedBy: string | null;
+  revokeReason: string | null;
+  active: boolean;
+}
+
+export interface ReportSummary {
+  id: number;
+  targetType: 'player' | 'idea';
+  targetId: string;
+  targetPlayerId: string | null;
+  targetLabel: string;
+  category: 'pseudo' | 'harassment' | 'cheating' | 'other';
+  status: 'open' | 'in_review' | 'actioned' | 'dismissed';
+  reporterId: string;
+  reporterPseudo: string | null;
+  assigneePseudo: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+export interface ReportDetail {
+  summary: ReportSummary;
+  details: string;
+  targetSnapshot: Json;
+  resolutionNote: string | null;
+  sanctionId: number | null;
+  otherReportsOnTarget: number;
+}
+
+export interface PlayerRow {
+  id: string;
+  pseudo: string;
+  kind: string;
+  status: string;
+  bannedUntil: string | null;
+  scoreExcludedUntil: string | null;
+  openReports: number;
+  createdAt: string;
+  lastSeenAt: string | null;
+}
+
+export interface PlayerSheet {
+  id: string;
+  pseudo: string;
+  kind: string;
+  status: string;
+  locale: string;
+  guardianScore: number;
+  fallsCount: number;
+  createdAt: string;
+  lastSeenAt: string | null;
+  bannedUntil: string | null;
+  scoreExcludedUntil: string | null;
+  pseudoResetPending: boolean;
+  friends: number;
+  handsGiven7: number;
+  handsReceived7: number;
+  staffRoles: string[];
+  sanctions: Sanction[];
+  reportsAbout: ReportSummary[];
+  reportsMade: ReportSummary[];
+}
+
+export interface AdminTicketSummary {
+  id: number;
+  playerId: string;
+  pseudo: string;
+  category: 'support' | 'appeal' | 'account_deletion';
+  subject: string;
+  status: 'open' | 'waiting_player' | 'resolved' | 'closed';
+  assigneePseudo: string | null;
+  sanctionId: number | null;
+  updatedAt: string;
+}
+
+export interface AdminTicket {
+  summary: AdminTicketSummary;
+  messages: {
+    id: number;
+    authorKind: 'player' | 'staff';
+    authorPseudo: string | null;
+    body: string;
+    internal: boolean;
+    at: string;
+  }[];
+}
+
+export interface AdminIdea {
+  id: number;
+  title: string;
+  body: string;
+  category: string;
+  status: 'new' | 'under_review' | 'planned' | 'shipped' | 'declined';
+  locale: string;
+  authorId: string;
+  authorPseudo: string | null;
+  votes: number;
+  staffAnswer: string | null;
+  hidden: boolean;
+  hiddenReason: string | null;
+  mergedInto: number | null;
+  createdAt: string;
+}
+
+export const IDEA_STATUSES: readonly AdminIdea['status'][] = [
+  'new',
+  'under_review',
+  'planned',
+  'shipped',
+  'declined',
+];
+export const TICKET_STATUSES: readonly AdminTicketSummary['status'][] = [
+  'open',
+  'waiting_player',
+  'resolved',
+  'closed',
+];
+
 export const adminApi = {
   session: () => get<AdminSession>('/session'),
   enroll: () => post<Enrollment>('/session/totp/enroll'),
@@ -146,4 +287,37 @@ export const adminApi = {
       `/audit${query({ action: filter.action, targetId: filter.targetId, before: filter.before })}`,
     ),
   verifyAudit: () => get<AuditVerification>('/audit/verify'),
+
+  players: (q: string, filter: string) => get<PlayerRow[]>(`/players${query({ q, filter })}`),
+  player: (id: string) => get<PlayerSheet>(`/players/${id}`),
+  sanction: (playerId: string, input: SanctionInput) =>
+    post<{ id: number }>(`/players/${playerId}/sanctions`, input),
+  revoke: (sanctionId: number, reason: string) =>
+    post<undefined>(`/sanctions/${sanctionId}/revoke`, { reason }),
+
+  reports: (status: string, before?: number) =>
+    get<{ items: ReportSummary[]; nextBeforeId: number | null }>(`/reports${query({ status, before })}`),
+  report: (id: number) => get<ReportDetail>(`/reports/${id}`),
+  assignReport: (id: number) => post<undefined>(`/reports/${id}/assign`, { toMe: true }),
+  resolveReport: (
+    id: number,
+    outcome: 'actioned' | 'dismissed',
+    note: string,
+    sanction: SanctionInput | null,
+  ) => post<{ sanctionId: number | null }>(`/reports/${id}/resolve`, { outcome, note, sanction }),
+
+  tickets: (status: string) => get<AdminTicketSummary[]>(`/tickets${query({ status })}`),
+  ticket: (id: number) => get<AdminTicket>(`/tickets/${id}`),
+  replyTicket: (id: number, body: string, internal: boolean) =>
+    post<undefined>(`/tickets/${id}/messages`, { body, internal }),
+  ticketStatus: (id: number, status: AdminTicketSummary['status']) =>
+    post<undefined>(`/tickets/${id}/status`, { status }),
+
+  ideas: (status: string, hidden: boolean) =>
+    get<AdminIdea[]>(`/ideas${query({ status, hidden: hidden ? 'true' : undefined })}`),
+  updateIdea: (
+    id: number,
+    changes: { status?: string; staffAnswer?: string; hidden?: boolean; hiddenReason?: string },
+  ) => request<AdminIdea>('PATCH', `${base}/ideas/${id}`, changes),
+  mergeIdea: (id: number, intoId: number) => post<undefined>(`/ideas/${id}/merge`, { intoId }),
 };

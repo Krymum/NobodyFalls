@@ -11,7 +11,11 @@
     "team": "Team",
     "audit": "Audit log",
     "signOut": "Sign out of the admin",
-    "language": "Language"
+    "language": "Language",
+    "reports": "Reports",
+    "players": "Players",
+    "tickets": "Requests",
+    "ideas": "Ideas"
   },
   "roles": {
     "admin": "Admin",
@@ -126,7 +130,11 @@
     "families": {
       "admin": "Sign-ins",
       "staff": "Team",
-      "audit": "Audit"
+      "audit": "Audit",
+      "sanction": "Sanctions",
+      "report": "Reports",
+      "ticket": "Requests",
+      "idea": "Ideas"
     },
     "actions": {
       "staff": {
@@ -145,6 +153,24 @@
       "audit": {
         "viewed": "Log viewed",
         "verified": "Integrity verified"
+      },
+      "sanction": {
+        "issued": "Sanction applied",
+        "revoked": "Sanction lifted"
+      },
+      "report": {
+        "assigned": "Report taken",
+        "resolved": "Report closed"
+      },
+      "ticket": {
+        "replied": "Answer sent",
+        "noted": "Internal note",
+        "status_changed": "Request status changed",
+        "assigned": "Request assigned"
+      },
+      "idea": {
+        "updated": "Idea updated",
+        "merged": "Ideas merged"
       }
     }
   },
@@ -179,6 +205,213 @@
     },
     "network": {
       "offline": "No network. Try again once you are connected."
+    },
+    "sanction": {
+      "kind": "Pick a sanction.",
+      "reason": "A reason has 3 to 500 characters.",
+      "public_message": "A warning or a ban needs a message for the player.",
+      "period": "The end must be in the future, within a year.",
+      "no_period": "A warning or a reset has no end.",
+      "self": "Nobody sanctions themselves.",
+      "staff": "Take this team member's role away first.",
+      "not_found": "This sanction does not exist.",
+      "already_revoked": "This sanction was already lifted.",
+      "player_not_found": "This player does not exist."
+    },
+    "report": {
+      "not_found": "This report does not exist.",
+      "already_resolved": "This report is already closed.",
+      "outcome": "Pick an outcome.",
+      "note": "2000 characters at most.",
+      "sanction_needs_actioned": "A sanction means \"actioned\"."
+    },
+    "ticket": {
+      "not_found": "This request does not exist or is not yours to handle.",
+      "message": "A message has 1 to 2000 characters.",
+      "closed": "This request is closed.",
+      "status": "Unknown status.",
+      "own_sanction": "Another team member handles appeals against your own sanctions."
+    },
+    "idea": {
+      "not_found": "This idea does not exist.",
+      "status": "Unknown status.",
+      "answer": "2000 characters at most.",
+      "merge_self": "An idea does not merge into itself.",
+      "merge_target": "Merge into a visible idea that is not merged itself."
+    }
+  },
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "none": "—",
+    "open": "Open",
+    "more": "Older",
+    "you": "you",
+    "player": "Player",
+    "noResults": "Nothing to show."
+  },
+  "sanction": {
+    "title": "Sanction",
+    "kind": "Sanction",
+    "reason": "Reason (for the team)",
+    "publicMessage": "Message to the player",
+    "endsAt": "End",
+    "endsAtHint": "Empty: no end. A ban without end is for admins only.",
+    "submit": "Apply the sanction",
+    "issued": "Sanction applied.",
+    "revoke": "Lift",
+    "revokeReason": "Why lift it?",
+    "revoked": "Sanction lifted.",
+    "active": "Active",
+    "until": "until {{date}}",
+    "forever": "no end",
+    "by": "by {{name}}",
+    "kinds": {
+      "warning": "Warning",
+      "pseudo_reset": "Name reset",
+      "score_exclusion": "Score exclusion",
+      "ban": "Ban"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "filter": "Status",
+    "statuses": {
+      "open": "To handle",
+      "in_review": "In review",
+      "actioned": "Actioned",
+      "dismissed": "Dismissed"
+    },
+    "categories": {
+      "pseudo": "Offensive name",
+      "harassment": "Harassment",
+      "cheating": "Cheating",
+      "other": "Other"
+    },
+    "columns": {
+      "target": "Target",
+      "category": "Reason",
+      "reporter": "Reported by",
+      "assignee": "Taken by",
+      "status": "Status",
+      "at": "Received"
+    },
+    "detailTitle": "Report #{{id}}",
+    "details": "What the reporter says",
+    "snapshot": "The target when reported",
+    "others_one": "{{count}} other report on this target",
+    "others_other": "{{count}} other reports on this target",
+    "assign": "I'll take it",
+    "assigned": "Taken.",
+    "resolveTitle": "Decision",
+    "outcome": "Outcome",
+    "outcomes": {
+      "actioned": "Actioned",
+      "dismissed": "Dismissed"
+    },
+    "note": "Note (for the team)",
+    "withSanction": "Sanction the target",
+    "resolve": "Close the report",
+    "resolved": "Report closed. The reporter is told it was handled.",
+    "openPlayer": "Player sheet"
+  },
+  "players": {
+    "title": "Players",
+    "search": "Name or id",
+    "filters": {
+      "all": "All",
+      "reported": "Reported",
+      "banned": "Banned"
+    },
+    "columns": {
+      "pseudo": "Name",
+      "status": "State",
+      "reports": "Open reports",
+      "since": "Joined",
+      "seen": "Seen"
+    },
+    "statuses": {
+      "active": "In play",
+      "fallen": "Fallen",
+      "waitlisted": "Waiting"
+    },
+    "banned": "Banned",
+    "excluded": "Score excluded",
+    "sheet": {
+      "facts": "At a glance",
+      "score": "Guardian score",
+      "falls": "Falls",
+      "friends": "Friends",
+      "given": "Hands given (7 d)",
+      "received": "Hands received (7 d)",
+      "staff": "Team member",
+      "pseudoPending": "Must choose a new name",
+      "sanctions": "Sanctions",
+      "reportsAbout": "Reports about them",
+      "reportsMade": "Reports they made"
+    }
+  },
+  "tickets": {
+    "title": "Requests",
+    "filters": {
+      "active": "Ongoing",
+      "open": "To answer",
+      "waiting_player": "Waiting for the player",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "categories": {
+      "support": "Help",
+      "appeal": "Appeal",
+      "account_deletion": "Account deletion"
+    },
+    "statuses": {
+      "open": "To answer",
+      "waiting_player": "Waiting for the player",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "columns": {
+      "subject": "Subject",
+      "player": "Player",
+      "category": "Type",
+      "status": "Status",
+      "updated": "Updated"
+    },
+    "reply": "Answer to the player",
+    "internal": "Internal note (never shown to the player)",
+    "send": "Send",
+    "sent": "Sent.",
+    "internalTag": "Internal note",
+    "team": "The team",
+    "status": "Status",
+    "setStatus": "Change the status",
+    "sanction": "Contested sanction: #{{id}}"
+  },
+  "ideas": {
+    "title": "Ideas",
+    "filter": "Status",
+    "all": "All",
+    "showHidden": "Show hidden ones",
+    "votes_one": "{{count}} backer",
+    "votes_other": "{{count}} backers",
+    "by": "by {{name}}",
+    "status": "Public status",
+    "answer": "The team's public answer",
+    "hide": "Hide",
+    "unhide": "Make visible",
+    "hiddenReason": "Why it is hidden",
+    "hidden": "Hidden",
+    "merged": "Merged into #{{id}}",
+    "mergeInto": "Merge into idea #",
+    "merge": "Merge",
+    "saved": "Idea saved.",
+    "statuses": {
+      "new": "New",
+      "under_review": "Under review",
+      "planned": "Planned",
+      "shipped": "Shipped",
+      "declined": "Declined"
     }
   }
 }

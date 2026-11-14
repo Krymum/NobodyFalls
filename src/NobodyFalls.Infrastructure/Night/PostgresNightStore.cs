@@ -273,7 +273,7 @@ internal sealed class PostgresNightStore(NpgsqlDataSource dataSource, IGameSetti
         }
 
         await tx.ExecuteAsync(NightSql.EnterPlayers, cancellationToken, ("day", day.Date));
-        var alive = await tx.ScalarAsync<int>(NightSql.CountAlive, cancellationToken);
+        var alive = await tx.ScalarAsync<int>(NightSql.CountAlive, cancellationToken, ("now", Sql.Utc(now)));
 
         var current = await settings.GetCurrentAsync(cancellationToken);
         var rules = current.Rules;

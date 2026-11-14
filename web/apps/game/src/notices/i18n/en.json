@@ -1,0 +1,30 @@
+{
+  "notices": {
+    "ban": {
+      "title": "Your account is suspended.",
+      "titleForever": "Your account is banned.",
+      "until": "Until {{date}}.",
+      "intro": "You cannot hold anyone or be held for now. It does not count as a fall.",
+      "contest": "Contest this decision",
+      "logout": "Sign out"
+    },
+    "warning": {
+      "title": "A message from the team",
+      "ack": "Understood"
+    },
+    "pseudo": {
+      "title": "Choose a new name.",
+      "intro": "The team replaced your name, which did not follow the rules. Choose another one to go on.",
+      "label": "New name",
+      "submit": "Confirm"
+    }
+  },
+  "errors": {
+    "pseudo": {
+      "no_reset": "Your name can only change after a reset by the team."
+    },
+    "sanction": {
+      "not_found": "This message no longer exists."
+    }
+  }
+}

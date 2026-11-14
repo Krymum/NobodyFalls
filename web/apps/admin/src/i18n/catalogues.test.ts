@@ -62,6 +62,31 @@ describe('admin translations (FR and EN, GAME_DESIGN §9)', () => {
       'staff.already_member',
       'staff.last_admin',
       'staff.not_human',
+      'sanction.kind',
+      'sanction.reason',
+      'sanction.public_message',
+      'sanction.period',
+      'sanction.no_period',
+      'sanction.self',
+      'sanction.staff',
+      'sanction.not_found',
+      'sanction.already_revoked',
+      'sanction.player_not_found',
+      'report.not_found',
+      'report.already_resolved',
+      'report.outcome',
+      'report.note',
+      'report.sanction_needs_actioned',
+      'ticket.not_found',
+      'ticket.message',
+      'ticket.closed',
+      'ticket.status',
+      'ticket.own_sanction',
+      'idea.not_found',
+      'idea.status',
+      'idea.answer',
+      'idea.merge_self',
+      'idea.merge_target',
       'request.failed',
       'request.rate_limited',
       'request.missing_header',
@@ -73,7 +98,7 @@ describe('admin translations (FR and EN, GAME_DESIGN §9)', () => {
     }
   });
 
-  it('every audit action written in phase 2 step (a) has a label', () => {
+  it('every audit action the admin writes has a label', () => {
     const actions = [
       'staff.bootstrapped',
       'staff.added',
@@ -86,6 +111,16 @@ describe('admin translations (FR and EN, GAME_DESIGN §9)', () => {
       'admin.sign_in_locked',
       'audit.viewed',
       'audit.verified',
+      'sanction.issued',
+      'sanction.revoked',
+      'report.assigned',
+      'report.resolved',
+      'ticket.replied',
+      'ticket.noted',
+      'ticket.status_changed',
+      'ticket.assigned',
+      'idea.updated',
+      'idea.merged',
     ];
     const all = new Set(keys(fr));
     for (const action of actions) {

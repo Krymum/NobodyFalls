@@ -47,6 +47,8 @@ internal static class Problems
         "admin.reauth_required" => StatusCodes.Status401Unauthorized,
         "admin.totp_locked" => StatusCodes.Status429TooManyRequests,
         "staff.last_admin" or "staff.admin_exists" => StatusCodes.Status409Conflict,
+        "sanction.staff" or "sanction.self" or "ticket.own_sanction" => StatusCodes.Status403Forbidden,
+        "player.banned" => StatusCodes.Status403Forbidden,
         _ when code.Contains("duplicate", StringComparison.Ordinal)
                || code.Contains("already", StringComparison.Ordinal)
                || code.EndsWith(".taken", StringComparison.Ordinal)
