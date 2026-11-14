@@ -1,6 +1,6 @@
 # NobodyFalls: one image serving the API and the built front end, from the same origin.
 
-FROM node:24-slim AS web
+FROM node:25-slim AS web
 WORKDIR /repo/web
 RUN corepack enable
 # Dependencies first, so that code changes reuse the cached layer.
