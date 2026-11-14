@@ -28,7 +28,7 @@ COPY src/ src/
 COPY --from=web /repo/src/NobodyFalls.Api/wwwroot src/NobodyFalls.Api/wwwroot
 RUN dotnet publish src/NobodyFalls.Api/NobodyFalls.Api.csproj -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 ENV ASPNETCORE_URLS=http://+:8080 \
