@@ -57,6 +57,17 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
         ("GET", "/api/v1/admin/ideas", AdminGate.Permission, Permission.IdeasModerate, false, null),
         ("PATCH", "/api/v1/admin/ideas/{id:long}", AdminGate.Permission, Permission.IdeasModerate, false, null),
         ("POST", "/api/v1/admin/ideas/{id:long}/merge", AdminGate.Permission, Permission.IdeasModerate, false, null),
+        ("GET", "/api/v1/admin/config/rules", AdminGate.Permission, Permission.ConfigRules, false, null),
+        ("GET", "/api/v1/admin/config/rules/versions", AdminGate.Permission, Permission.ConfigRules, false, null),
+        ("PUT", "/api/v1/admin/config/rules", AdminGate.Permission, Permission.ConfigRules, true, null),
+        ("GET", "/api/v1/admin/config/storms", AdminGate.Permission, Permission.ConfigStorms, false, null),
+        ("POST", "/api/v1/admin/config/storms", AdminGate.Permission, Permission.ConfigStorms, true, null),
+        ("DELETE", "/api/v1/admin/config/storms/{day}", AdminGate.Permission, Permission.ConfigStorms, true, null),
+        ("GET", "/api/v1/admin/config/seasons", AdminGate.Permission, Permission.ConfigSeasons, false, null),
+        ("POST", "/api/v1/admin/config/seasons", AdminGate.Permission, Permission.ConfigSeasons, true, null),
+        ("PATCH", "/api/v1/admin/config/seasons/{number:int}", AdminGate.Permission, Permission.ConfigSeasons, true, null),
+        ("GET", "/api/v1/admin/config/flags", AdminGate.Permission, Permission.ConfigFlags, false, null),
+        ("PUT", "/api/v1/admin/config/flags/{key}", AdminGate.Permission, Permission.ConfigFlags, true, null),
     ];
 
     public static TheoryData<string, string> Routes()
@@ -157,7 +168,10 @@ public sealed class AdminAuthorizationTests(PostgresFixture postgres)
         var url = endpoint.Route
             .Replace("{playerId:guid}", Guid.Empty.ToString(), StringComparison.Ordinal)
             .Replace("{id:guid}", Guid.Empty.ToString(), StringComparison.Ordinal)
-            .Replace("{id:long}", "1", StringComparison.Ordinal);
+            .Replace("{id:long}", "1", StringComparison.Ordinal)
+            .Replace("{number:int}", "1", StringComparison.Ordinal)
+            .Replace("{day}", "2000-01-01", StringComparison.Ordinal)
+            .Replace("{key}", "ideas", StringComparison.Ordinal);
         var request = new HttpRequestMessage(new HttpMethod(endpoint.Method), new Uri(url, UriKind.Relative));
         if (endpoint.Method is "POST" or "PUT" or "PATCH" or "DELETE")
         {

@@ -31,6 +31,7 @@ internal static class AdminEndpoints
         MapStaff(admin.MapGroup("/staff"));
         MapAudit(admin.MapGroup("/audit"));
         ModerationEndpoints.MapModeration(admin);
+        ConfigEndpoints.MapConfig(admin);
     }
 
     private static void MapSession(RouteGroupBuilder session)

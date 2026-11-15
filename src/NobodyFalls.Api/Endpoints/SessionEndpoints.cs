@@ -5,6 +5,7 @@ using NobodyFalls.Api.Hosting;
 using NobodyFalls.Api.Http;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
+using NobodyFalls.Application.Config;
 using NobodyFalls.Application.Players;
 using NobodyFalls.Application.Queries;
 using NobodyFalls.Domain.Players;
@@ -27,6 +28,7 @@ internal static class SessionEndpoints
             SignInProviders providers,
             IOptions<TurnstileOptions> turnstile,
             DevToolsOptions devTools,
+            IFeatureFlags flags,
             CancellationToken ct) =>
         {
             SessionPlayer? player = null;
@@ -51,7 +53,8 @@ internal static class SessionEndpoints
                 }
             }
 
-            return Results.Ok(new SessionResponse(state, player, returned, providers.Names, turnstile.Value.SiteKey, devTools.Enabled));
+            return Results.Ok(new SessionResponse(
+                state, player, returned, providers.Names, turnstile.Value.SiteKey, devTools.Enabled, await FeatureGate.ForClientAsync(flags, ct)));
         });
 
         api.MapPost("/registration", async (

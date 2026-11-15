@@ -524,6 +524,48 @@
   border-left-style: dashed;
 }
 
+/* Live configuration: sections as tabs-like links, dense groups of small fields. */
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 20px;
+}
+
+.subnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--nf-color-outline);
+  border-radius: var(--nf-space-radius);
+  color: var(--nf-color-text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.subnav a:hover {
+  color: var(--nf-color-bone);
+}
+
+.subnav a[aria-current='page'] {
+  color: var(--nf-color-bone);
+  border-color: var(--nf-color-bone);
+}
+
+.fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 20px;
+  min-width: 0;
+}
+
+.configGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px 20px;
+}
+
 /* Dashboard: figures as tiles (no frames, a thin rule), one bar chart. */
 .tiles {
   display: grid;

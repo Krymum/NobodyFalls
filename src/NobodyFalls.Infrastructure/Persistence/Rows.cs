@@ -72,6 +72,15 @@ internal sealed class GameDayRow
     public DateTimeOffset? FriendReminderAt { get; set; }
 }
 
+/// <summary>An override of a feature flag declared in the code (ADR 0022).</summary>
+internal sealed class FeatureFlagRow
+{
+    public string Key { get; set; } = "";
+    public bool Enabled { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
+    public Guid? UpdatedBy { get; set; }
+}
+
 internal sealed class StormRow
 {
     public DateOnly Day { get; set; }

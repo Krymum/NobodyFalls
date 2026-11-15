@@ -31,6 +31,11 @@ const TABS = ['ideas', 'contact', 'report'] as const;
 type Tab = (typeof TABS)[number];
 
 /** Runs one async action for a form: busy flag, translated error, success message. */
+/** A feature switched off by the team is hidden (the server refuses it too, ADR 0022). */
+function useFeature(key: 'ideas' | 'reports' | 'contact'): boolean {
+  return useGame((s) => s.session?.features?.[key] !== false);
+}
+
 function useAction() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,10 +86,11 @@ export function FeedbackScreen() {
   const { t } = useTranslation();
   // A banned player only comes here to contest the ban (GAME_DESIGN §9).
   const banned = useGame((s) => s.notices?.ban != null);
-  const tabs: readonly Tab[] = banned ? ['contact'] : TABS;
+  const reports = useFeature('reports');
+  const tabs: readonly Tab[] = banned ? ['contact'] : TABS.filter((name) => reports || name !== 'report');
   const [tab, setTab] = useState<Tab>(() => {
     const asked = new URLSearchParams(window.location.search).get('tab');
-    return banned ? 'contact' : (TABS.find((name) => name === asked) ?? 'ideas');
+    return banned ? 'contact' : (tabs.find((name) => name === asked) ?? 'ideas');
   });
 
   const select = (next: Tab): void => {
@@ -155,6 +161,7 @@ function Ideas() {
   const [next, setNext] = useState<number | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const open = useFeature('ideas');
 
   const load = useCallback(
     (offset: number) => {
@@ -195,12 +202,16 @@ function Ideas() {
   return (
     <>
       <p className={ui.text}>{t('feedback.ideas.intro')}</p>
-      <ProposeIdea
-        onSent={() => {
-          setSort('new');
-          load(0);
-        }}
-      />
+      {open ? (
+        <ProposeIdea
+          onSent={() => {
+            setSort('new');
+            load(0);
+          }}
+        />
+      ) : (
+        <p className={ui.text}>{t('feedback.ideas.closed')}</p>
+      )}
       <div className={styles.toolbar}>
         <div className={styles.choices} role="group">
           {(['votes', 'new'] as const).map((value) => (
@@ -266,7 +277,7 @@ function Ideas() {
               <span className={styles.votes}>{t('feedback.ideas.votes', { count: idea.votes })}</span>
               {idea.mine ? (
                 <span className={styles.meta}>{t('feedback.ideas.mine')}</span>
-              ) : (
+              ) : !open ? null : (
                 <button
                   type="button"
                   className={styles.choice}
@@ -375,10 +386,14 @@ function ProposeIdea({ onSent }: { onSent: () => void }) {
 function Contact() {
   const { t, i18n } = useTranslation();
   const banned = useGame((s) => s.notices?.ban != null);
-  const categories: readonly TicketCategory[] = banned ? ['appeal'] : TICKET_CATEGORIES;
+  // Contesting a sanction and asking for erasure are rights: only support can be switched off.
+  const support = useFeature('contact');
+  const categories: readonly TicketCategory[] = banned
+    ? ['appeal']
+    : TICKET_CATEGORIES.filter((c) => support || c !== 'support');
   const [tickets, setTickets] = useState<TicketSummary[] | null>(null);
   const [open, setOpen] = useState<number | null>(null);
-  const [category, setCategory] = useState<TicketCategory>(banned ? 'appeal' : 'support');
+  const [category, setCategory] = useState<TicketCategory>(categories[0] ?? 'appeal');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const { busy, error, done, run } = useAction();

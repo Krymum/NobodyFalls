@@ -41,7 +41,7 @@ internal sealed class PostgresDevStore(
             truncate table hands, player_days, life_debts, player_falls, season_scores, player_stats,
                            friendships, friend_requests, blocks, hold_pairs, player_skin_unlocks,
                            notification_outbox, push_subscriptions, notification_preferences,
-                           appearances, external_logins, storms, game_days, seasons, players
+                           appearances, external_logins, storms, game_days, seasons, players, feature_flags
             restart identity cascade;
 
             delete from dev_clock;

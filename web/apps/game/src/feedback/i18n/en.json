@@ -42,7 +42,8 @@
         "social": "Friends and help",
         "interface": "Interface",
         "other": "Other"
-      }
+      },
+      "closed": "New ideas and votes are closed for now. You can still read the ideas and the team's answers."
     },
     "contact": {
       "intro": "A question, a problem, a sanction to contest? Write to the team: the answer comes here.",

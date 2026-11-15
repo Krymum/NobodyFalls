@@ -62,6 +62,46 @@ export interface AuditVerification {
   firstBrokenId: number | null;
 }
 
+/** Game rules as the server sends them: numbers, durations "hh:mm:ss", times of day "hh:mm:ss". */
+export type Rules = Record<string, Json>;
+
+export interface RulesState {
+  latestVersion: number;
+  todayVersion: number;
+  rules: Rules;
+}
+
+export interface RulesVersion {
+  version: number;
+  createdAt: string;
+  author: string | null;
+  comment: string;
+  rules: Rules;
+}
+
+export interface ScheduledStorm {
+  day: string;
+  createdAt: string;
+  author: string | null;
+}
+
+export interface SeasonView {
+  number: number;
+  name: string;
+  openingDay: string;
+  lastDay: string | null;
+  deaths: number;
+}
+
+export interface FlagState {
+  key: string;
+  description: string;
+  enabled: boolean;
+  default: boolean;
+  updatedAt: string | null;
+  updatedBy: string | null;
+}
+
 /** A refused request. `code` is stable and translated by the interface (`errors.<code>`). */
 export class ApiError extends Error {
   constructor(
@@ -318,6 +358,22 @@ export const adminApi = {
   verifyAudit: () => get<AuditVerification>('/audit/verify'),
 
   dashboard: () => get<Dashboard>('/dashboard'),
+
+  rules: () => get<RulesState>('/config/rules'),
+  rulesVersions: () => get<RulesVersion[]>('/config/rules/versions'),
+  saveRules: (rules: Rules, comment: string) =>
+    request<{ version: number }>('PUT', `${base}/config/rules`, { rules, comment }),
+  storms: () => get<{ today: string; storms: ScheduledStorm[] }>('/config/storms'),
+  scheduleStorm: (day: string) => post<undefined>('/config/storms', { day }),
+  cancelStorm: (day: string) => request<undefined>('DELETE', `${base}/config/storms/${day}`),
+  seasons: () => get<{ today: string; seasons: SeasonView[] }>('/config/seasons'),
+  planSeason: (name: string, openingDay: string, lastDay: string | null) =>
+    post<{ number: number }>('/config/seasons', { name, openingDay, lastDay }),
+  changeSeason: (number: number, name: string, openingDay: string, lastDay: string | null) =>
+    request<undefined>('PATCH', `${base}/config/seasons/${number}`, { name, openingDay, lastDay }),
+  flags: () => get<FlagState[]>('/config/flags'),
+  setFlag: (key: string, enabled: boolean) =>
+    request<undefined>('PUT', `${base}/config/flags/${key}`, { enabled }),
   links: (id: string) => get<AccountLinks>(`/players/${id}/links`),
   exportUrl: (id: string) => `${base}/players/${id}/export`,
   deletePlayer: (id: string, reason: string) =>

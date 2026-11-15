@@ -6,7 +6,20 @@ import { formatDateTime } from '../i18n/index.ts';
 import styles from '../styles/admin.module.css';
 import { ErrorText, Notice, useSubmit } from '../ui.tsx';
 
-const FAMILIES = ['staff', 'admin', 'audit', 'sanction', 'report', 'ticket', 'idea', 'player'] as const;
+const FAMILIES = [
+  'staff',
+  'admin',
+  'audit',
+  'sanction',
+  'report',
+  'ticket',
+  'idea',
+  'player',
+  'rules',
+  'storm',
+  'season',
+  'flag',
+] as const;
 
 function Row({ entry }: { entry: AuditEntry }) {
   const { t, i18n } = useTranslation();

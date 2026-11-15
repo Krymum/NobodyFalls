@@ -234,6 +234,31 @@ namespace NobodyFalls.Infrastructure.Persistence.Migrations
                     b.ToTable("external_logins", (string)null);
                 });
 
+            modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.FeatureFlagRow", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("key");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("enabled");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Key")
+                        .HasName("pk_feature_flags");
+
+                    b.ToTable("feature_flags", (string)null);
+                });
+
             modelBuilder.Entity("NobodyFalls.Infrastructure.Persistence.FriendRequestRow", b =>
                 {
                     b.Property<long>("Id")

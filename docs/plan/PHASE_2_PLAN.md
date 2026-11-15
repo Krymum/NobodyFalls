@@ -520,4 +520,15 @@ l'étape (a) ; l'admin réutilise son système de layout) :
     suppression RGPD.
 - **Retour après un ban** : le joueur reprend au prochain début de journée, au seuil
   normal. Un ban levé en cours de journée ne le remet pas en jeu le jour même.
+- **Étape (d)** découpée en deux PR :
+  - **(d1) configuration en direct**, qui couvre le critère « un admin programme une
+    tempête et la voit s'appliquer à minuit » : règles versionnées avec diff et retour
+    à une version, tempêtes, saisons, feature flags (`ideas`, `reports`, `contact`) ;
+  - **(d2) annonces** : segments, aperçu, in-app, push et le flag `announcements.push`.
+- **Flag `contact`** : il ne ferme que les demandes au support. Contester une sanction
+  et demander la suppression de son compte sont des droits, toujours ouverts.
+- **Tempêtes** : une journée déjà démarrée (y compris par les outils de dev) ne change
+  plus, même si son heure de début n'est pas encore passée.
+- **Saisons** : la suivante se planifie une fois fixé le dernier jour de la saison en
+  cours, et jamais à cheval sur elle (`SeasonCalendar`).
 
