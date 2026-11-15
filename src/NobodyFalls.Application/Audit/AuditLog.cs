@@ -52,6 +52,12 @@ public static class AuditActions
     public const string PlayerLinksViewed = "player.links_viewed";
     public const string PlayerExported = "player.exported";
     public const string PlayerDeleted = "player.deleted";
+    public const string RulesChanged = "rules.changed";
+    public const string StormScheduled = "storm.scheduled";
+    public const string StormCancelled = "storm.cancelled";
+    public const string SeasonPlanned = "season.planned";
+    public const string SeasonChanged = "season.changed";
+    public const string FlagChanged = "flag.changed";
 }
 
 /// <summary>Stable target types.</summary>
@@ -63,6 +69,10 @@ public static class AuditTargets
     public const string Report = "report";
     public const string Ticket = "ticket";
     public const string Idea = "idea";
+    public const string Rules = "rules";
+    public const string Storm = "storm";
+    public const string Season = "season";
+    public const string Flag = "flag";
 }
 
 public sealed record AuditQuery(

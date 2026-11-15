@@ -18,6 +18,7 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
     public DbSet<SeasonRow> Seasons => Set<SeasonRow>();
     public DbSet<GameDayRow> GameDays => Set<GameDayRow>();
     public DbSet<StormRow> Storms => Set<StormRow>();
+    public DbSet<FeatureFlagRow> FeatureFlags => Set<FeatureFlagRow>();
     public DbSet<PlayerDayRow> PlayerDays => Set<PlayerDayRow>();
     public DbSet<HandRow> Hands => Set<HandRow>();
     public DbSet<LifeDebtRow> LifeDebts => Set<LifeDebtRow>();
@@ -200,6 +201,13 @@ internal sealed class NobodyFallsDbContext(DbContextOptions<NobodyFallsDbContext
         {
             e.ToTable("storms");
             e.HasKey(s => s.Day);
+        });
+
+        b.Entity<FeatureFlagRow>(e =>
+        {
+            e.ToTable("feature_flags");
+            e.HasKey(f => f.Key);
+            e.Property(f => f.Key).HasMaxLength(64);
         });
 
         b.Entity<LifeDebtRow>(e =>

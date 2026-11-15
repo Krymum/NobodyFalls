@@ -15,7 +15,8 @@
     "reports": "Reports",
     "players": "Players",
     "tickets": "Requests",
-    "ideas": "Ideas"
+    "ideas": "Ideas",
+    "config": "Configuration"
   },
   "roles": {
     "admin": "Admin",
@@ -135,7 +136,11 @@
       "report": "Reports",
       "ticket": "Requests",
       "idea": "Ideas",
-      "player": "Players"
+      "player": "Players",
+      "rules": "Rules",
+      "storm": "Storms",
+      "season": "Seasons",
+      "flag": "Features"
     },
     "actions": {
       "staff": {
@@ -177,6 +182,20 @@
         "links_viewed": "Linked accounts viewed",
         "exported": "Data exported",
         "deleted": "Account deleted"
+      },
+      "rules": {
+        "changed": "Rules changed"
+      },
+      "storm": {
+        "scheduled": "Storm scheduled",
+        "cancelled": "Storm cancelled"
+      },
+      "season": {
+        "planned": "Season planned",
+        "changed": "Season changed"
+      },
+      "flag": {
+        "changed": "Feature switched"
       }
     }
   },
@@ -249,6 +268,48 @@
       "not_found": "This player does not exist.",
       "staff": "Take this team member's role away first.",
       "reason": "Give the request (3 to 500 characters)."
+    },
+    "rules": {
+      "missing": "Send the complete rules.",
+      "comment": "Say why the rules change (3 to 200 characters).",
+      "unchanged": "These rules are already the latest version.",
+      "hands_per_day": "Between 1 and 10 hands per day.",
+      "base_required": "At least one hand is required.",
+      "low_population_required": "Cannot be negative.",
+      "low_population_below": "Cannot be negative.",
+      "fragile_extra": "Cannot be negative.",
+      "storm_extra": "Cannot be negative.",
+      "storm_notice": "Between 0 and 24 hours.",
+      "return_cutoff": "Between 0 and 24 hours.",
+      "last_rampart_window": "Between 0 and 24 hours.",
+      "points": "Points cannot be negative.",
+      "friend_limit": "At least one friend must be allowed.",
+      "suggestion_min_nights": "At least one night.",
+      "watchers": {
+        "max_count": "Cannot be negative.",
+        "disappear_at_population": "Cannot be negative.",
+        "hands_per_watcher": "Cannot be negative."
+      }
+    },
+    "storm": {
+      "day": "Give the day of the storm.",
+      "too_late": "This day has started: its storm can no longer change.",
+      "already_scheduled": "A storm is already planned that day.",
+      "not_found": "No storm is planned that day."
+    },
+    "season": {
+      "overlap": "Seasons cannot overlap: the previous one must end before the next one opens.",
+      "already_started": "This day has started: the opening cannot be that day or move.",
+      "already_closed": "This season is over.",
+      "not_found": "This season does not exist.",
+      "past_end": "The last day cannot be in the past.",
+      "dates": "Give valid dates; the last day is optional.",
+      "name": "Give the season a name.",
+      "number": "Invalid season number."
+    },
+    "flag": {
+      "not_found": "This feature does not exist.",
+      "enabled": "Say whether the feature is on."
     }
   },
   "common": {
@@ -481,5 +542,115 @@
     "sharedDevice_other": "{{count}} accounts on one device:",
     "burst_one": "{{count}} sign-up from one address:",
     "burst_other": "{{count}} sign-ups from one address:"
+  },
+  "config": {
+    "title": "Configuration",
+    "system": "the system",
+    "rules": {
+      "title": "Rules",
+      "intro": "Version {{latest}}. Today plays version {{today}}: a new version applies from the next game day, never during one.",
+      "groups": {
+        "threshold": "Thresholds",
+        "watchers": "Watchers",
+        "points": "Guardian points",
+        "times": "Times (UTC)",
+        "social": "Friends"
+      },
+      "fields": {
+        "handsPerDay": "Hands per day",
+        "baseRequired": "Hands required (base)",
+        "lowPopulationRequired": "Hands required with few players",
+        "lowPopulationBelow": "\"Few players\": fewer than",
+        "fragileExtra": "Extra on the 2nd night",
+        "stormExtra": "Extra on a storm night",
+        "watchers.maxCount": "Watchers at most",
+        "watchers.disappearAtPopulation": "No Watcher left from",
+        "watchers.handsPerWatcher": "Hands per Watcher",
+        "watchers.passAt": "Watchers' pass",
+        "pointsFriend": "Hand to a friend",
+        "pointsStranger": "Hand to a stranger",
+        "lastRampartBonus": "Last stand bonus",
+        "stormNotice": "Storm notice before midnight",
+        "returnCutoff": "Return postponed if less than",
+        "lastRampartWindow": "Last stand window",
+        "friendReminderAt": "\"Friends in danger\" reminder",
+        "friendLimit": "Friends at most",
+        "suggestionMinNights": "Nights before suggesting a friend"
+      },
+      "review": "Changes",
+      "noChange": "No change from the latest version.",
+      "comment": "Why this change",
+      "save": "Save a new version",
+      "discard": "Discard the changes",
+      "saved": "Version {{version}} saved. It applies from the next game day.",
+      "versions": "Versions",
+      "version": "Version",
+      "when": "Date",
+      "author": "By",
+      "why": "Why",
+      "actions": "Actions",
+      "today": "in play",
+      "restore": "Restore",
+      "backTo": "Back to version {{version}}"
+    },
+    "storms": {
+      "title": "Storms",
+      "intro": "A storm adds required hands for everyone for a day. It is scheduled or cancelled before its day starts; today ({{today}}) no longer moves.",
+      "add": "Schedule a storm",
+      "day": "Day",
+      "schedule": "Schedule",
+      "scheduled": "Storm scheduled for {{day}}.",
+      "list": "Scheduled and recent storms",
+      "none": "No storm scheduled.",
+      "state": "State",
+      "states": {
+        "upcoming": "Upcoming",
+        "today": "Today",
+        "past": "Past"
+      },
+      "cancel": "Cancel",
+      "cancelConfirm": "Cancel the storm of {{day}}?",
+      "cancelled": "Storm of {{day}} cancelled."
+    },
+    "seasons": {
+      "title": "Seasons",
+      "intro": "A season opens at midnight for everyone. The next one is planned once the current one has a last day; a planned season can change until it opens.",
+      "name": "Name",
+      "opening": "Opening",
+      "last": "Last day",
+      "lastOptional": "Last day (optional)",
+      "states": {
+        "open": "Open",
+        "planned": "Planned",
+        "closed": "Over"
+      },
+      "save": "Save",
+      "saved": "Season \"{{name}}\" saved.",
+      "plan": "Plan the next season",
+      "planButton": "Plan",
+      "planned": "Season \"{{name}}\" planned."
+    },
+    "flags": {
+      "title": "Features",
+      "intro": "A switched-off feature disappears from the game and the server refuses it. Contesting a sanction and asking for one's account to be deleted always stay possible.",
+      "feature": "Feature",
+      "state": "State",
+      "changed": "Last change",
+      "enabled": "On",
+      "disabled": "Off",
+      "default": "Default value",
+      "on": "{{name}}: on.",
+      "off": "{{name}}: off.",
+      "names": {
+        "ideas": "Ideas",
+        "reports": "Reports",
+        "contact": "Support contact"
+      },
+      "descriptions": {
+        "ideas": "Proposing ideas and voting. Reading stays open.",
+        "reports": "Reporting a player or an idea.",
+        "contact": "Writing to support."
+      }
+    }
   }
 }

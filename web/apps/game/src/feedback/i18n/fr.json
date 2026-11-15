@@ -42,7 +42,8 @@
         "social": "Amis et entraide",
         "interface": "Interface",
         "other": "Autre"
-      }
+      },
+      "closed": "Les nouvelles propositions et les votes sont fermés pour l'instant. Tu peux toujours lire les idées et les réponses de l'équipe."
     },
     "contact": {
       "intro": "Une question, un souci, une sanction à contester ? Écris à l'équipe : la réponse arrive ici.",

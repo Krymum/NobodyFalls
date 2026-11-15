@@ -76,3 +76,32 @@ export async function resetWorld(request: APIRequestContext): Promise<void> {
   const response = await request.post('/dev/reset', { headers: API_HEADER });
   expect(response.ok(), `reset → ${response.status()}`).toBe(true);
 }
+
+/** Opens a section of the admin, through the drawer on small screens. */
+export async function openSection(page: Page, name: string): Promise<void> {
+  const menu = page.getByRole('button', { name: 'Menu' });
+  if (await menu.isVisible()) {
+    await menu.click();
+  }
+  await page.getByRole('navigation').getByRole('link', { name, exact: true }).click();
+}
+
+/** A team member with these roles, signed in to the admin with a TOTP code. */
+export async function staff(browser: Browser, pseudo: string, roles: string[]): Promise<Page> {
+  const page = await (await browser.newContext({ locale: 'fr-FR' })).newPage();
+  const id = await signUpByApi(page.request, pseudo);
+  await dev(page.request, '/dev/staff/me', { roles });
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Configurer mon application' }).click();
+  // The secret exists once the QR code shows.
+  await expect(page.getByRole('img', { name: /Code QR/ })).toBeVisible();
+  const code = ((await (await page.request.get(`/dev/totp/${id}`)).json()) as { code: string }).code;
+  await page.getByLabel('Code à 6 chiffres').fill(code);
+  await page.getByRole('button', { name: 'Confirmer' }).click();
+  await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
+  // Admins and moderators land on the dashboard, support on the greeting.
+  await expect(
+    page.getByRole('heading', { name: new RegExp(`^(Tableau de bord|Bonjour ${pseudo}\\.)$`) }),
+  ).toBeVisible();
+  return page;
+}

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
 using NobodyFalls.Application.Audit;
+using NobodyFalls.Application.Config;
 using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Friends;
@@ -19,6 +20,7 @@ using NobodyFalls.Application.Staff;
 using NobodyFalls.Infrastructure.Accounts;
 using NobodyFalls.Infrastructure.Audit;
 using NobodyFalls.Infrastructure.Clock;
+using NobodyFalls.Infrastructure.Config;
 using NobodyFalls.Infrastructure.Dev;
 using NobodyFalls.Infrastructure.Feedback;
 using NobodyFalls.Infrastructure.Friends;
@@ -111,6 +113,12 @@ public static class DependencyInjection
         services.AddSingleton<IDashboardQueries, PostgresDashboardQueries>();
         services.AddSingleton<IAccountLinks, PostgresAccountLinks>();
         services.AddSingleton<IPersonalData, PostgresPersonalData>();
+
+        // Phase 2: live configuration (GAME_DESIGN §9, ADR 0022).
+        services.AddSingleton<IRulesConfig, PostgresRulesConfig>();
+        services.AddSingleton<IStormSchedule, PostgresStormSchedule>();
+        services.AddSingleton<ISeasonConfig, PostgresSeasonConfig>();
+        services.AddSingleton<IFeatureFlags, PostgresFeatureFlags>();
 
         if (options.SimulatedClock)
         {

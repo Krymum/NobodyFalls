@@ -4,9 +4,11 @@ using NobodyFalls.Api.Hosting;
 using NobodyFalls.Api.Http;
 using NobodyFalls.Application.Abstractions;
 using NobodyFalls.Application.Accounts;
+using NobodyFalls.Application.Config;
 using NobodyFalls.Application.Feedback;
 using NobodyFalls.Application.Moderation;
 using NobodyFalls.Application.Push;
+using NobodyFalls.Domain.Config;
 using NobodyFalls.Domain.Feedback;
 
 namespace NobodyFalls.Api.Endpoints;
@@ -57,13 +59,13 @@ internal static class FeedbackEndpoints
             var player = user.RequiredPlayerId();
             var result = await actions.ProposeIdeaAsync(player, body.Title, body.Body, body.Category, await directory.LocaleOfAsync(player, ct), ct);
             return result.IsSuccess ? Results.Created($"/api/v1/ideas/{result.Value}", new { id = result.Value }) : Problems.From(result.Error!);
-        }).RequireRateLimiting(RateLimits.Feedback);
+        }).RequireRateLimiting(RateLimits.Feedback).RequiresFeature(FeatureFlags.IdeasOpen);
 
         feedback.MapPut("/ideas/{id:long}/vote", async (long id, ClaimsPrincipal user, FeedbackActions actions, CancellationToken ct) =>
-            ToResult(await actions.VoteAsync(user.RequiredPlayerId(), id, vote: true, ct))).RequireRateLimiting(RateLimits.Feedback);
+            ToResult(await actions.VoteAsync(user.RequiredPlayerId(), id, vote: true, ct))).RequireRateLimiting(RateLimits.Feedback).RequiresFeature(FeatureFlags.IdeasOpen);
 
         feedback.MapDelete("/ideas/{id:long}/vote", async (long id, ClaimsPrincipal user, FeedbackActions actions, CancellationToken ct) =>
-            ToResult(await actions.VoteAsync(user.RequiredPlayerId(), id, vote: false, ct))).RequireRateLimiting(RateLimits.Feedback);
+            ToResult(await actions.VoteAsync(user.RequiredPlayerId(), id, vote: false, ct))).RequireRateLimiting(RateLimits.Feedback).RequiresFeature(FeatureFlags.IdeasOpen);
 
         feedback.MapGet("/tickets", async (ClaimsPrincipal user, ITicketStore tickets, CancellationToken ct) =>
             Results.Ok(await tickets.MineAsync(user.RequiredPlayerId(), ct)));
@@ -73,8 +75,14 @@ internal static class FeedbackEndpoints
 
         feedback.MapPost("/tickets", async (
             TicketRequest body, ClaimsPrincipal user, HttpContext context, INotificationDirectory directory, FeedbackActions actions,
-            IPlayerNotices notices, IClock clock, CancellationToken ct) =>
+            IPlayerNotices notices, IFeatureFlags flags, IClock clock, CancellationToken ct) =>
         {
+            // Contesting a sanction and asking for erasure are rights: only support can be switched off.
+            if (body.Category == "support" && !await flags.IsEnabledAsync(FeatureFlags.ContactOpen, ct))
+            {
+                return Problems.From(FeatureErrors.Disabled);
+            }
+
             // A banned player can still write, to contest the ban.
             if (body.Category != "appeal" && await BannedPlayersFilter.IsBannedAsync(context, notices, clock))
             {
@@ -101,7 +109,7 @@ internal static class FeedbackEndpoints
                 user.RequiredPlayerId(), body.Target, body.PlayerId, body.Pseudo, body.IdeaId, body.Category, body.Details, ct);
             // The reporter only learns that the report was received (never what happens to the target).
             return result.IsSuccess ? Results.Created($"/api/v1/reports/{result.Value}", new { id = result.Value }) : Problems.From(result.Error!);
-        }).RequireRateLimiting(RateLimits.Feedback);
+        }).RequireRateLimiting(RateLimits.Feedback).RequiresFeature(FeatureFlags.ReportsOpen);
     }
 
     private static IResult ToResult(NobodyFalls.Domain.Common.Result<VoteResult> result) =>

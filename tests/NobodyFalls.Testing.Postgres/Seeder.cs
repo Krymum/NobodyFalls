@@ -8,7 +8,11 @@ namespace NobodyFalls.Testing.Postgres;
 public sealed class Seeder(NpgsqlDataSource data)
 {
     public Task SeasonAsync(GameDay openingDay, GameDay? lastDay = null) => ExecAsync(
-        "insert into seasons (id, number, name, opening_day, last_day, deaths) values (1, 1, 'S1', @opening, @last, 0)",
+        // A fixed id that the tests use, and the identity moved past it for the seasons planned later.
+        """
+        insert into seasons (id, number, name, opening_day, last_day, deaths) values (1, 1, 'S1', @opening, @last, 0);
+        select setval(pg_get_serial_sequence('seasons', 'id'), 1);
+        """,
         ("opening", openingDay.Date),
         ("last", lastDay?.Date));
 

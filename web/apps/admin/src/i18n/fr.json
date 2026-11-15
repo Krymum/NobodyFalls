@@ -15,7 +15,8 @@
     "reports": "Signalements",
     "players": "Joueurs",
     "tickets": "Demandes",
-    "ideas": "Idées"
+    "ideas": "Idées",
+    "config": "Configuration"
   },
   "roles": {
     "admin": "Admin",
@@ -135,7 +136,11 @@
       "report": "Signalements",
       "ticket": "Demandes",
       "idea": "Idées",
-      "player": "Joueurs"
+      "player": "Joueurs",
+      "rules": "Règles",
+      "storm": "Tempêtes",
+      "season": "Saisons",
+      "flag": "Fonctionnalités"
     },
     "actions": {
       "staff": {
@@ -177,6 +182,20 @@
         "links_viewed": "Comptes liés consultés",
         "exported": "Données exportées",
         "deleted": "Compte supprimé"
+      },
+      "rules": {
+        "changed": "Règles modifiées"
+      },
+      "storm": {
+        "scheduled": "Tempête programmée",
+        "cancelled": "Tempête annulée"
+      },
+      "season": {
+        "planned": "Saison planifiée",
+        "changed": "Saison modifiée"
+      },
+      "flag": {
+        "changed": "Fonctionnalité changée"
       }
     }
   },
@@ -249,6 +268,48 @@
       "not_found": "Ce joueur n'existe pas.",
       "staff": "Retire d'abord son rôle à ce membre de l'équipe.",
       "reason": "Indique la demande (3 à 500 caractères)."
+    },
+    "rules": {
+      "missing": "Envoie les règles complètes.",
+      "comment": "Indique pourquoi les règles changent (3 à 200 caractères).",
+      "unchanged": "Ces règles sont déjà la dernière version.",
+      "hands_per_day": "Entre 1 et 10 mains par jour.",
+      "base_required": "Au moins une main requise.",
+      "low_population_required": "Ne peut pas être négatif.",
+      "low_population_below": "Ne peut pas être négatif.",
+      "fragile_extra": "Ne peut pas être négatif.",
+      "storm_extra": "Ne peut pas être négatif.",
+      "storm_notice": "Entre 0 et 24 heures.",
+      "return_cutoff": "Entre 0 et 24 heures.",
+      "last_rampart_window": "Entre 0 et 24 heures.",
+      "points": "Les points ne peuvent pas être négatifs.",
+      "friend_limit": "Au moins un ami doit être possible.",
+      "suggestion_min_nights": "Au moins une nuit.",
+      "watchers": {
+        "max_count": "Ne peut pas être négatif.",
+        "disappear_at_population": "Ne peut pas être négatif.",
+        "hands_per_watcher": "Ne peut pas être négatif."
+      }
+    },
+    "storm": {
+      "day": "Indique le jour de la tempête.",
+      "too_late": "Cette journée a commencé : sa tempête ne peut plus changer.",
+      "already_scheduled": "Une tempête est déjà prévue ce jour-là.",
+      "not_found": "Aucune tempête n'est prévue ce jour-là."
+    },
+    "season": {
+      "overlap": "Les saisons ne peuvent pas se chevaucher : la précédente doit finir avant que la suivante ouvre.",
+      "already_started": "Cette journée a commencé : l'ouverture ne peut plus être ce jour-là ni changer.",
+      "already_closed": "Cette saison est terminée.",
+      "not_found": "Cette saison n'existe pas.",
+      "past_end": "Le dernier jour ne peut pas être dans le passé.",
+      "dates": "Indique des dates valides ; le dernier jour est facultatif.",
+      "name": "Donne un nom à la saison.",
+      "number": "Numéro de saison invalide."
+    },
+    "flag": {
+      "not_found": "Cette fonctionnalité n'existe pas.",
+      "enabled": "Indique si la fonctionnalité est activée."
     }
   },
   "common": {
@@ -481,5 +542,115 @@
     "sharedDevice_other": "{{count}} comptes sur un appareil :",
     "burst_one": "{{count}} inscription depuis une adresse :",
     "burst_other": "{{count}} inscriptions depuis une adresse :"
+  },
+  "config": {
+    "title": "Configuration",
+    "system": "le système",
+    "rules": {
+      "title": "Règles",
+      "intro": "Version {{latest}}. La journée en cours joue la version {{today}} : une nouvelle version s'applique à partir de la prochaine journée, jamais pendant.",
+      "groups": {
+        "threshold": "Seuils",
+        "watchers": "Veilleurs",
+        "points": "Points Gardien",
+        "times": "Horaires (UTC)",
+        "social": "Amis"
+      },
+      "fields": {
+        "handsPerDay": "Mains par jour",
+        "baseRequired": "Mains requises (base)",
+        "lowPopulationRequired": "Mains requises si peu de joueurs",
+        "lowPopulationBelow": "« Peu de joueurs » : moins de",
+        "fragileExtra": "En plus la 2e nuit",
+        "stormExtra": "En plus un soir de tempête",
+        "watchers.maxCount": "Veilleurs au maximum",
+        "watchers.disappearAtPopulation": "Plus aucun Veilleur à partir de",
+        "watchers.handsPerWatcher": "Mains par Veilleur",
+        "watchers.passAt": "Passage des Veilleurs",
+        "pointsFriend": "Main à un ami",
+        "pointsStranger": "Main à un inconnu",
+        "lastRampartBonus": "Bonus Dernier rempart",
+        "stormNotice": "Annonce de tempête avant minuit",
+        "returnCutoff": "Retour reporté si moins de",
+        "lastRampartWindow": "Fenêtre du Dernier rempart",
+        "friendReminderAt": "Rappel « amis en danger »",
+        "friendLimit": "Amis au maximum",
+        "suggestionMinNights": "Nuits avant de suggérer un ami"
+      },
+      "review": "Changements",
+      "noChange": "Aucun changement par rapport à la dernière version.",
+      "comment": "Pourquoi ce changement",
+      "save": "Enregistrer une nouvelle version",
+      "discard": "Annuler les changements",
+      "saved": "Version {{version}} enregistrée. Elle s'appliquera à partir de la prochaine journée.",
+      "versions": "Versions",
+      "version": "Version",
+      "when": "Date",
+      "author": "Par",
+      "why": "Pourquoi",
+      "actions": "Actions",
+      "today": "en cours",
+      "restore": "Reprendre",
+      "backTo": "Retour à la version {{version}}"
+    },
+    "storms": {
+      "title": "Tempêtes",
+      "intro": "Une tempête ajoute des mains requises à tout le monde pour une journée. On la programme ou on l'annule avant que sa journée commence ; aujourd'hui ({{today}}) ne bouge plus.",
+      "add": "Programmer une tempête",
+      "day": "Jour",
+      "schedule": "Programmer",
+      "scheduled": "Tempête programmée pour {{day}}.",
+      "list": "Tempêtes programmées et récentes",
+      "none": "Aucune tempête programmée.",
+      "state": "État",
+      "states": {
+        "upcoming": "À venir",
+        "today": "Aujourd'hui",
+        "past": "Passée"
+      },
+      "cancel": "Annuler",
+      "cancelConfirm": "Annuler la tempête de {{day}} ?",
+      "cancelled": "Tempête de {{day}} annulée."
+    },
+    "seasons": {
+      "title": "Saisons",
+      "intro": "Une saison ouvre à minuit pour tout le monde. On planifie la suivante une fois fixé le dernier jour de la saison en cours ; une saison planifiée se modifie tant qu'elle n'a pas ouvert.",
+      "name": "Nom",
+      "opening": "Ouverture",
+      "last": "Dernier jour",
+      "lastOptional": "Dernier jour (facultatif)",
+      "states": {
+        "open": "En cours",
+        "planned": "Planifiée",
+        "closed": "Terminée"
+      },
+      "save": "Enregistrer",
+      "saved": "Saison « {{name}} » enregistrée.",
+      "plan": "Planifier la prochaine saison",
+      "planButton": "Planifier",
+      "planned": "Saison « {{name}} » planifiée."
+    },
+    "flags": {
+      "title": "Fonctionnalités",
+      "intro": "Une fonctionnalité désactivée disparaît du jeu et le serveur la refuse. Contester une sanction et demander la suppression de son compte restent toujours possibles.",
+      "feature": "Fonctionnalité",
+      "state": "État",
+      "changed": "Dernier changement",
+      "enabled": "Activée",
+      "disabled": "Désactivée",
+      "default": "Valeur par défaut",
+      "on": "{{name}} : activée.",
+      "off": "{{name}} : désactivée.",
+      "names": {
+        "ideas": "Idées",
+        "reports": "Signalements",
+        "contact": "Contact support"
+      },
+      "descriptions": {
+        "ideas": "Proposer des idées et voter. La lecture reste ouverte.",
+        "reports": "Signaler un joueur ou une idée.",
+        "contact": "Écrire au support."
+      }
+    }
   }
 }

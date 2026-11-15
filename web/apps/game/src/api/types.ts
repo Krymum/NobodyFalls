@@ -85,6 +85,8 @@ export interface Session {
   readonly providers: readonly string[];
   readonly turnstileSiteKey: string;
   readonly devTools: boolean;
+  /** Feature flags the team can switch off (ADR 0022); a missing key means on. */
+  readonly features?: Readonly<Record<string, boolean>>;
 }
 
 /** What a sanctioned player must see first (GAME_DESIGN §9). */

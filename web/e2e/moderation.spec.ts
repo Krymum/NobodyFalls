@@ -1,36 +1,10 @@
-import { expect, test, type Browser, type Page } from '@playwright/test';
-import { API_HEADER, dev, resetWorld, signUpByApi, uniqueName } from './support.ts';
+import { expect, test } from '@playwright/test';
+import { API_HEADER, openSection, resetWorld, signUpByApi, staff, uniqueName } from './support.ts';
 
 /**
  * Phase 2 done criterion: a moderator handles a report end to end, and every action
  * appears in the audit log (GAME_DESIGN §9).
  */
-
-async function openSection(page: Page, name: string): Promise<void> {
-  const menu = page.getByRole('button', { name: 'Menu' });
-  if (await menu.isVisible()) {
-    await menu.click();
-  }
-  await page.getByRole('navigation').getByRole('link', { name, exact: true }).click();
-}
-
-/** A team member with these roles, signed in to the admin with a TOTP code. */
-async function staff(browser: Browser, pseudo: string, roles: string[]): Promise<Page> {
-  const page = await (await browser.newContext({ locale: 'fr-FR' })).newPage();
-  const id = await signUpByApi(page.request, pseudo);
-  await dev(page.request, '/dev/staff/me', { roles });
-  await page.goto('/admin/');
-  await page.getByRole('button', { name: 'Configurer mon application' }).click();
-  const code = ((await (await page.request.get(`/dev/totp/${id}`)).json()) as { code: string }).code;
-  await page.getByLabel('Code à 6 chiffres').fill(code);
-  await page.getByRole('button', { name: 'Confirmer' }).click();
-  await page.getByRole('button', { name: 'Je les ai mis en lieu sûr' }).click();
-  // Admins and moderators land on the dashboard, support on the greeting.
-  await expect(
-    page.getByRole('heading', { name: new RegExp(`^(Tableau de bord|Bonjour ${pseudo}\\.)$`) }),
-  ).toBeVisible();
-  return page;
-}
 
 test.beforeEach(async ({ request }) => {
   await resetWorld(request);

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using NobodyFalls.Api.Auth;
 using NobodyFalls.Application.Abstractions;
+using NobodyFalls.Application.Config;
 using NobodyFalls.Application.Dev;
 using NobodyFalls.Application.Night;
 using NobodyFalls.Application.Staff;
@@ -54,9 +55,10 @@ internal static class DevEndpoints
         });
 
         // Start over: an empty world, the real time, a season opening today.
-        dev.MapPost("/reset", async (IDevStore store, IClockControl control, IClock clock, INightStore night, CancellationToken ct) =>
+        dev.MapPost("/reset", async (IDevStore store, IClockControl control, IClock clock, INightStore night, IFeatureFlags flags, CancellationToken ct) =>
         {
             await store.ResetAsync(ct);
+            flags.Forget();
             await control.SetOffsetAsync(TimeSpan.Zero, ct);
             var now = clock.UtcNow;
             await store.EnsureSeasonAsync(GameDay.Of(now), ct);

@@ -6,6 +6,7 @@ import { changeLocale, LOCALES } from '../i18n/index.ts';
 import { useAdmin } from '../store.ts';
 import styles from '../styles/admin.module.css';
 import { Audit } from './Audit.tsx';
+import { Config } from './Config.tsx';
 import { Dashboard } from './Dashboard.tsx';
 import { Home } from './Home.tsx';
 import { Ideas } from './Ideas.tsx';
@@ -28,6 +29,11 @@ const SECTIONS: readonly Section[] = [
   { path: '/players', label: 'nav.players', permissions: ['players.view'] },
   { path: '/tickets', label: 'nav.tickets', permissions: ['tickets.support', 'tickets.appeal'] },
   { path: '/ideas', label: 'nav.ideas', permissions: ['ideas.moderate'] },
+  {
+    path: '/config',
+    label: 'nav.config',
+    permissions: ['config.rules', 'config.storms', 'config.seasons', 'config.flags'],
+  },
   { path: '/team', label: 'nav.team', permissions: ['staff.manage'] },
   { path: '/audit', label: 'nav.audit', permissions: ['audit.view'] },
 ];
@@ -134,6 +140,13 @@ export function Shell({ session }: { session: AdminSession }) {
           <Route path="/ideas">{allowed('ideas.moderate') ? <Ideas /> : <Home session={session} />}</Route>
           <Route path="/team">
             {allowed('staff.manage') ? <Team me={session.playerId} /> : <Home session={session} />}
+          </Route>
+          <Route path="/config" nest>
+            {['config.rules', 'config.storms', 'config.seasons', 'config.flags'].some(allowed) ? (
+              <Config session={session} />
+            ) : (
+              <Home session={session} />
+            )}
           </Route>
           <Route path="/audit">{allowed('audit.view') ? <Audit /> : <Home session={session} />}</Route>
           <Route>{allowed('dashboard.view') ? <Dashboard /> : <Home session={session} />}</Route>

@@ -23,7 +23,8 @@ public sealed record SessionResponse(
     ReturnOutcome? Returned,
     IReadOnlyList<string> Providers,
     string TurnstileSiteKey,
-    bool DevTools);
+    bool DevTools,
+    IReadOnlyDictionary<string, bool> Features);
 
 public sealed record RegistrationRequest(string? Pseudo, Appearance Appearance, string? Locale, string? InviteCode, string? TurnstileToken);
 
